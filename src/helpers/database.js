@@ -1,0 +1,5 @@
+export const LOCALSTORAGE_DB_USER = 'user'
+
+export const LOCALSTORAGE_DATABASES = [
+  LOCALSTORAGE_DB_USER,
+]
