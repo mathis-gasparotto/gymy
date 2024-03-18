@@ -8,13 +8,13 @@ import {
 } from 'firebase/auth'
 import { app, auth } from 'src/boot/firebase'
 import { LocalStorage } from 'quasar'
-import { addUser, getUser } from './userService'
-import { initData, removeData, retrieveData } from './firebaseService'
+import { addUser, getUser, updateUser } from './userService'
+import { initData, removeData, retrieveData, updateData } from './firebaseService'
 import { LOCALSTORAGE_DATABASES, LOCALSTORAGE_DB_USER } from 'src/helpers/database'
 
 export async function signup(email, password, username) {
   const users = retrieveData('users')
-  if (users.find((u) => u.username == username)) {
+  if (users && users.find((u) => u.username == username)) {
     throw new Error("Nom d'utilisateur déjà utilisé")
   }
   await setPersistence(auth, browserLocalPersistence)
@@ -26,8 +26,7 @@ export async function signup(email, password, username) {
       }
       return addUser(userCredential.user.uid, payload, username.trim())
         .then((res) => {
-          LocalStorage.set(LOCALSTORAGE_DB_USER, res)
-          return res
+          initData('users/' + userCredential.user.uid, LOCALSTORAGE_DB_USER)
         })
         .catch((error) => {
           cancelSignup(userCredential.user.uid)
@@ -43,17 +42,14 @@ export async function login(email, password) {
   await setPersistence(auth, browserLocalPersistence)
   return signInWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
-      return initData('users/' + userCredential.user.uid, LOCALSTORAGE_DB_USER)
-        .then(() => {
-          const user = getUser()
-          LocalStorage.set(LOCALSTORAGE_DB_USER, {
-            ...user,
-            uid: userCredential.user.uid
-          })
-        })
-        .catch((error) => {
-          throw new Error(error.message)
-        })
+      initData('users/' + userCredential.user.uid, LOCALSTORAGE_DB_USER)
+      const user = getUser()
+      const newData = {
+        ...user,
+        lastLoginAt: new Date().toISOString()
+      }
+      updateData('users/' + userCredential.user.uid, newData)
+      return true
     })
     .catch((error) => {
       throw new Error(error.message)
@@ -68,6 +64,7 @@ export function logout() {
       LOCALSTORAGE_DATABASES.forEach((db) => {
         LocalStorage.remove(db)
       })
+      return true
     })
     .catch((error) => {
       throw new Error(error.message)

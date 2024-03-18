@@ -1,15 +1,13 @@
 import { set, ref, onValue, remove, update } from 'firebase/database'
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth'
-import { getUser, setCurrentUser } from './userService'
+import { initUser } from './userService'
 import { LocalStorage } from 'quasar'
 import { auth, db} from 'src/boot/firebase'
 
 export function retrieveData(refStr) {
   const dataRef = ref(db, refStr)
-  return onValue(dataRef, (snapshot) => {
+  onValue(dataRef, (snapshot) => {
     return snapshot.val()
-  }, (errorObject) => {
-    throw new Error(errorObject.message)
   })
 }
 
@@ -44,7 +42,7 @@ export function initData(refStr, localStorageKey, initValue = null) {
 export function registerUser(email, password) {
   return createUserWithEmailAndPassword(auth, email, password)
   .then((userCredential) => {
-    setCurrentUser(userCredential.user)
+    initUser(userCredential.user.uid)
     return userCredential.user
   })
   .catch((error) => {
@@ -55,7 +53,7 @@ export function registerUser(email, password) {
 export function loginUser(email, password) {
   return signInWithEmailAndPassword(auth, email, password)
   .then((userCredential) => {
-    setCurrentUser(userCredential.user)
+    initUser(userCredential.user.uid)
     return userCredential.user
   })
   .catch((error) => {

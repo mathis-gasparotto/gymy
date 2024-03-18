@@ -1,0 +1,41 @@
+.btn {
+  text-transform: unset;
+  &.text-bold {
+    .q-btn__content {
+      .block {
+        font-weight: 600;
+      }
+    }
+  }
+  &-primary {
+    background-color: $primary;
+    color: $white;
+  }
+  &-secondary {
+    background-color: $secondary;
+    color: $white;
+    &.btn {
+      &-bordered {
+        border: 3px solid $secondary;
+        &--thin {
+          border: 1px solid $secondary;
+          font-weight: 500;
+        }
+      }
+    }
+  }
+  &-disabled {
+    background-color: $disabled;
+    color: $white;
+    &.q-btn {
+      opacity: 1 !important;
+    }
+  }
+  &-full-width {
+    width: 100%;
+  }
+  &-white {
+    background-color: #fff;
+    color: $secondary;
+  }
+}

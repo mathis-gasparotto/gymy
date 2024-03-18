@@ -1,0 +1,82 @@
+.login {
+  &-input, &-toggle, &-text {
+    width: 100%;
+  }
+  &-form {
+    width: 90%;
+  }
+}
+.signup {
+  &-input, &-toggle, &-text {
+    width: 100%;
+  }
+  &-form {
+    width: 90%;
+  }
+}
+
+.global {
+  &-input, &-toggle, &-text, &-select, &-textarea {
+    width: 100%;
+    &.q-field {
+      &--outlined {
+        .q-field__control {
+          &::before {
+            border-color: $secondary;
+          }
+        }
+      }
+    }
+  }
+  &-textarea {
+    &.q-field {
+      &--rounded {
+        .q-field__control {
+          border-radius: 15px;
+        }
+      }
+    }
+  }
+  &-form {
+    width: 75%;
+  }
+}
+
+.account {
+  &-input, &-toggle, &-text, &-select, &-textarea {
+    width: 60%;
+    &.q-field {
+      &--outlined {
+        .q-field__control {
+          &::before {
+            border-color: $secondary;
+          }
+        }
+      }
+    }
+  }
+  &-textarea {
+    &.q-field {
+      &--rounded {
+        .q-field__control {
+          border-radius: 15px;
+        }
+      }
+    }
+  }
+  &-submit {
+    height: 56px;
+  }
+  &-password {
+    &-form {
+      .account {
+        &-input, &-toggle, &-text, &-select, &-textarea {
+          width: 100%;
+        }
+      }
+    }
+  }
+  &-form {
+    width: 100%;
+  }
+}
