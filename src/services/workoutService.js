@@ -26,7 +26,7 @@ export function getWorkout(id) {
 export async function addWorkout(payload) {
   const id = uid()
 
-  createData('users/' + auth.currentUser.uid + '/' + id, payload)
+  createData('users/' + auth.currentUser.uid + '/workouts/' + id, payload)
 
   return {
     id: id,
@@ -35,11 +35,11 @@ export async function addWorkout(payload) {
 }
 
 export async function updateWorkout(id, payload) {
-  updateData('users/' + auth.currentUser.uid + '/' + id, payload)
+  updateData('users/' + auth.currentUser.uid + '/workouts/' + id, payload)
 
   return payload
 }
 
 export async function deleteWorkout(id) {
-  removeData('users/' + auth.currentUser.uid + '/' + id)
+  removeData('users/' + auth.currentUser.uid + '/workouts/' + id)
 }

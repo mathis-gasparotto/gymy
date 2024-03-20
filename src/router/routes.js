@@ -29,6 +29,11 @@ const routes = [
         path: '/add-perf',
         name: 'addPerf',
         component: () => import('pages/AddPerfPage.vue')
+      },
+      {
+        path: '/manage',
+        name: 'manage',
+        component: () => import('pages/ManagePage.vue')
       }
     ]
   },

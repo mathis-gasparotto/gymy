@@ -1,8 +1,17 @@
 <template>
-  <q-page class="flex h-100 column">
-    <ChoiceWorkout v-if="selectStep === 1" @selectWorkout="selectWorkout"></ChoiceWorkout>
-    <ChoiceExercice v-if="selectStep === 2" :workoutId="workout.id" @selectExercice="selectExercice"></ChoiceExercice>
-    <AddPerfExercice v-if="selectStep === 3" :label="exercice.label" @submit="submit"></AddPerfExercice>
+  <q-page class="flex h-100 column page-content">
+    <q-linear-progress :value="(selectStep-1)/3" class="q-mb-lg q-mt-md w-80 q-mx-auto" />
+    <q-btn
+      color="primary"
+      label="Retour"
+      v-if="selectStep > 1"
+      class="q-mb-lg w-content"
+      icon="arrow_back"
+      @click="selectStep -= 1"
+    />
+    <ChoiceWorkout v-if="selectStep === 1" @selectWorkout="selectWorkout" />
+    <ChoiceExercice v-if="selectStep === 2" :workoutId="workout.id" @selectExercice="selectExercice" />
+    <AddPerfExercice v-if="selectStep === 3" :label="exercice.label" @submit="submit" />
   </q-page>
 </template>
 
@@ -11,7 +20,7 @@ import AddPerfExercice from 'src/components/AddPerf/AddPerfExercice.vue'
 import ChoiceWorkout from 'src/components/AddPerf/ChoiceWorkout.vue'
 import ChoiceExercice from 'src/components/AddPerf/ChoiceExercice.vue'
 import { addPerformance } from 'src/services/performanceService'
-import { errorNotify, successNotify } from 'src/services/notify'
+import { errorNotify, successNotify } from 'src/services/notifyService'
 
 export default {
   name: 'AddPerfPage',
@@ -46,4 +55,4 @@ export default {
     }
   }
 }
-</script>
+</script>src/services/notifyService

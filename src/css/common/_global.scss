@@ -113,8 +113,23 @@
   &-50 {
     width: 50%;
   }
+  &-60 {
+    width: 60%;
+  }
+  &-70 {
+    width: 70%;
+  }
+  &-80 {
+    width: 80%;
+  }
+  &-90 {
+    width: 90%;
+  }
   &-100 {
     width: 100%;
+  }
+  &-content {
+    width: fit-content;
   }
 }
 

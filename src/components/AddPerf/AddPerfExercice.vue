@@ -1,11 +1,12 @@
 <template>
-  <div class="page-content flex flex-center">
+  <div class="flex flex-center">
     <q-card class="q-mb-md flex-center column q-px-md">
-      <q-card-section class="q-pb-none">
+      <q-card-section>
         <div class="text-h6">
           {{ label }}
         </div>
       </q-card-section>
+      <q-separator />
       <q-card-section v-for="serie in series" :key="serie.id" class="flex flex-center q-py-sm">
         <q-input
           :name="'value-' + serie.id"
@@ -52,6 +53,7 @@
           @click="addSerie"
         />
       </q-card-section>
+      <q-separator />
       <q-card-section class="q-pt-none q-mb-sm">
         <q-input
           rounded
@@ -65,11 +67,13 @@
         >
         </q-input>
       </q-card-section>
+      <q-separator />
       <q-card-section class="q-pt-none q-mb-sm">
         <q-btn
-        color="primary"
-        label="Envoyer"
+          color="primary"
+          label="Envoyer"
           @click="submit"
+          :disable="!inputsValid"
         />
       </q-card-section>
     </q-card>
@@ -124,6 +128,11 @@ export default {
       })
     }
   },
+  computed: {
+    inputsValid () {
+      return this.series.filter(serie => serie.value !== null && serie.value !== '' && serie.value >= 0).length >= 1
+    }
+  },
   methods: {
     addSerie () {
       this.series.push({
@@ -138,12 +147,15 @@ export default {
       }
     },
     submit () {
+      if (!this.inputsValid) return
       this.$emit('submit', {
         date: this.date,
         series: this.series.map(serie => {
-          return {
-            value: serie.value,
-            type: serie.type.value
+          if (serie.value !== null && serie.value !== '' && serie.value >= 0) {
+            return {
+              value: serie.value,
+              type: serie.type.value
+            }
           }
         })
       })

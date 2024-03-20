@@ -1,8 +1,6 @@
 <template>
   <div class="flex flex-center column page">
-    <p class="text-h6 q-py-md bg-primary text-center text-bold title">
-      Inscription
-    </p>
+    <GymyHeader text="Inscription" />
     <q-form class="flex flex-center column form signup-form" ref="signupForm" @submit.prevent="onsubmit()">
       <q-input
         name="username"
@@ -92,7 +90,7 @@
         </template>
       </q-input>
       <q-input
-        :name="'value-' + serie.id"
+        name="defaultNumberOfSeries"
         outlined
         class="q-mb-md signup-input"
         type="number"
@@ -146,10 +144,14 @@ import { signup } from 'src/services/authService'
 import translate from '../helpers/translatting'
 import { openURL } from 'quasar'
 import { DEFAULT_NUMBER_OF_SERIES } from 'src/helpers/signupHelper'
-import { errorNotify, successNotify } from 'src/services/notify'
+import { errorNotify, successNotify } from 'src/services/notifyService'
+import GymyHeader from 'src/components/GymyHeader.vue'
 
 export default {
   name: 'SignupPage',
+  components: {
+    GymyHeader
+  },
   setup() {
     return {
       openURL
@@ -228,15 +230,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.title {
-  width: 75%;
-  color: white;
-  border-radius: 15px;
-}
 .signup-toggle {
   flex-wrap: nowrap;
 }
 .page {
   width: 300px;
 }
-</style>
+</style>src/services/notifyService
