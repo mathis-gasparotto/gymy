@@ -12,12 +12,21 @@ export function retrieveData(refStr) {
 }
 
 export function createData(refStr, data) {
+  data = {
+    ...data,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  }
   set(ref(db, refStr), data).catch((error) => {
     throw new Error(error.message)
   })
 }
 
 export function updateData(refStr, data) {
+  data = {
+    ...data,
+    updatedAt: new Date().toISOString()
+  }
   update(ref(db, refStr), data).catch((error) => {
     throw new Error(error.message)
   })

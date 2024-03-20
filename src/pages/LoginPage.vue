@@ -45,7 +45,8 @@
             color="primary"
             @click="showPassword = !showPassword"
           />
-        </template></q-input>
+        </template>
+      </q-input>
       <q-btn
         label="Se connecter"
         type="submit"
@@ -79,7 +80,7 @@
 <script>
 import { login } from 'src/services/authService'
 import translate from 'src/helpers/translatting'
-import { Notify } from 'quasar'
+import { errorNotify, successNotify } from 'src/services/notify'
 
 export default {
   name: 'LoginPage',
@@ -120,34 +121,10 @@ export default {
         if (success) {
           login(this.form.email, this.form.password).then(() => {
               this.$router.push({ name: 'index' })
-              Notify.create({
-                message: 'Vous êtes désormais connecté',
-                color: 'positive',
-                icon: 'check_circle',
-                position: 'top',
-                timeout: 3000,
-                actions: [
-                  {
-                    icon: 'close',
-                    color: 'white'
-                  }
-                ]
-              })
+              successNotify('Vous êtes désormais connecté')
             }).catch((err) => {
               this.loading = false
-              Notify.create({
-                message: translate().translateSigninError(err),
-                color: 'negative',
-                icon: 'report_problem',
-                position: 'top',
-                timeout: 3000,
-                actions: [
-                  {
-                    icon: 'close',
-                    color: 'white'
-                  }
-                ]
-              })
+              errorNotify(translate().translateSigninError(err))
             })
         } else {
           // console.log('error')

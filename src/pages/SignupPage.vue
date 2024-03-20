@@ -91,6 +91,23 @@
           />
         </template>
       </q-input>
+      <q-input
+        :name="'value-' + serie.id"
+        outlined
+        class="q-mb-md signup-input"
+        type="number"
+        inputmode="numeric"
+        v-model="form.defaultNumberOfSeries"
+        min="0"
+        :rules="[
+          (val) => (val !== null && val !== '') || 'Veullez remplir ce champ',
+          (val) => val >= 1 || 'Veullez renseigner une valeur positif supérieur à 0',
+        ]"
+        label="Nombre de séries par défaut*"
+        lazy-rules
+        hide-bottom-space
+      >
+      </q-input>
 
       <p class="flex-end text-right signup-text">*Champ obligatoire</p>
       <!-- <div class="q-mb-md signup-toggle flex items-center ">
@@ -127,7 +144,9 @@
 <script>
 import { signup } from 'src/services/authService'
 import translate from '../helpers/translatting'
-import { Notify, openURL } from 'quasar'
+import { openURL } from 'quasar'
+import { DEFAULT_NUMBER_OF_SERIES } from 'src/helpers/signupHelper'
+import { errorNotify, successNotify } from 'src/services/notify'
 
 export default {
   name: 'SignupPage',
@@ -143,6 +162,7 @@ export default {
         email: 'mathis.gasparotto@protonmail.com',
         password: 'Tatane!20022',
         confirmPassword: 'Tatane!20022',
+        defaultNumberOfSeries: DEFAULT_NUMBER_OF_SERIES
         // minAgeCheck: false,
         // newsletterCheck: false
       },
@@ -161,7 +181,8 @@ export default {
           this.form.username &&
           this.form.email &&
           this.form.password &&
-          this.form.confirmPassword
+          this.form.confirmPassword &&
+          this.form.defaultNumberOfSeries
         ) {
           this.$refs.signupForm.validate().then((success) => {
             if (success) {
@@ -186,40 +207,16 @@ export default {
             this.form.email.trim(),
             this.form.password.trim(),
             this.form.username.trim(),
+            this.form.defaultNumberOfSeries,
             // this.form.newsletterCheck
           )
             .then(() => {
               this.$router.push({ name: 'index' })
-              Notify.create({
-                message: 'Vous avez bien été inscrit',
-                color: 'positive',
-                icon: 'check_circle',
-                position: 'top',
-                timeout: 3000,
-                actions: [
-                  {
-                    icon: 'close',
-                    color: 'white'
-                  }
-                ]
-              })
+              successNotify('Vous êtes désormais inscrit')
             })
             .catch((err) => {
               this.loading = false
-              console.log(err)
-              Notify.create({
-                message: translate().translateSignupError(err),
-                color: 'negative',
-                icon: 'report_problem',
-                position: 'top',
-                timeout: 3000,
-                actions: [
-                  {
-                    icon: 'close',
-                    color: 'white'
-                  }
-                ]
-              })
+              errorNotify(translate().translateSignupError(err))
             })
         } else {
           this.loading = false

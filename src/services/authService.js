@@ -6,13 +6,14 @@ import {
   browserLocalPersistence,
   deleteUser
 } from 'firebase/auth'
-import { app, auth } from 'src/boot/firebase'
+import { app, auth, db } from 'src/boot/firebase'
 import { LocalStorage } from 'quasar'
 import { addUser, initUser } from './userService'
 import { initData, removeData, removeListenner, retrieveData, updateData } from './firebaseService'
-import { LOCALSTORAGE_DATABASES, LOCALSTORAGE_DB_USER } from 'src/helpers/database'
+import { LOCALSTORAGE_DATABASES, LOCALSTORAGE_DB_USER } from 'src/helpers/databaseHelper'
+import { ref, update } from 'firebase/database'
 
-export async function signup(email, password, username) {
+export async function signup(email, password, username, defaultNumberOfSeries) {
   const users = retrieveData('users')
   if (users && users.find((u) => u.username == username)) {
     throw new Error("Nom d'utilisateur déjà utilisé")
@@ -22,6 +23,7 @@ export async function signup(email, password, username) {
     .then(async (userCredential) => {
       let payload = {
         email: userCredential.user.email,
+        defaultNumberOfSeries,
         lastLoginAt: new Date().toISOString()
       }
       return addUser(userCredential.user.uid, payload, username.trim())
@@ -44,7 +46,9 @@ export async function login(email, password) {
     .then(async (userCredential) => {
       await LocalStorage.set(LOCALSTORAGE_DB_USER, userCredential.user)
       await initUser(userCredential.user.uid)
-      await updateData('users/' + userCredential.user.uid, {lastLoginAt: new Date().toISOString()})
+      await update(ref(db, 'users/' + userCredential.user.uid), {lastLoginAt: new Date().toISOString()}).catch((error) => {
+        throw new Error(error.message)
+      })
       return true
     })
     .catch((error) => {

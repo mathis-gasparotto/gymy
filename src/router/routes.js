@@ -24,6 +24,11 @@ const routes = [
         path: '',
         name: 'index',
         component: () => import('pages/IndexPage.vue')
+      },
+      {
+        path: '/add-perf',
+        name: 'addPerf',
+        component: () => import('pages/AddPerfPage.vue')
       }
     ]
   },
