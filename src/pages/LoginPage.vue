@@ -80,7 +80,6 @@
 import { login } from 'src/services/authService'
 import translate from 'src/helpers/translatting'
 import { Notify } from 'quasar'
-// import { cp } from "fs";
 
 export default {
   name: 'LoginPage',

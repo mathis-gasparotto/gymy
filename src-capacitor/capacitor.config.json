@@ -1,0 +1,9 @@
+{
+  "appId": "app.gymy",
+  "appName": "Gymy",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https",
+    "url": "http://10.104.131.147:9500"
+  }
+}

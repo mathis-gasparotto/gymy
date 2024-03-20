@@ -8,8 +8,8 @@ import {
 } from 'firebase/auth'
 import { app, auth } from 'src/boot/firebase'
 import { LocalStorage } from 'quasar'
-import { addUser, getUser, updateUser } from './userService'
-import { initData, removeData, retrieveData, updateData } from './firebaseService'
+import { addUser, initUser } from './userService'
+import { initData, removeData, removeListenner, retrieveData, updateData } from './firebaseService'
 import { LOCALSTORAGE_DATABASES, LOCALSTORAGE_DB_USER } from 'src/helpers/database'
 
 export async function signup(email, password, username) {
@@ -41,14 +41,10 @@ export async function signup(email, password, username) {
 export async function login(email, password) {
   await setPersistence(auth, browserLocalPersistence)
   return signInWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-      initData('users/' + userCredential.user.uid, LOCALSTORAGE_DB_USER)
-      const user = getUser()
-      const newData = {
-        ...user,
-        lastLoginAt: new Date().toISOString()
-      }
-      updateData('users/' + userCredential.user.uid, newData)
+    .then(async (userCredential) => {
+      await LocalStorage.set(LOCALSTORAGE_DB_USER, userCredential.user)
+      await initUser(userCredential.user.uid)
+      await updateData('users/' + userCredential.user.uid, {lastLoginAt: new Date().toISOString()})
       return true
     })
     .catch((error) => {
@@ -61,6 +57,7 @@ export function logout() {
   return auth
     .signOut()
     .then(() => {
+      removeListenner('users/' + LocalStorage.getItem(LOCALSTORAGE_DB_USER).uid)
       LOCALSTORAGE_DATABASES.forEach((db) => {
         LocalStorage.remove(db)
       })

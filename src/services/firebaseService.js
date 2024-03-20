@@ -1,4 +1,4 @@
-import { set, ref, onValue, remove, update } from 'firebase/database'
+import { set, ref, onValue, remove, update, off } from 'firebase/database'
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth'
 import { initUser } from './userService'
 import { LocalStorage } from 'quasar'
@@ -6,7 +6,7 @@ import { auth, db} from 'src/boot/firebase'
 
 export function retrieveData(refStr) {
   const dataRef = ref(db, refStr)
-  onValue(dataRef, (snapshot) => {
+  return onValue(dataRef, (snapshot) => {
     return snapshot.val()
   })
 }
@@ -37,6 +37,11 @@ export function initData(refStr, localStorageKey, initValue = null) {
       LocalStorage.set(localStorageKey, initValue && !data ? initValue : data)
     }
   })
+}
+
+export function removeListenner(refStr) {
+  const dataRef = ref(db, refStr)
+  return off(dataRef)
 }
 
 export function registerUser(email, password) {

@@ -10,15 +10,16 @@
 </template>
 
 <script>
-import { logout } from 'src/services/authService'
-import { defineComponent } from 'vue'
+import { logout as logoutFirebase } from 'src/services/authService'
 
-export default defineComponent({
+export default {
   name: 'IndexPage',
-  setup() {
-    return {
-      logout
+  methods: {
+    logout() {
+      logoutFirebase().then(() => {
+        this.$router.push({ name: 'login' })
+      })
     }
   }
-})
+}
 </script>
