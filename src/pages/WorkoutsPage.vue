@@ -21,11 +21,9 @@ import AddPerfExercice from 'src/components/AddPerf/AddPerfExercice.vue'
 import ChoiceWorkout from 'src/components/AddPerf/ChoiceWorkout.vue'
 import ChoiceExercice from 'src/components/AddPerf/ChoiceExercice.vue'
 import PerformanceList from 'src/components/AddPerf/PerformanceList.vue'
-import { addPerformance } from 'src/services/performanceService'
-import { errorNotify, successNotify } from 'src/helpers/notifyHelper'
 
 export default {
-  name: 'AddPerfPage',
+  name: 'WorkoutsPage',
   components: {
     AddPerfExercice,
     ChoiceWorkout,

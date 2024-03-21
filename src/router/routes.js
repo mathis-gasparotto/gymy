@@ -26,14 +26,9 @@ const routes = [
         component: () => import('pages/IndexPage.vue')
       },
       {
-        path: '/add-perf',
-        name: 'addPerf',
-        component: () => import('pages/AddPerfPage.vue')
-      },
-      {
-        path: '/manage',
-        name: 'manage',
-        component: () => import('pages/ManagePage.vue')
+        path: '/workouts',
+        name: 'workouts',
+        component: () => import('pages/WorkoutsPage.vue')
       }
     ]
   },

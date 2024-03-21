@@ -15,7 +15,7 @@
     <q-footer class="nav-bar-container">
       <q-tabs align="center" class="bg-dark nav-bar" indicator-color="transparent" active-color="primary">
         <q-route-tab :to="{ name: 'index' }" icon="home" label="Accueil" />
-        <q-route-tab :to="{ name: 'addPerf' }" icon="fitness_center" label="Entrainements" />
+        <q-route-tab :to="{ name: 'workouts' }" icon="fitness_center" label="Entrainements" />
         <!-- <q-route-tab :to="{ name: 'account' }" icon="account_circle" label="Compte" /> -->
       </q-tabs>
     </q-footer>
