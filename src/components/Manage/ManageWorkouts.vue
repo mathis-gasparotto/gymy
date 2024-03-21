@@ -1,14 +1,23 @@
 <template>
   <div class="flex column">
-    <GymyHeader text="Choix de l'entrainement" />
+    <GymyHeader text="Entrainements" />
     <div v-if="workouts && workouts.length > 0">
       <q-card v-for="workout in workouts" :key="workout.id" @click="$emit('selectWorkout', workout)" class="clickable q-mb-md flex-center column q-px-md">
-        <q-card-section>
+        <q-card-section class="sm">
           <div class="text-h6">
             {{ workout.label }}
           </div>
         </q-card-section>
-        <q-card-actions horizontal class="absolute-right no-wrap">
+        <q-card-section class="q-pb-none lt-sm">
+          <div class="text-h6">
+            {{ workout.label }}
+          </div>
+        </q-card-section>
+        <q-card-actions horizontal class="absolute-right sm q-d no-wrap">
+          <q-btn flat round color="primary" icon="edit" @click.stop="edit(workout)" />
+          <q-btn flat round color="negative" icon="delete" @click.stop="showDeleteModal(workout)" />
+        </q-card-actions>
+        <q-card-actions horizontal class="lt-sm no-wrap q-pa-none">
           <q-btn flat round color="primary" icon="edit" @click.stop="edit(workout)" />
           <q-btn flat round color="negative" icon="delete" @click.stop="showDeleteModal(workout)" />
         </q-card-actions>
@@ -18,11 +27,14 @@
     <q-dialog v-model="editForm">
       <q-card class="q-px-xl q-py-xl">
         <q-card-section>
-          <div class="text-h6 text-center">Modifier un entrainement</div>
+          <div class="text-h6 text-center">Modifier l'entrainement {{ workoutToEdit.label }}</div>
         </q-card-section>
         <q-card-section>
           <WorkoutForm :initData="workoutToEdit" buttonLabel="Confirmer" :loading="editLoading" @submit="onEditSubmit" />
         </q-card-section>
+        <q-card-actions align="center">
+          <q-btn label="Annuler" color="negative" v-close-popup />
+        </q-card-actions>
       </q-card>
     </q-dialog>
     <q-dialog v-model="addForm">
@@ -33,6 +45,9 @@
         <q-card-section>
           <WorkoutForm buttonLabel="Ajouter" buttonIcon="add" :loading="addLoading" @submit="onAddSubmit" />
         </q-card-section>
+        <q-card-actions align="center">
+          <q-btn label="Annuler" color="negative" v-close-popup />
+        </q-card-actions>
       </q-card>
     </q-dialog>
     <q-page-sticky position="bottom-right" :offset="[18, 18]">

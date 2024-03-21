@@ -14,8 +14,8 @@ export async function getWorkouts() {
   }).sort((a, b) => Date(b.createdAt) - Date(a.createdAt))
 }
 
-export function getWorkout(id) {
-  const data = LocalStorage.getItem(LOCALSTORAGE_DB_USER).workouts[id]
+export async function getWorkout(id) {
+  const data = await LocalStorage.getItem(LOCALSTORAGE_DB_USER).workouts[id]
   if (!data) return null
   return {
     id: id,
