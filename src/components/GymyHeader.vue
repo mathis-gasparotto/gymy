@@ -15,3 +15,9 @@ export default {
   }
 }
 </script>
+
+<style scoped lang="scss">
+.title {
+  width: 100%;
+}
+</style>

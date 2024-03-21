@@ -38,7 +38,10 @@ export async function addUser(userUid, payload, username) {
   return toReturn
 }
 
-export function updateUser(userUid, payload) {
+export async function updateUser(payload, userUid = null) {
+  if (!userUid) {
+    userUid = auth.currentUser.uid
+  }
   const newData = {
     ...payload,
     updatedAt: new Date().toISOString()
