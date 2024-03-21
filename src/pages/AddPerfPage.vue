@@ -10,8 +10,9 @@
       @click="selectStep -= 1"
     />
     <ChoiceWorkout v-if="selectStep === 1" @selectWorkout="selectWorkout" />
-    <ChoiceExercice v-if="selectStep === 2" :workoutId="workout.id" @selectExercice="selectExercice" />
-    <AddPerfExercice v-if="selectStep === 3" :label="exercice.label" @submit="submit" />
+    <ChoiceExercice v-if="selectStep === 2" :workout="workout" @selectExercice="selectExercice" />
+    <AddPerfExercice class="q-mb-lg" v-if="selectStep === 3" :workout="workout" :exercice="exercice" @reloadPerformances="$refs.performanceList.loadPerformances()" />
+    <PerformanceList v-if="selectStep === 3" :workout="workout" :exercice="exercice" ref="performanceList" />
   </q-page>
 </template>
 
@@ -19,15 +20,17 @@
 import AddPerfExercice from 'src/components/AddPerf/AddPerfExercice.vue'
 import ChoiceWorkout from 'src/components/AddPerf/ChoiceWorkout.vue'
 import ChoiceExercice from 'src/components/AddPerf/ChoiceExercice.vue'
+import PerformanceList from 'src/components/AddPerf/PerformanceList.vue'
 import { addPerformance } from 'src/services/performanceService'
-import { errorNotify, successNotify } from 'src/services/notifyService'
+import { errorNotify, successNotify } from 'src/helpers/notifyHelper'
 
 export default {
   name: 'AddPerfPage',
   components: {
     AddPerfExercice,
     ChoiceWorkout,
-    ChoiceExercice
+    ChoiceExercice,
+    PerformanceList
   },
   data () {
     return {
@@ -44,14 +47,6 @@ export default {
     selectExercice(exercice) {
       this.exercice = exercice
       this.selectStep = 3
-    },
-    submit(payload) {
-      addPerformance(this.workout.id, this.exercice.id, payload).then(() => {
-        successNotify('Performance ajoutée')
-        this.$router.push({name: 'index'})
-      }).catch(() => {
-        errorNotify('Erreur lors de l\'ajout de la performance')
-      })
     }
   }
 }

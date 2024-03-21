@@ -4,14 +4,14 @@ import { createData, removeData, updateData } from './firebaseService'
 import { LOCALSTORAGE_DB_USER } from 'src/helpers/databaseHelper'
 
 export async function getPerformances(workoutId, exerciceId) {
-  const performancesObject = await LocalStorage.getItem(LOCALSTORAGE_DB_USER).exercices[workoutId].exercices[exerciceId].performances
+  const performancesObject = await LocalStorage.getItem(LOCALSTORAGE_DB_USER).workouts[workoutId].exercices[exerciceId].performances
   if (!performancesObject) return []
   return Object.keys(performancesObject).map(key => {
     return {
       id: key,
       ...performancesObject[key]
     }
-  }).sort((a, b) => Date(b.date) - Date(a.date))
+  }).sort((a, b) => new Date(b.date) - new Date(a.date))
 }
 
 export async function getPerformance(workoutId, exerciceId, id) {

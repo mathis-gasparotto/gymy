@@ -11,7 +11,7 @@ export async function getWorkouts() {
       id: key,
       ...workoutsObject[key]
     }
-  }).sort((a, b) => Date(b.createdAt) - Date(a.createdAt))
+  }).sort((a, b) => new Date(b.createdAt) - Date(a.createdAt))
 }
 
 export async function getWorkout(id) {

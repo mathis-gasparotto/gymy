@@ -144,7 +144,7 @@ import { signup } from 'src/services/authService'
 import translate from '../helpers/translatting'
 import { openURL } from 'quasar'
 import { DEFAULT_NUMBER_OF_SERIES } from 'src/helpers/signupHelper'
-import { errorNotify, successNotify } from 'src/services/notifyService'
+import { errorNotify, successNotify } from 'src/helpers/notifyHelper'
 import GymyHeader from 'src/components/GymyHeader.vue'
 
 export default {

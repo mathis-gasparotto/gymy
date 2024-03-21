@@ -66,7 +66,7 @@
 import { addExercice, deleteExercice, getExercices, moveExercice, updateExercice } from 'src/services/exerciceService'
 import GymyHeader from 'src/components/GymyHeader.vue'
 import { Dialog } from 'quasar'
-import { errorNotify, successNotify } from 'src/services/notifyService'
+import { errorNotify, successNotify } from 'src/helpers/notifyHelper'
 import ExerciceForm from 'src/components/Manage/ExerciceForm.vue'
 import draggable from 'vuedraggable'
 

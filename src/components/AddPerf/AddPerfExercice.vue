@@ -1,13 +1,13 @@
 <template>
-  <div class="flex flex-center">
+  <div class="flex flex-center column">
     <q-card class="q-mb-md flex-center column q-px-md">
       <q-card-section>
         <div class="text-h6">
-          {{ label }}
+          {{ workout.label }} - {{ exercice.label }}
         </div>
       </q-card-section>
       <q-separator />
-      <q-card-section v-for="serie in series" :key="serie.id" class="flex flex-center q-py-sm">
+      <q-card-section v-for="serie in series" :key="serie.id" class="flex justify-center q-py-sm">
         <q-input
           :name="'value-' + serie.id"
           outlined
@@ -71,7 +71,7 @@
       <q-card-section class="q-pt-none q-mb-sm">
         <q-btn
           color="primary"
-          label="Envoyer"
+          label="Ajouter"
           @click="submit"
           :disable="!inputsValid"
         />
@@ -81,22 +81,23 @@
 </template>
 
 <script>
-import { PERFORMANCE_TYPES, PERFORMANCE_TYPE_DEFAULT, PERFORMANCE_TYPE_BAR, PERFORMANCE_TYPE_ARM } from 'src/helpers/performanceHelper'
+import { PERFORMANCE_TYPE_DEFAULT, PERFORMANCE_TYPE_BAR, PERFORMANCE_TYPE_ARM } from 'src/helpers/performanceHelper'
+import { errorNotify, successNotify } from 'src/helpers/notifyHelper'
+import { addPerformance } from 'src/services/performanceService'
 import { getUser } from 'src/services/userService'
 
 export default {
   name: 'AddPerfExercice',
-  emits: ['submit'],
+  emits: ['reloadPerformances'],
   props: {
-    label: {
-      type: String,
+    workout: {
+      type: Object,
       required: true
-    }
-  },
-  setup () {
-    return {
-      PERFORMANCE_TYPES
-    }
+    },
+    exercice: {
+      type: Object,
+      required: true
+    },
   },
   data () {
     return {
@@ -115,18 +116,13 @@ export default {
           label: 'Bras'
         },
       ],
-      date: new Date().toISOString().substr(0, 10)
+      date: null,
+      defaultNumberOfSeries: null
     }
   },
-  created () {
-    this.defaultNumberOfSeries = getUser().defaultNumberOfSeries
-    for (let i = 0; i < this.defaultNumberOfSeries; i++) {
-      this.series.push({
-        id: new Date().getTime() + i,
-        value: null,
-        type: this.types[0]
-      })
-    }
+  async created () {
+    this.defaultNumberOfSeries = await getUser().defaultNumberOfSeries
+    this.initInputs()
   },
   computed: {
     inputsValid () {
@@ -134,6 +130,17 @@ export default {
     }
   },
   methods: {
+    initInputs() {
+      this.series = []
+      this.date = new Date().toISOString().substr(0, 10)
+      for (let i = 0; i < this.defaultNumberOfSeries; i++) {
+        this.series.push({
+          id: new Date().getTime() + i,
+          value: null,
+          type: this.types[0]
+        })
+      }
+    },
     addSerie () {
       this.series.push({
         id: new Date().getTime(),
@@ -148,7 +155,7 @@ export default {
     },
     submit () {
       if (!this.inputsValid) return
-      this.$emit('submit', {
+      const payload = {
         date: this.date,
         series: this.series.map(serie => {
           if (serie.value !== null && serie.value !== '' && serie.value >= 0) {
@@ -158,6 +165,13 @@ export default {
             }
           }
         })
+      }
+      addPerformance(this.workout.id, this.exercice.id, payload).then(() => {
+        this.$emit('reloadPerformances')
+        successNotify('Performance ajoutée')
+        this.initInputs()
+      }).catch(() => {
+        errorNotify('Erreur lors de l\'ajout de la performance')
       })
     }
   }

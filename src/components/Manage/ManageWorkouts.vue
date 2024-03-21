@@ -2,7 +2,7 @@
   <div class="flex column">
     <GymyHeader text="Entrainements" />
     <div v-if="workouts && workouts.length > 0">
-      <q-card v-for="workout in workouts" :key="workout.id" @click="$emit('selectWorkout', workout)" class="clickable q-mb-md flex-center column q-px-md">
+      <q-card v-for="workout in workouts" :key="workout.id" @click="$emit('selectWorkout', workout)" class="cursor-pointer q-mb-md flex-center column q-px-md">
         <q-card-section class="sm">
           <div class="text-h6">
             {{ workout.label }}
@@ -60,7 +60,7 @@
 import { addWorkout, deleteWorkout, getWorkouts, updateWorkout } from 'src/services/workoutService'
 import GymyHeader from 'src/components/GymyHeader.vue'
 import { Dialog } from 'quasar'
-import { errorNotify, successNotify } from 'src/services/notifyService'
+import { errorNotify, successNotify } from 'src/helpers/notifyHelper'
 import WorkoutForm from 'src/components/Manage/WorkoutForm.vue'
 
 export default {

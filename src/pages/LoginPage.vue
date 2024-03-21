@@ -80,7 +80,7 @@
 <script>
 import { login } from 'src/services/authService'
 import translate from 'src/helpers/translatting'
-import { errorNotify, successNotify } from 'src/services/notifyService'
+import { errorNotify, successNotify } from 'src/helpers/notifyHelper'
 
 export default {
   name: 'LoginPage',
