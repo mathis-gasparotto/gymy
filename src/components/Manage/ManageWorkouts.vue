@@ -9,104 +9,100 @@
           </div>
         </q-card-section>
         <q-card-actions horizontal class="absolute-right no-wrap">
-          <q-btn flat round color="primary" icon="edit" @click.stop="edit" />
+          <q-btn flat round color="primary" icon="edit" @click.stop="edit(workout)" />
           <q-btn flat round color="negative" icon="delete" @click.stop="showDeleteModal(workout)" />
         </q-card-actions>
       </q-card>
     </div>
     <span v-else class="text-center">Aucun entrainement de disponible</span>
+    <q-dialog v-model="editForm">
+      <q-card class="q-px-xl q-py-xl">
+        <q-card-section>
+          <div class="text-h6 text-center">Modifier un entrainement</div>
+        </q-card-section>
+        <q-card-section>
+          <WorkoutForm :initData="workoutToEdit" buttonLabel="Confirmer" :loading="editLoading" @submit="onEditSubmit" />
+        </q-card-section>
+      </q-card>
+    </q-dialog>
     <q-dialog v-model="addForm">
       <q-card class="q-px-xl q-py-xl">
         <q-card-section>
           <div class="text-h6 text-center">Ajouter un entrainement</div>
         </q-card-section>
         <q-card-section>
-          <q-form @submit.prevent="onsubmit()" class="flex-center column">
-            <q-input
-              name="label"
-              rounded
-              outlined
-              label="Nom de l'entrainement"
-              autofocus
-              class="q-mb-md"
-              type="text"
-              v-model="workoutToAdd.label"
-              lazy-rules
-              :rules="[
-                (val) => val.trim().length > 2 || 'Veullez renseigner minimum 3 caractères'
-              ]"
-              hide-bottom-space
-            ></q-input>
-            <q-btn
-              color="primary"
-              label="Ajouter"
-              icon="add"
-              type="submit"
-              :disable="!addFormValid"
-            />
-          </q-form>
+          <WorkoutForm buttonLabel="Ajouter" buttonIcon="add" :loading="addLoading" @submit="onAddSubmit" />
         </q-card-section>
       </q-card>
     </q-dialog>
     <q-page-sticky position="bottom-right" :offset="[18, 18]">
-      <q-btn fab icon="add" color="primary" @click="showAddForm" />
+      <q-btn fab icon="add" color="primary" @click="addForm = true" />
     </q-page-sticky>
   </div>
 </template>
 
 <script>
-import { addWorkout, deleteWorkout, getWorkouts } from 'src/services/workoutService'
+import { addWorkout, deleteWorkout, getWorkouts, updateWorkout } from 'src/services/workoutService'
 import GymyHeader from 'src/components/GymyHeader.vue'
 import { Dialog } from 'quasar'
 import { errorNotify, successNotify } from 'src/services/notifyService'
+import WorkoutForm from 'src/components/Manage/WorkoutForm.vue'
 
 export default {
   name: 'ManageWorkouts',
   emits: ['selectWorkout'],
   components: {
-    GymyHeader
+    GymyHeader,
+    WorkoutForm
   },
   data() {
     return {
       workouts: {},
       addForm: false,
       addLoading: false,
-      workoutToAdd: {
-        label: ''
-      }
+      editForm: false,
+      editLoading: false,
+      workoutToEdit: {}
     }
   },
   created() {
     this.loadWorkouts()
   },
-  computed: {
-    addFormValid() {
-      return this.workoutToAdd.label.trim().length > 2
-    }
-  },
   methods: {
     async loadWorkouts() {
       this.workouts = await getWorkouts()
     },
-    onsubmit() {
-      if (!this.addFormValid) return
+    onAddSubmit(payload) {
       this.addLoading = true
-      addWorkout(this.workoutToAdd)
-        .then(() => {
+      addWorkout(payload)
+        .then(async () => {
+          await this.loadWorkouts()
           successNotify('Votre entrainement a bien été ajouté')
           this.addForm = false
-          this.loadWorkouts()
+          this.addLoading = false
         })
         .catch((err) => {
           this.addLoading = false
           errorNotify('Une erreur est survenue lors de l\'ajout de votre entrainement')
         })
     },
-    edit() {
-      console.log('edit')
+    onEditSubmit(payload) {
+      this.editLoading = true
+      updateWorkout(payload.id, { label: payload.label })
+        .then(async () => {
+          await this.loadWorkouts()
+          successNotify('Votre entrainement a bien été modifié')
+          this.editForm = false
+          this.editLoading = false
+        })
+        .catch((err) => {
+          this.editLoading = false
+          errorNotify('Une erreur est survenue lors de l\'édition de votre entrainement')
+        })
     },
-    showAddForm() {
-      this.addForm = true
+    edit(workout) {
+      this.workoutToEdit = workout
+      this.editForm = true
     },
     showDeleteModal(workout) {
       let deleteLoading = false
@@ -129,9 +125,9 @@ export default {
         .onOk(() => {
           deleteLoading = true
           deleteWorkout(workout.id)
-            .then(() => {
+            .then(async () => {
+              await this.loadWorkouts()
               successNotify('Votre entrainement a bien été supprimé')
-              this.loadWorkouts()
             })
             .catch((err) => {
               deleteLoading = false
@@ -147,4 +143,4 @@ export default {
 </script>
 
 <style scoped lang="scss">
-</style>src/services/notifyService
+</style>
