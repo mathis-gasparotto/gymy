@@ -14,8 +14,8 @@ import { LOCALSTORAGE_DATABASES, LOCALSTORAGE_DB_USER } from 'src/helpers/databa
 import { ref, update } from 'firebase/database'
 
 export async function signup(email, password, username, defaultNumberOfSeries) {
-  const users = retrieveData('users')
-  if (users && users.find((u) => u.username == username)) {
+  const users = await retrieveData('users')
+  if (users && Object.values(users).find((u) => u.username == username)) {
     throw new Error("Nom d'utilisateur déjà utilisé")
   }
   await setPersistence(auth, browserLocalPersistence)
@@ -31,7 +31,7 @@ export async function signup(email, password, username, defaultNumberOfSeries) {
           initData('users/' + userCredential.user.uid, LOCALSTORAGE_DB_USER)
         })
         .catch((error) => {
-          cancelSignup(userCredential.user.uid)
+          deleteAllUserData(userCredential.user.uid)
           throw new Error(error.message)
         })
     })
@@ -72,11 +72,10 @@ export function logout() {
     })
 }
 
-export async function cancelSignup(userId) {
-  removeData('users/' + userId)
-  if (auth.currentUser) {
-    await deleteUser(auth.currentUser).catch((error) => {
-      throw new Error(error.message)
-    })
-  }
+export async function deleteAllUserData() {
+  if (!auth.currentUser) return
+  removeData('users/' + auth.currentUser.uid)
+  await deleteUser(auth.currentUser).catch((error) => {
+    throw new Error(error.message)
+  })
 }

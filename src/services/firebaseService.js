@@ -4,11 +4,13 @@ import { initUser } from './userService'
 import { LocalStorage } from 'quasar'
 import { auth, db} from 'src/boot/firebase'
 
-export function retrieveData(refStr) {
+export async function retrieveData(refStr) {
   const dataRef = ref(db, refStr)
-  return onValue(dataRef, (snapshot) => {
-    return snapshot.val()
+  let data
+  await onValue(dataRef, (snapshot) => {
+    data = snapshot.val()
   })
+  return data
 }
 
 export function createData(refStr, data) {

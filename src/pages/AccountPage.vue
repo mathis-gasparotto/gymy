@@ -28,6 +28,7 @@
       </div>
       <q-btn @click="showEditDefaultNumberOfSeries = true" color="primary" class="w-content q-mt-lg" icon="edit">Modifier le nombre de séries par défaut</q-btn>
       <q-btn @click="logout" color="negative" class="w-content q-mt-xl">Se déconnecter</q-btn>
+      <q-btn @click="deleteAccount" color="negative" class="w-content q-mt-xl">Supprimer son compte</q-btn>
       <q-dialog v-model="showEditDefaultNumberOfSeries">
         <q-card class="q-px-xl q-py-xl">
           <q-card-section align="center">
@@ -69,10 +70,11 @@
 </template>
 
 <script>
-import { logout as logoutFirebase } from 'src/services/authService'
+import { deleteAllUserData, logout as logoutFirebase } from 'src/services/authService'
 import GymyHeader from 'src/components/GymyHeader.vue'
 import { getUser, updateUser } from 'src/services/userService'
 import { errorNotify, successNotify } from 'src/helpers/notifyHelper'
+import { Dialog } from 'quasar'
 
 export default {
   name: 'AccountPage',
@@ -110,6 +112,33 @@ export default {
       }).catch((err) => {
         this.defaultNumberOfSeriesLoading = false
         errorNotify('Une erreur est survenue lors de la modification de votre nombre de série par défaut')
+      })
+    },
+    deleteAccount() {
+      let deleteLoading = false
+      Dialog.create({
+        title: 'Supprimer son compte',
+        message: 'Êtes-vous sûr de vouloir supprimer votre compte ?',
+        cancel: {
+          label: 'Annuler',
+          color: 'primary',
+          unelevated: true
+        },
+        ok: {
+          label: 'Supprimer',
+          color: 'negative',
+          unelevated: true,
+          loading: deleteLoading
+        },
+        persistent: true
+      }).onOk(() => {
+        deleteLoading = true
+        deleteAllUserData().then(() => {
+          this.$router.push({ name: 'login' })
+        }).catch(() => {
+          deleteLoading = false
+          errorNotify('Une erreur est survenue lors de la suppression de votre compte')
+        })
       })
     },
     logout() {

@@ -14,6 +14,9 @@ const { configure } = require('quasar/wrappers');
 
 module.exports = configure(function (/* ctx */) {
   return {
+    bin: {
+      windowsAndroidStudio: 'C:\\Users\\mathi\\AppData\\Local\\Programs\\Android Studio\\bin\\studio64.exe',
+    },
     eslint: {
       // fix: true,
       // include = [],
@@ -31,7 +34,7 @@ module.exports = configure(function (/* ctx */) {
     // https://v2.quasar.dev/quasar-cli/boot-files
     boot: [
       'firebase',
-      // 'capacitor'
+      'capacitor'
     ],
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#css
@@ -109,10 +112,8 @@ module.exports = configure(function (/* ctx */) {
 
       // Quasar plugins
       plugins: [
-        'Cookies',
         'LocalStorage',
         'Notify',
-        'Loading',
         'Dialog'
       ]
     },

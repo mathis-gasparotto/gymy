@@ -1,5 +1,6 @@
 export default () => ({
   translateSignupError(error) {
+    console.log(error)
     if (error.message === "Nom d'utilisateur déjà utilisé") return error.message
     switch (error.message) {
       case 'Firebase: Error (auth/email-already-in-use).':
