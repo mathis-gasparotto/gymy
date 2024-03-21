@@ -160,10 +160,10 @@ export default {
   data() {
     return {
       form: {
-        username: 'maggio',
-        email: 'mathis.gasparotto@protonmail.com',
-        password: 'Tatane!20022',
-        confirmPassword: 'Tatane!20022',
+        username: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
         defaultNumberOfSeries: DEFAULT_NUMBER_OF_SERIES
         // minAgeCheck: false,
         // newsletterCheck: false

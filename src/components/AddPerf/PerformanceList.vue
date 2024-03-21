@@ -16,11 +16,11 @@
     </q-card>
 
     <q-dialog v-model="editForm">
-      <q-card class="q-pa-xl">
+      <q-card class="q-pa-md">
         <q-card-section align="center">
-          <div class="text-h6 text-center">Modifier la performance du {{ performanceToEdit.date }}</div>
+          <div class="text-h6 text-center">Modifier la performance du {{ formatting().dateToDisplay(performanceToEdit.date) }}</div>
         </q-card-section>
-        <q-card-section align="center" v-for="serie in performanceToEdit.series" :key="serie.id" class="flex flex-center q-py-sm">
+        <q-card-section align="center" v-for="serie in performanceToEdit.series" :key="serie.id" class="flex flex-center q-py-sm no-wrap">
           <q-input
             :name="'value-' + serie.id"
             outlined
@@ -148,7 +148,9 @@ export default {
   },
   computed: {
     inputsValid () {
-      return this.performanceToEdit.series && this.performanceToEdit.series.filter(serie => serie.value !== null && serie.value !== '' && serie.value >= 0).length >= 1
+      const allDefault = this.performanceToEdit.series.every(serie => serie.type.value === PERFORMANCE_TYPE_DEFAULT)
+      const allNoDefault = this.performanceToEdit.series.every(serie => serie.type.value !== PERFORMANCE_TYPE_DEFAULT)
+      return this.performanceToEdit.series && this.performanceToEdit.series.filter(serie => serie.value !== null && serie.value !== '' && serie.value >= 0).length >= 1 && this.performanceToEdit.date && ((allDefault && !allNoDefault) || (allNoDefault && !allDefault))
     }
   },
   methods: {
@@ -172,7 +174,7 @@ export default {
         date: this.performanceToEdit.date
       })
         .then(async () => {
-          await this.loadPerformances()
+          this.$emit('reloadPerformances')
           successNotify('Votre performance a bien été modifiée')
           this.editForm = false
           this.editLoading = false
@@ -206,22 +208,6 @@ export default {
         errorNotify('Erreur lors de la récupération des performances')
       })
     },
-    removePerformance(id) {
-      deletePerformance(this.workout.id, this.exercice.id, id).then(async () => {
-        await this.loadPerformances()
-        successNotify('Performance supprimée')
-      }).catch(() => {
-        errorNotify('Erreur lors de la suppression de la performance')
-      })
-    },
-    editPerformance(id, payload) {
-      updatePerformance(this.workout.id, this.exercice.id, id, payload).then(async () => {
-        await this.loadPerformances()
-        successNotify('Performance modifiée')
-      }).catch(() => {
-        errorNotify('Erreur lors de la modification de la performance')
-      })
-    },
     showDeleteModal(performance) {
       let deleteLoading = false
       Dialog.create({
@@ -244,7 +230,7 @@ export default {
           deleteLoading = true
           deletePerformance(this.workout.id, this.exercice.id, performance.id)
             .then(async () => {
-              await this.loadPerformances()
+              this.$emit('reloadPerformances')
               successNotify('Votre performance a bien été supprimée')
             })
             .catch((err) => {

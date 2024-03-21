@@ -16,6 +16,7 @@
     "quasar": "^2.6.0",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0",
+    "vue3-charts": "^1.1.33",
     "vuedraggable": "^4.1.0"
   },
   "devDependencies": {

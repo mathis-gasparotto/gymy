@@ -6,7 +6,7 @@
         <template #item="{ element }">
           <q-card @click="$emit('selectExercice', element)"
             class="q-mb-md flex-center column q-px-md cursor-pointer">
-            <q-card-section class="bt-sm">
+            <q-card-section class="gt-sm">
               <div class="text-h6">
                 {{ element.label }}
               </div>
@@ -16,7 +16,7 @@
                 {{ element.label }}
               </div>
             </q-card-section>
-            <q-card-actions horizontal class="absolute-right bt-sm no-wrap">
+            <q-card-actions horizontal class="absolute-right gt-sm no-wrap">
               <q-btn flat round color="primary" icon="edit" @click.stop="edit(element)" />
               <q-btn flat round color="negative" icon="delete" @click.stop="showDeleteModal(element)" />
             </q-card-actions>

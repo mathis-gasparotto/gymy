@@ -11,8 +11,9 @@
     />
     <ChoiceWorkout v-if="selectStep === 1" @selectWorkout="selectWorkout" />
     <ChoiceExercice v-if="selectStep === 2" :workout="workout" @selectExercice="selectExercice" />
-    <AddPerfExercice class="q-mb-lg" v-if="selectStep === 3" :workout="workout" :exercice="exercice" @reloadPerformances="$refs.performanceList.loadPerformances()" />
-    <PerformanceList v-if="selectStep === 3" :workout="workout" :exercice="exercice" ref="performanceList" />
+    <AddPerfExercice class="q-mb-lg" v-if="selectStep === 3" :workout="workout" :exercice="exercice" @reloadPerformances="reloadPerformances" />
+    <PerformanceList v-if="selectStep === 3" :workout="workout" :exercice="exercice" @reloadPerformances="reloadPerformances" ref="performanceList" />
+    <PerformancesGraph v-if="selectStep === 3" :workoutId="workout.id" :exerciceId="exercice.id" ref="performanceGraph" />
   </q-page>
 </template>
 
@@ -21,6 +22,7 @@ import AddPerfExercice from 'src/components/AddPerf/AddPerfExercice.vue'
 import ChoiceWorkout from 'src/components/AddPerf/ChoiceWorkout.vue'
 import ChoiceExercice from 'src/components/AddPerf/ChoiceExercice.vue'
 import PerformanceList from 'src/components/AddPerf/PerformanceList.vue'
+import PerformancesGraph from 'src/components/PerformancesGraph/PerformancesGraph.vue'
 
 export default {
   name: 'WorkoutsPage',
@@ -28,7 +30,8 @@ export default {
     AddPerfExercice,
     ChoiceWorkout,
     ChoiceExercice,
-    PerformanceList
+    PerformanceList,
+    PerformancesGraph
   },
   data () {
     return {
@@ -45,6 +48,10 @@ export default {
     selectExercice(exercice) {
       this.exercice = exercice
       this.selectStep = 3
+    },
+    reloadPerformances() {
+      this.$refs.performanceList.loadPerformances()
+      this.$refs.performanceGraph.loadPerformances()
     }
   }
 }

@@ -7,7 +7,7 @@
         </div>
       </q-card-section>
       <q-separator />
-      <q-card-section v-for="serie in series" :key="serie.id" class="flex justify-center q-py-sm">
+      <q-card-section v-for="serie in series" :key="serie.id" class="flex justify-center q-py-sm no-wrap">
         <q-input
           :name="'value-' + serie.id"
           outlined
@@ -126,7 +126,9 @@ export default {
   },
   computed: {
     inputsValid () {
-      return this.series.filter(serie => serie.value !== null && serie.value !== '' && serie.value >= 0).length >= 1
+      const allDefault = this.series.every(serie => serie.type.value === PERFORMANCE_TYPE_DEFAULT)
+      const allNoDefault = this.series.every(serie => serie.type.value !== PERFORMANCE_TYPE_DEFAULT)
+      return this.series && this.series.filter(serie => serie.value !== null && serie.value !== '' && serie.value >= 0).length >= 1 && ((allDefault && !allNoDefault) || (allNoDefault && !allDefault)) && this.date
     }
   },
   methods: {

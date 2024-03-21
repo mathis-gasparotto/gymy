@@ -3,7 +3,7 @@
     <GymyHeader text="Entrainements" />
     <div v-if="workouts && workouts.length > 0">
       <q-card v-for="workout in workouts" :key="workout.id" @click="$emit('selectWorkout', workout)" class="cursor-pointer q-mb-md flex-center column q-px-md">
-        <q-card-section class="bt-sm">
+        <q-card-section class="gt-sm">
           <div class="text-h6">
             {{ workout.label }}
           </div>
@@ -13,7 +13,7 @@
             {{ workout.label }}
           </div>
         </q-card-section>
-        <q-card-actions horizontal class="absolute-right bt-sm no-wrap">
+        <q-card-actions horizontal class="absolute-right gt-sm no-wrap">
           <q-btn flat round color="primary" icon="edit" @click.stop="edit(workout)" />
           <q-btn flat round color="negative" icon="delete" @click.stop="showDeleteModal(workout)" />
         </q-card-actions>

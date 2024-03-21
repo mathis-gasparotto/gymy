@@ -52,7 +52,7 @@ export async function updateUser(payload, userUid = null) {
 }
 
 export async function deleteUser() {
-  removeData('users/' + auth.currentUser.uid)
+  await removeData('users/' + auth.currentUser.uid)
   LocalStorage.remove(LOCALSTORAGE_DB_USER)
 }
 
