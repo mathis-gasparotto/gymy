@@ -13,10 +13,17 @@ const { configure } = require('quasar/wrappers');
 
 
 module.exports = configure(function (/* ctx */) {
+  const env = require('dotenv').config().parsed
+  let config = {}
+  if (env && env.WINDOWS_ANDROID_STUDIO) {
+    config = {
+      bin: {
+        windowsAndroidStudio: env.WINDOWS_ANDROID_STUDIO,
+      }
+    }
+  }
   return {
-    bin: {
-      windowsAndroidStudio: 'C:\\Users\\mathi\\AppData\\Local\\Programs\\Android Studio\\bin\\studio64.exe',
-    },
+    ...config,
     eslint: {
       // fix: true,
       // include = [],
