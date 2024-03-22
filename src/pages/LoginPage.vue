@@ -1,8 +1,8 @@
 <template>
   <div class="login-page page">
     <q-img
-      src="~assets/quasar-logo-vertical.svg"
-      style="width: 200px; height: 200px"
+      src="~assets/icon.png"
+      style="width: 200px"
       class="q-mb-xl"
     ></q-img>
     <q-form

@@ -167,42 +167,42 @@ module.exports = configure(function (/* ctx */) {
       // extendInjectManifestOptions (cfg) {},
       // extendManifestJson (json) {}
       // extendPWACustomSWConf (esbuildConf) {}
-      // manifest: {
-      //   name: 'Gymy',
-      //   short_name: 'Gymy',
-      //   description: 'A Gym Tracker App',
-      //   icons: [
-      //     {
-      //       'src': 'icons/icon-128x128.png',
-      //       'sizes': '128x128',
-      //       'type': 'image/png'
-      //     },
-      //     {
-      //       'src': 'icons/icon-192x192.png',
-      //       'sizes': '192x192',
-      //       'type': 'image/png'
-      //     },
-      //     {
-      //       'src': 'icons/icon-256x256.png',
-      //       'sizes': '256x256',
-      //       'type': 'image/png'
-      //     },
-      //     {
-      //       'src': 'icons/icon-384x384.png',
-      //       'sizes': '384x384',
-      //       'type': 'image/png'
-      //     },
-      //     {
-      //       'src': 'icons/icon-512x512.png',
-      //       'sizes': '512x512',
-      //       'type': 'image/png'
-      //     }
-      //   ],
-      //   display: 'standalone',
-      //   orientation: 'portrait',
-      //   background_color: '#ffffff',
-      //   theme_color: '#3805c6'
-      // }
+      manifest: {
+        name: 'Gymy',
+        short_name: 'Gymy',
+        description: 'A Gym Tracker App',
+        icons: [
+          {
+            'src': 'icons/icon-128x128.png',
+            'sizes': '128x128',
+            'type': 'image/png'
+          },
+          {
+            'src': 'icons/icon-192x192.png',
+            'sizes': '192x192',
+            'type': 'image/png'
+          },
+          {
+            'src': 'icons/icon-256x256.png',
+            'sizes': '256x256',
+            'type': 'image/png'
+          },
+          {
+            'src': 'icons/icon-384x384.png',
+            'sizes': '384x384',
+            'type': 'image/png'
+          },
+          {
+            'src': 'icons/icon-512x512.png',
+            'sizes': '512x512',
+            'type': 'image/png'
+          }
+        ],
+        display: 'standalone',
+        orientation: 'portrait',
+        background_color: '#ffffff',
+        theme_color: '#4fabf7'
+      }
     },
 
     // Full list of options: https://v2.quasar.dev/quasar-cli/developing-cordova-apps/configuring-cordova
