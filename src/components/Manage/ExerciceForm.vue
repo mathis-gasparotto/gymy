@@ -15,6 +15,17 @@
       ]"
       hide-bottom-space
     ></q-input>
+    <q-input
+      name="config"
+      rounded
+      outlined
+      label="Config de l'exercice"
+      autofocus
+      class="q-mb-md"
+      type="text"
+      v-model="exerciceForm.config"
+      hide-bottom-space
+    ></q-input>
     <q-btn
       v-if="buttonIcon"
       color="primary"
@@ -62,10 +73,10 @@ export default {
   },
   data() {
     return {
-      exercices: {},
       addLoading: false,
       exerciceForm: {
-        label: ''
+        label: '',
+        config: ''
       }
     }
   },

@@ -62,7 +62,6 @@ export default {
   },
   data() {
     return {
-      workouts: {},
       addLoading: false,
       workoutForm: {
         label: ''

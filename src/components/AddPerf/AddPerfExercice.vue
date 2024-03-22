@@ -2,8 +2,11 @@
   <div class="flex flex-center column">
     <q-card class="q-mb-md flex-center column q-px-md">
       <q-card-section>
-        <div class="text-h6">
+        <div class="text-h6 text-center">
           {{ workout.label }} - {{ exercice.label }}
+        </div>
+        <div v-if="exercice.config" class="text-center">
+          ({{ exercice.config }})
         </div>
       </q-card-section>
       <q-separator />

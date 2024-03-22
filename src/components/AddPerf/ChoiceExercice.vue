@@ -6,17 +6,23 @@
         <template #item="{ element }">
           <q-card @click="$emit('selectExercice', element)"
             class="q-mb-md flex-center column q-px-md cursor-pointer">
-            <q-card-section class="sm">
-              <div class="text-h6">
+            <q-card-section class="gt-xs">
+              <div class="text-h6 text-center">
                 {{ element.label }}
+              </div>
+              <div v-if="element.config" class="text-center">
+                ({{ element.config }})
               </div>
             </q-card-section>
             <q-card-section class="q-pb-none lt-sm">
-              <div class="text-h6">
+              <div class="text-h6 text-center">
                 {{ element.label }}
               </div>
+              <div v-if="element.config" class="text-center">
+                ({{ element.config }})
+              </div>
             </q-card-section>
-            <q-card-actions horizontal class="absolute-right sm no-wrap">
+            <q-card-actions horizontal class="absolute-right gt-xs no-wrap">
               <q-btn flat round color="primary" icon="edit" @click.stop="edit(element)" />
               <q-btn flat round color="negative" icon="delete" @click.stop="showDeleteModal(element)" />
             </q-card-actions>
@@ -30,7 +36,7 @@
     </div>
     <span v-else class="text-center">Aucun exercice de disponible dans cet entrainement</span>
     <q-dialog v-model="editForm">
-      <q-card class="q-px-xl q-py-xl">
+      <q-card class="q-px-xs q-py-xs">
         <q-card-section>
           <div class="text-h6 text-center">Modifier l'exercice {{ exerciceToEdit.label }}</div>
         </q-card-section>
@@ -44,7 +50,7 @@
       </q-card>
     </q-dialog>
     <q-dialog v-model="addForm">
-      <q-card class="q-px-xl q-py-xl">
+      <q-card class="q-px-xs q-py-xs">
         <q-card-section>
           <div class="text-h6 text-center">Ajouter un exercice</div>
         </q-card-section>
@@ -126,7 +132,7 @@ export default {
     },
     onEditSubmit(payload) {
       this.editLoading = true
-      updateExercice(this.workout.id, payload.id, { label: payload.label })
+      updateExercice(this.workout.id, payload.id, { label: payload.label, config: payload.config || null})
         .then(async () => {
           await this.loadExercices()
           successNotify('Votre exercice a bien été modifié')

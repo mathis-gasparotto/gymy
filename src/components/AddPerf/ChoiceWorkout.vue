@@ -3,17 +3,17 @@
     <GymyHeader text="Entrainements" />
     <div v-if="workouts && workouts.length > 0">
       <q-card v-for="workout in workouts" :key="workout.id" @click="$emit('selectWorkout', workout)" class="cursor-pointer q-mb-md flex-center column q-px-md">
-        <q-card-section class="sm">
-          <div class="text-h6">
+        <q-card-section class="gt-xs">
+          <div class="text-h6 text-center">
             {{ workout.label }}
           </div>
         </q-card-section>
         <q-card-section class="q-pb-none lt-sm">
-          <div class="text-h6">
+          <div class="text-h6 text-center">
             {{ workout.label }}
           </div>
         </q-card-section>
-        <q-card-actions horizontal class="absolute-right sm no-wrap">
+        <q-card-actions horizontal class="absolute-right gt-xs no-wrap">
           <q-btn flat round color="primary" icon="edit" @click.stop="edit(workout)" />
           <q-btn flat round color="negative" icon="delete" @click.stop="showDeleteModal(workout)" />
         </q-card-actions>
@@ -25,7 +25,7 @@
     </div>
     <span v-else class="text-center">Aucun entrainement de disponible</span>
     <q-dialog v-model="editForm">
-      <q-card class="q-px-xl q-py-xl">
+      <q-card class="q-px-xs q-py-xs">
         <q-card-section>
           <div class="text-h6 text-center">Modifier l'entrainement {{ workoutToEdit.label }}</div>
         </q-card-section>
@@ -38,7 +38,7 @@
       </q-card>
     </q-dialog>
     <q-dialog v-model="addForm">
-      <q-card class="q-px-xl q-py-xl">
+      <q-card class="q-px-xs q-py-xs">
         <q-card-section>
           <div class="text-h6 text-center">Ajouter un entrainement</div>
         </q-card-section>

@@ -30,7 +30,7 @@
       <q-btn @click="logout" color="negative" class="w-content q-mt-xl">Se déconnecter</q-btn>
       <q-btn @click="deleteAccount" color="negative" class="w-content q-mt-xl">Supprimer son compte</q-btn>
       <q-dialog v-model="showEditDefaultNumberOfSeries">
-        <q-card class="q-px-xl q-py-xl">
+        <q-card class="q-px-xs q-py-xs">
           <q-card-section align="center">
             <div class="text-h6 text-center">Modifier votre nombre de série par défaut</div>
           </q-card-section>
