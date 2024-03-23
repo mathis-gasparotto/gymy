@@ -18,6 +18,7 @@
         autofocus
         class="q-mb-md login-input"
         type="email"
+        inputmode="email"
         v-model="form.email"
         :rules="[
           (val, rules) =>

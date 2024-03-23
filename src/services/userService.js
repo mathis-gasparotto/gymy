@@ -1,6 +1,6 @@
 import { auth } from 'src/boot/firebase'
 import { LocalStorage } from 'quasar'
-import { DEFAULT_NUMBER_OF_SERIES } from 'src/helpers/signupHelper'
+import { DEFAULT_NUMBER_OF_SERIES, DEFAULT_REST_TIME } from 'src/helpers/signupHelper'
 import { createData, initData, removeData, updateData } from './firebaseService'
 import { LOCALSTORAGE_DB_USER } from 'src/helpers/databaseHelper'
 
@@ -22,6 +22,7 @@ export async function addUser(userUid, payload, username) {
     username,
     email: payload.email,
     defaultNumberOfSeries: payload.defaultNumberOfSeries ? payload.defaultNumberOfSeries : DEFAULT_NUMBER_OF_SERIES,
+    restTime: payload.restTime ? payload.restTime : DEFAULT_REST_TIME,
     createdAt: payload.createdAt,
     updatedAt: payload.updatedAt,
     lastLoginAt: payload.lastLoginAt

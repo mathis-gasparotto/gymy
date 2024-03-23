@@ -38,5 +38,10 @@ export default () => ({
   },
   maxStringLenght(str, max) {
     return str.length > max ? str.substring(0, max) + '...' : str
+  },
+  durationFormatFromString(duration) {
+    const minutes = Number(duration.split(':')[0])
+    const seconds = Number(duration.split(':')[1])
+    return `${minutes > 9 ? minutes : '0' + minutes}:${seconds > 9 ? seconds : '0' + seconds}`
   }
 })

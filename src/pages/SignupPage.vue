@@ -26,6 +26,7 @@
         class="q-mb-md signup-input"
         bg-color="white"
         type="email"
+        inputmode="email"
         v-model="form.email"
         lazy-rules
         :rules="[
@@ -106,6 +107,22 @@
         hide-bottom-space
       >
       </q-input>
+      <q-input
+        name="restTime"
+        outlined
+        class="q-mb-md signup-input"
+        type="text"
+        v-model="form.restTime"
+        :rules="[
+          (val) => /^-?[\d]?[\d]:[0-5]\d$/.test(val) || 'Veullez renseigner une durée valide',
+          (val) => (val !== null && val !== '') || 'Veullez remplir ce champ',
+        ]"
+        hint="Format : 00:00"
+        label="Temps de repos*"
+        lazy-rules
+        hide-bottom-space
+      >
+      </q-input>
 
       <p class="flex-end text-right signup-text">*Champ obligatoire</p>
       <!-- <div class="q-mb-md signup-toggle flex items-center ">
@@ -143,9 +160,10 @@
 import { signup } from 'src/services/authService'
 import translate from '../helpers/translatting'
 import { openURL } from 'quasar'
-import { DEFAULT_NUMBER_OF_SERIES } from 'src/helpers/signupHelper'
+import { DEFAULT_NUMBER_OF_SERIES, DEFAULT_REST_TIME } from 'src/helpers/signupHelper'
 import { errorNotify, successNotify } from 'src/helpers/notifyHelper'
 import GymyHeader from 'src/components/GymyHeader.vue'
+import formatting from 'src/helpers/formatting'
 
 export default {
   name: 'SignupPage',
@@ -164,7 +182,8 @@ export default {
         email: '',
         password: '',
         confirmPassword: '',
-        defaultNumberOfSeries: DEFAULT_NUMBER_OF_SERIES
+        defaultNumberOfSeries: DEFAULT_NUMBER_OF_SERIES,
+        restTime: DEFAULT_REST_TIME,
         // minAgeCheck: false,
         // newsletterCheck: false
       },
@@ -184,7 +203,8 @@ export default {
           this.form.email &&
           this.form.password &&
           this.form.confirmPassword &&
-          this.form.defaultNumberOfSeries
+          this.form.defaultNumberOfSeries &&
+          this.form.restTime
         ) {
           this.$refs.signupForm.validate().then((success) => {
             if (success) {
@@ -210,6 +230,7 @@ export default {
             this.form.password.trim(),
             this.form.username.trim(),
             this.form.defaultNumberOfSeries,
+            formatting().durationFormatFromString(this.form.restTime)
             // this.form.newsletterCheck
           )
             .then(() => {
