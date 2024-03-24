@@ -3,6 +3,7 @@
   "appName": "Gymy",
   "webDir": "www",
   "server": {
-    "androidScheme": "https"
+    "androidScheme": "https",
+    "hostname": "gymy-f709a.web.app"
   }
 }
