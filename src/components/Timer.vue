@@ -43,7 +43,7 @@ export default {
     }
   },
   setup() {
-    const { play: playSound } = useSound(buttonSfx, {autoplay: false})
+    const { play: playSound } = useSound(buttonSfx, {volume: 2.5, autoplay: false})
     return {
       playSound
     }
