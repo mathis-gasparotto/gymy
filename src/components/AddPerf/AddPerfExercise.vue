@@ -165,7 +165,7 @@ export default {
         series: this.series.map(serie => {
           if (serie.value !== null && serie.value !== '' && serie.value >= 0) {
             return {
-              value: serie.value,
+              value: Number(serie.value),
               type: serie.type.value
             }
           }

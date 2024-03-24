@@ -137,7 +137,7 @@ export default {
     },
     onEditSubmit(payload) {
       this.editLoading = true
-      updateExercise(this.workout.id, payload.id, { label: payload.label, config: payload.config || null})
+      updateExercise(this.workout.id, payload.id, payload)
         .then(() => {
           this.loadExercises()
           successNotify('Votre exercise a bien été modifié')

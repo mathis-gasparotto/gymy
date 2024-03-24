@@ -169,6 +169,7 @@ export default {
       updatePerformance(this.workout.id, this.exercise.id, this.performanceToEdit.id, {
         series: this.performanceToEdit.series.map(serie => ({
           ...serie,
+          value: Number(serie.value),
           type: serie.type.value
         })),
         date: this.performanceToEdit.date

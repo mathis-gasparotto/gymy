@@ -81,7 +81,7 @@ export default {
   },
   created() {
     if (this.initData) {
-      this.exerciseForm = {...this.initData}
+      this.exerciseForm = {...this.exerciseForm, ...this.initData}
     }
   },
   computed: {
@@ -92,7 +92,12 @@ export default {
   methods: {
     onsubmit() {
       if (!this.formValid) return
-      this.$emit('submit', this.exerciseForm)
+      const payload = {
+        ...this.exerciseForm,
+        label: this.exerciseForm.label.trim(),
+        config: this.exerciseForm.config && this.exerciseForm.config.trim().length > 0 ? this.exerciseForm.config.trim() : null
+      }
+      this.$emit('submit', payload)
     }
   }
 }
