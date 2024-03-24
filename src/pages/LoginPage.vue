@@ -73,15 +73,19 @@
             >Inscris toi</router-link
           >
         </p>
+        <p class="q-my-lg text-center text-bold link" @click="continueAsGuest">
+          Continuer en tant qu'invité
+        </p>
       </q-card-section>
     </q-card>
   </div>
 </template>
 
 <script>
-import { login } from 'src/services/authService'
+import { login, loginAsGuest } from 'src/services/authService'
 import translate from 'src/helpers/translatting'
 import { errorNotify, successNotify } from 'src/helpers/notifyHelper'
+import { Dialog } from 'quasar'
 
 export default {
   name: 'LoginPage',
@@ -131,6 +135,24 @@ export default {
           // console.log('error')
           this.loading = false
         }
+      })
+    },
+    continueAsGuest() {
+      Dialog.create({
+        title: 'Continuer en tant qu\'invité',
+        message: '<b>Tu ne pourra pas retouver tes données depuis un autre appareil, et si tu désinstalles l\'application, tu perdras toutes tes données.</b><br/>Tu ne pourra pas non plus te connecter plus tard pour sauvegarder tes données en ligne.',
+        html: true,
+        ok: {
+          label: 'Continuer',
+          color: 'primary'
+        },
+        cancel: {
+          label: 'Annuler',
+          color: 'negative'
+        }
+      }).onOk(() => {
+        loginAsGuest()
+        this.$router.push({ name: 'index' })
       })
     }
   }

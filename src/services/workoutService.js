@@ -2,6 +2,8 @@ import { auth } from 'src/boot/firebase'
 import { LocalStorage, uid } from 'quasar'
 import { createData, removeData, updateData } from './firebaseService'
 import { LOCALSTORAGE_DB_USER } from 'src/helpers/databaseHelper'
+import { getUser } from './userService'
+import { USER_GUEST_UID } from 'src/helpers/userHelper'
 
 export function getWorkouts() {
   const workoutsObject = LocalStorage.getItem(LOCALSTORAGE_DB_USER).workouts
@@ -34,7 +36,18 @@ export async function addWorkout(payload) {
     position: lastPosition + 1
   }
 
-  await createData('users/' + auth.currentUser.uid + '/workouts/' + id, payload)
+  const user = getUser()
+  if (user.uid === USER_GUEST_UID) {
+    LocalStorage.set(LOCALSTORAGE_DB_USER, {
+      ...user,
+      workouts: {
+        ...user.workouts,
+        [id]: payload
+      }
+    })
+  } else {
+    await createData('users/' + (auth.currentUser ? auth.currentUser.uid : getUser().uid) + '/workouts/' + id, payload)
+  }
 
   return {
     id: id,
@@ -43,7 +56,21 @@ export async function addWorkout(payload) {
 }
 
 export async function updateWorkout(id, payload) {
-  await updateData('users/' + auth.currentUser.uid + '/workouts/' + id, payload)
+  const user = getUser()
+  if (user.uid === USER_GUEST_UID) {
+    LocalStorage.set(LOCALSTORAGE_DB_USER, {
+      ...user,
+      workouts: {
+        ...user.workouts,
+        [id]: {
+          ...user.workouts[id],
+          ...payload
+        }
+      }
+    })
+  } else {
+    await updateData('users/' + (auth.currentUser ? auth.currentUser.uid : getUser().uid) + '/workouts/' + id, payload)
+  }
 
   return payload
 }
@@ -101,5 +128,19 @@ export async function deleteWorkout(id) {
       })
     })
   }
-  await removeData('users/' + auth.currentUser.uid + '/workouts/' + id)
+
+  const user = getUser()
+  if (user.uid === USER_GUEST_UID) {
+    LocalStorage.set(LOCALSTORAGE_DB_USER, {
+      ...user,
+      workouts: Object.keys(user.workouts).reduce((acc, key) => {
+        if (key !== id) {
+          acc[key] = user.workouts[key]
+        }
+        return acc
+      }, {})
+    })
+  } else {
+    await removeData('users/' + (auth.currentUser ? auth.currentUser.uid : getUser().uid) + '/workouts/' + id)
+  }
 }

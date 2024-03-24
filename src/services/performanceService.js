@@ -3,6 +3,8 @@ import { LocalStorage, uid } from 'quasar'
 import { createData, removeData, updateData } from './firebaseService'
 import { LOCALSTORAGE_DB_USER } from 'src/helpers/databaseHelper'
 import { PERFORMANCE_TYPE_BAR, PERFORMANCE_TYPE_DEFAULT } from 'src/helpers/performanceHelper'
+import { getUser } from './userService'
+import { USER_GUEST_UID } from 'src/helpers/userHelper'
 
 export function getPerformances(workoutId, exerciseId) {
   const performancesObject = LocalStorage.getItem(LOCALSTORAGE_DB_USER).workouts[workoutId].exercises[exerciseId].performances
@@ -47,7 +49,30 @@ export function getPerformanceAverage(workoutId, exerciseId, id) {
 export async function addPerformance(workoutId, exerciseId, payload) {
   const id = uid()
 
-  await createData('users/' + auth.currentUser.uid + '/workouts/' + workoutId + '/exercises/' + exerciseId + '/performances/' + id, payload)
+  const user = getUser()
+  if (user.uid === USER_GUEST_UID) {
+    LocalStorage.set(LOCALSTORAGE_DB_USER, {
+      ...user,
+      workouts: {
+        ...user.workouts,
+        [workoutId]: {
+          ...user.workouts[workoutId],
+          exercises: {
+            ...user.workouts[workoutId].exercises,
+            [exerciseId]: {
+              ...user.workouts[workoutId].exercises[exerciseId],
+              performances: {
+                ...user.workouts[workoutId].exercises[exerciseId].performances,
+                [id]: payload
+              }
+            }
+          }
+        }
+      }
+    })
+  } else {
+    await createData('users/' + (auth.currentUser ? auth.currentUser.uid : getUser().uid) + '/workouts/' + workoutId + '/exercises/' + exerciseId + '/performances/' + id, payload)
+  }
 
   return {
     id: id,
@@ -56,11 +81,62 @@ export async function addPerformance(workoutId, exerciseId, payload) {
 }
 
 export async function updatePerformance(workoutId, exerciseId, id, payload) {
-  await updateData('users/' + auth.currentUser.uid + '/workouts/' + workoutId + '/exercises/' + exerciseId + '/performances/' + id, payload)
+  const user = getUser()
+  if (user.uid === USER_GUEST_UID) {
+    LocalStorage.set(LOCALSTORAGE_DB_USER, {
+      ...user,
+      workouts: {
+        ...user.workouts,
+        [workoutId]: {
+          ...user.workouts[workoutId],
+          exercises: {
+            ...user.workouts[workoutId].exercises,
+            [exerciseId]: {
+              ...user.workouts[workoutId].exercises[exerciseId],
+              performances: {
+                ...user.workouts[workoutId].exercises[exerciseId].performances,
+                [id]: {
+                  ...user.workouts[workoutId].exercises[exerciseId].performances[id],
+                  ...payload
+                }
+              }
+            }
+          }
+        }
+      }
+    })
+  } else {
+    await updateData('users/' + (auth.currentUser ? auth.currentUser.uid : getUser().uid) + '/workouts/' + workoutId + '/exercises/' + exerciseId + '/performances/' + id, payload)
+  }
 
   return payload
 }
 
 export async function deletePerformance(workoutId, exerciseId, id) {
-  await removeData('users/' + auth.currentUser.uid + '/workouts/' + workoutId + '/exercises/' + exerciseId + '/performances/' + id)
+  const user = getUser()
+  if (user.uid === USER_GUEST_UID) {
+    LocalStorage.set(LOCALSTORAGE_DB_USER, {
+      ...user,
+      workouts: {
+        ...user.workouts,
+        [workoutId]: {
+          ...user.workouts[workoutId],
+          exercises: {
+            ...user.workouts[workoutId].exercises,
+            [exerciseId]: {
+              ...user.workouts[workoutId].exercises[exerciseId],
+              performances: Object.keys(user.workouts[workoutId].exercises[exerciseId].performances).reduce((acc, key) => {
+                if (key !== id) {
+                  acc[key] = user.workouts[workoutId].exercises[exerciseId].performances[key]
+                }
+                return acc
+              }, {})
+            }
+          }
+        }
+      }
+    })
+  } else {
+    await removeData('users/' + (auth.currentUser ? auth.currentUser.uid : getUser().uid) + '/workouts/' + workoutId + '/exercises/' + exerciseId + '/performances/' + id)
+  }
 }

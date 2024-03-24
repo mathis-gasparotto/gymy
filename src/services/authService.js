@@ -8,10 +8,11 @@ import {
 } from 'firebase/auth'
 import { app, auth, db } from 'src/boot/firebase'
 import { LocalStorage } from 'quasar'
-import { addUser, initUser } from './userService'
+import { addUser, getUser, initUser } from './userService'
 import { initData, removeData, removeListenner, retrieveData, updateData } from './firebaseService'
 import { LOCALSTORAGE_DATABASES, LOCALSTORAGE_DB_USER } from 'src/helpers/databaseHelper'
 import { ref, update } from 'firebase/database'
+import { USER_GUEST, USER_GUEST_UID } from 'src/helpers/userHelper'
 
 export async function signup(email, password, username, defaultNumberOfSeries, restTime) {
   const users = await retrieveData('users')
@@ -41,6 +42,10 @@ export async function signup(email, password, username, defaultNumberOfSeries, r
     })
 }
 
+export function loginAsGuest() {
+  return LocalStorage.set(LOCALSTORAGE_DB_USER, USER_GUEST)
+}
+
 export async function login(email, password) {
   await setPersistence(auth, browserLocalPersistence)
   return signInWithEmailAndPassword(auth, email, password)
@@ -57,7 +62,10 @@ export async function login(email, password) {
     })
 }
 
-export function logout() {
+export async function logout() {
+  if (getUser().uid ===  USER_GUEST_UID) {
+    return LocalStorage.remove(LOCALSTORAGE_DB_USER)
+  }
   const auth = getAuth(app)
   return auth
     .signOut()

@@ -1,8 +1,9 @@
-import { set, ref, onValue, remove, update, off } from 'firebase/database'
+import { set, ref, onValue, remove, update, off, get } from 'firebase/database'
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth'
-import { initUser } from './userService'
+import { getUser, initUser } from './userService'
 import { LocalStorage } from 'quasar'
 import { auth, db} from 'src/boot/firebase'
+import { USER_GUEST_UID } from 'src/helpers/userHelper'
 
 export async function retrieveData(refStr) {
   const dataRef = ref(db, refStr)
@@ -41,6 +42,7 @@ export function removeData(refStr) {
 }
 
 export function initData(refStr, localStorageKey, initValue = null) {
+  if (getUser().uid ===  USER_GUEST_UID) return
   const dataRef = ref(db, refStr)
   return onValue(dataRef, (snapshot) => {
     const data = snapshot.val()
