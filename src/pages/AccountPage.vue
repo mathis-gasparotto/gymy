@@ -36,8 +36,8 @@
           </div>
         </div>
       </div>
-      <q-btn @click="showEditDefaultNumberOfSeries = true" color="primary" class="w-content q-mt-lg" icon="edit">Modifier le nombre de séries par défaut</q-btn>
-      <q-btn @click="showEditRestTime = true" color="primary" class="w-content q-mt-lg" icon="edit">Modifier le temps de repos</q-btn>
+      <q-btn @click="showEditDefaultNumberOfSeries = true" color="primary" class="w-content q-mt-lg">Modifier le nombre de séries par défaut</q-btn>
+      <q-btn @click="showEditRestTime = true" color="primary" class="w-content q-mt-lg">Modifier le temps de repos</q-btn>
       <q-btn @click="logout" color="negative" class="w-content q-mt-xl">Se déconnecter</q-btn>
       <q-btn @click="deleteAccount" color="negative" class="w-content q-mt-xl">Supprimer son compte</q-btn>
       <q-dialog v-model="showEditDefaultNumberOfSeries">
