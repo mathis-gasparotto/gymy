@@ -22,7 +22,7 @@
         v-model="form.email"
         :rules="[
           (val, rules) =>
-            rules.email(val) || 'Veullez rensigner une addresse email valide'
+            rules.email(val) || 'Veuillez renseigner une adresse email valide'
         ]"
         lazy-rules
         hide-bottom-space
@@ -35,7 +35,7 @@
         class="q-mb-md login-input"
         :type="showPassword ? 'text' : 'password'"
         v-model="form.password"
-        :rules="[(val) => val.trim().length > 0 || 'Veullez remplir ce champ']"
+        :rules="[(val) => val.trim().length > 0 || 'Veuillez remplir ce champ']"
         lazy-rules
         hide-bottom-space
       >

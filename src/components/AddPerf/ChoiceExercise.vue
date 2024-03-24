@@ -2,7 +2,7 @@
   <div class="flex column">
     <GymyHeader :text="'Exercises - ' + workout.label" />
     <div v-if="exercises && exercises.length > 0">
-      <draggable :list="exercises" class="list-group" ghost-class="ghost" itemKey="id" @end="onDragEnd">
+      <draggable :list="exercises" class="list-group" ghost-class="ghost" itemKey="id" handle=".draggable-btn" @end="onDragEnd" @start="drag=true">
         <template #item="{ element }">
           <q-card @click="$emit('selectExercise', element)"
             class="q-mb-md flex-center column q-px-md cursor-pointer">
@@ -30,6 +30,9 @@
               <q-btn flat round color="primary" icon="edit" @click.stop="edit(element)" />
               <q-btn flat round color="negative" icon="delete" @click.stop="showDeleteModal(element)" />
             </q-card-actions>
+            <div class="draggable-btn-container">
+              <q-icon :class="'draggable-btn ' + (drag ? 'cursor-grabbing' : 'cursor-grab')" size="sm" name="menu"></q-icon>
+            </div>
           </q-card>
         </template>
       </draggable>
@@ -98,6 +101,7 @@ export default {
       editForm: false,
       editLoading: false,
       exerciseToEdit: {},
+      drag: false
     }
   },
   created() {
@@ -105,6 +109,7 @@ export default {
   },
   methods: {
     onDragEnd(e) {
+      this.drag = false
       const newPosition = e.newIndex + 1
       moveExercise(this.workout.id, e.item['_underlying_vm_'].id, newPosition)
         .catch((err) => {
@@ -187,4 +192,13 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.draggable-btn {
+  &-container {
+    position: absolute;
+    left: 10px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+  }
+}
 </style>

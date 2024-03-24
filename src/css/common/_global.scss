@@ -132,3 +132,15 @@
 .rounded {
   border-radius: 10px;
 }
+
+.cursor {
+  &-move {
+    cursor: move;
+  }
+  &-grab {
+    cursor: grab;
+  }
+  &-grabbing {
+    cursor: grabbing;
+  }
+}

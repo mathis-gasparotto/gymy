@@ -30,8 +30,8 @@
             v-model="serie.value"
             min="0"
             :rules="[
-              (val) => (val !== null && val !== '') || 'Veullez remplir ce champ',
-              (val) => val >= 0 || 'Veullez renseigner une valeur positif',
+              (val) => (val !== null && val !== '') || 'Veuillez remplir ce champ',
+              (val) => val >= 0 || 'Veuillez renseigner une valeur positif',
             ]"
             label="Performance"
             lazy-rules
@@ -46,7 +46,7 @@
             label="Type de performance"
             class="w-40"
             lazy-rules
-            :rules="[(val) => typeof val === 'object' || 'Veullez renseigner un type de performance']"
+            :rules="[(val) => typeof val === 'object' || 'Veuillez renseigner un type de performance']"
             hide-bottom-space
           >
           </q-select>

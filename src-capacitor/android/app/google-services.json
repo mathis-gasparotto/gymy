@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "388931833033",
+    "firebase_url": "https://gymy-f709a-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "gymy-f709a",
+    "storage_bucket": "gymy-f709a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:388931833033:android:95ef8b18317c0ab6581118",
+        "android_client_info": {
+          "package_name": "app.gymy"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPiwAz8eWmjndgNJ43JrWor4sGVz8AZQo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -11,7 +11,7 @@
       v-model="workoutForm.label"
       lazy-rules
       :rules="[
-        (val) => val.trim().length > 2 || 'Veullez renseigner minimum 3 caractères'
+        (val) => val.trim().length > 2 || 'Veuillez renseigner minimum 3 caractères'
       ]"
       hide-bottom-space
     ></q-input>
