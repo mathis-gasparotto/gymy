@@ -10,26 +10,26 @@
       @click="selectStep -= 1"
     />
     <ChoiceWorkout v-if="selectStep === 1" @selectWorkout="selectWorkout" />
-    <ChoiceExercice v-if="selectStep === 2" :workout="workout" @selectExercice="selectExercice" />
-    <AddPerfExercice class="q-mb-lg" v-if="selectStep === 3" :workout="workout" :exercice="exercice" @reloadPerformances="reloadPerformances" />
-    <PerformanceList v-if="selectStep === 3" :workout="workout" :exercice="exercice" @reloadPerformances="reloadPerformances" ref="performanceList" />
-    <PerformancesGraph v-if="selectStep === 3" :workoutId="workout.id" :exerciceId="exercice.id" ref="performanceGraph" />
+    <ChoiceExercise v-if="selectStep === 2 && workout" :workout="workout" @selectExercise="selectExercise" />
+    <AddPerfExercise class="q-mb-lg" v-if="selectStep === 3 && workout && exercise" :workout="workout" :exercise="exercise" @reloadPerformances="reloadPerformances" />
+    <PerformanceList v-if="selectStep === 3 && workout && exercise" :workout="workout" :exercise="exercise" @reloadPerformances="reloadPerformances" ref="performanceList" />
+    <PerformancesGraph v-if="selectStep === 3 && workout && exercise" :workoutId="workout.id" :exerciseId="exercise.id" ref="performanceGraph" />
   </q-page>
 </template>
 
 <script>
-import AddPerfExercice from 'src/components/AddPerf/AddPerfExercice.vue'
+import AddPerfExercise from 'src/components/AddPerf/AddPerfExercise.vue'
 import ChoiceWorkout from 'src/components/AddPerf/ChoiceWorkout.vue'
-import ChoiceExercice from 'src/components/AddPerf/ChoiceExercice.vue'
+import ChoiceExercise from 'src/components/AddPerf/ChoiceExercise.vue'
 import PerformanceList from 'src/components/AddPerf/PerformanceList.vue'
 import PerformancesGraph from 'src/components/PerformancesGraph/PerformancesGraph.vue'
 
 export default {
   name: 'WorkoutsPage',
   components: {
-    AddPerfExercice,
+    AddPerfExercise,
     ChoiceWorkout,
-    ChoiceExercice,
+    ChoiceExercise,
     PerformanceList,
     PerformancesGraph
   },
@@ -37,7 +37,7 @@ export default {
     return {
       selectStep: 1,
       workout: null,
-      exercice: null,
+      exercise: null,
     }
   },
   methods: {
@@ -45,8 +45,8 @@ export default {
       this.workout = workout
       this.selectStep = 2
     },
-    selectExercice(exercice) {
-      this.exercice = exercice
+    selectExercise(exercise) {
+      this.exercise = exercise
       this.selectStep = 3
     },
     reloadPerformances() {

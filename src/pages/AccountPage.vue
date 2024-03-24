@@ -49,6 +49,7 @@
             <q-form ref="defaultNumberOfSeriesForm" @submit.prevent="submitDefaultNumberOfSeries">
               <q-input
                 name="defaultNumberOfSeries"
+                autofocus
                 outlined
                 class="q-mb-md"
                 type="number"
@@ -87,6 +88,7 @@
             <q-form ref="restTimeForm" @submit.prevent="submitRestTime">
               <q-input
                 name="restTime"
+                autofocus
                 outlined
                 class="q-mb-md"
                 type="text"
@@ -171,16 +173,16 @@ export default {
     }
   },
   methods: {
-    async loadUser() {
-      this.user = await getUser()
+    loadUser() {
+      this.user = getUser()
       this.newDefaultNumberOfSeries = this.user.defaultNumberOfSeries
       this.newRestTime = this.user.restTime
     },
     submitDefaultNumberOfSeries() {
       if (!this.newDefaultNumberOfSeriesValid) return
       this.defaultNumberOfSeriesLoading = true
-      updateUser({ defaultNumberOfSeries: Number(this.newDefaultNumberOfSeries) }).then(async () => {
-        await this.loadUser()
+      updateUser({ defaultNumberOfSeries: Number(this.newDefaultNumberOfSeries) }).then(() => {
+        this.loadUser()
         this.defaultNumberOfSeriesLoading = false
         this.showEditDefaultNumberOfSeries = false
         successNotify('Votre nombre de série par défaut a bien été modifié')
@@ -192,8 +194,8 @@ export default {
     submitRestTime() {
       if (!this.newRestTimeValid) return
       this.restTimeLoading = true
-      updateUser({ restTime: formatting().durationFormatFromString(this.newRestTime) }).then(async () => {
-        await this.loadUser()
+      updateUser({ restTime: formatting().durationFormatFromString(this.newRestTime) }).then(() => {
+        this.loadUser()
         this.restTimeLoading = false
         this.showEditRestTime = false
         successNotify('Votre nombre de série par défaut a bien été modifié')

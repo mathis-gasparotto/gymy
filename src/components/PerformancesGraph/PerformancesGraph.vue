@@ -28,7 +28,7 @@ export default {
       type: String,
       required: true
     },
-    exerciceId: {
+    exerciseId: {
       type: String,
       required: true
     }
@@ -56,13 +56,13 @@ export default {
     this.loadPerformances()
   },
   methods: {
-    async loadPerformances() {
+    loadPerformances() {
       this.showChart = false
-      this.performances = await getPerformances(this.workoutId, this.exerciceId)
+      this.performances = getPerformances(this.workoutId, this.exerciseId)
       this.performances = this.performances.sort((a, b) => new Date(a.date) - new Date(b.date))
       this.data = []
-      this.performances.forEach(async (perf) => {
-        const value = await getPerformanceAverage(this.workoutId, this.exerciceId, perf.id)
+      this.performances.forEach((perf) => {
+        const value = getPerformanceAverage(this.workoutId, this.exerciseId, perf.id)
         this.data.push({
           date: formatting().dateToDisplay(perf.date),
           value: value

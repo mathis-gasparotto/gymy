@@ -4,11 +4,11 @@
       name="label"
       rounded
       outlined
-      label="Nom de l'exercice"
+      label="Nom de l'exercise"
       autofocus
       class="q-mb-md"
       type="text"
-      v-model="exerciceForm.label"
+      v-model="exerciseForm.label"
       lazy-rules
       :rules="[
         (val) => val.trim().length > 2 || 'Veullez renseigner minimum 3 caractères'
@@ -19,11 +19,10 @@
       name="config"
       rounded
       outlined
-      label="Config de l'exercice"
-      autofocus
+      label="Config de l'exercise"
       class="q-mb-md"
       type="text"
-      v-model="exerciceForm.config"
+      v-model="exerciseForm.config"
       hide-bottom-space
     ></q-input>
     <q-btn
@@ -48,7 +47,7 @@
 
 <script>
 export default {
-  name: 'ExerciceForm',
+  name: 'ExerciseForm',
   emits: ['submit'],
   props: {
     initData: {
@@ -74,7 +73,7 @@ export default {
   data() {
     return {
       addLoading: false,
-      exerciceForm: {
+      exerciseForm: {
         label: '',
         config: ''
       }
@@ -82,18 +81,18 @@ export default {
   },
   created() {
     if (this.initData) {
-      this.exerciceForm = {...this.initData}
+      this.exerciseForm = {...this.initData}
     }
   },
   computed: {
     formValid() {
-      return this.exerciceForm.label.trim().length > 2
+      return this.exerciseForm.label.trim().length > 2
     }
   },
   methods: {
     onsubmit() {
       if (!this.formValid) return
-      this.$emit('submit', this.exerciceForm)
+      this.$emit('submit', this.exerciseForm)
     }
   }
 }

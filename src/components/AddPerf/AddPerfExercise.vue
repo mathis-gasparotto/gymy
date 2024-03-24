@@ -3,10 +3,10 @@
     <q-card class="q-mb-md flex-center column q-px-md">
       <q-card-section>
         <div class="text-h6 text-center">
-          {{ workout.label }} - {{ exercice.label }}
+          {{ workout.label }} - {{ exercise.label }}
         </div>
-        <div v-if="exercice.config" class="text-center">
-          ({{ exercice.config }})
+        <div v-if="exercise.config" class="text-center">
+          ({{ exercise.config }})
         </div>
       </q-card-section>
       <q-separator />
@@ -14,7 +14,7 @@
         <q-input
           :name="'value-' + serie.id"
           outlined
-          class="exercice-input w-40"
+          class="exercise-input w-40"
           type="number"
           inputmode="numeric"
           v-model="serie.value"
@@ -90,14 +90,14 @@ import { addPerformance } from 'src/services/performanceService'
 import { getUser } from 'src/services/userService'
 
 export default {
-  name: 'AddPerfExercice',
+  name: 'AddPerfExercise',
   emits: ['reloadPerformances'],
   props: {
     workout: {
       type: Object,
       required: true
     },
-    exercice: {
+    exercise: {
       type: Object,
       required: true
     },
@@ -123,8 +123,8 @@ export default {
       defaultNumberOfSeries: null
     }
   },
-  async created () {
-    this.defaultNumberOfSeries = await getUser().defaultNumberOfSeries
+  created () {
+    this.defaultNumberOfSeries = getUser().defaultNumberOfSeries
     this.initInputs()
   },
   computed: {
@@ -171,7 +171,7 @@ export default {
           }
         })
       }
-      addPerformance(this.workout.id, this.exercice.id, payload).then(() => {
+      addPerformance(this.workout.id, this.exercise.id, payload).then(() => {
         this.$emit('reloadPerformances')
         successNotify('Performance ajoutée')
         this.initInputs()

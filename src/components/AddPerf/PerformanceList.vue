@@ -24,7 +24,7 @@
           <q-input
             :name="'value-' + serie.id"
             outlined
-            class="exercice-input w-40"
+            class="exercise-input w-40"
             type="number"
             inputmode="numeric"
             v-model="serie.value"
@@ -110,7 +110,7 @@ export default {
       type: Object,
       required: true
     },
-    exercice: {
+    exercise: {
       type: Object,
       required: true
     },
@@ -166,14 +166,14 @@ export default {
     },
     onEditSubmit() {
       this.editLoading = true
-      updatePerformance(this.workout.id, this.exercice.id, this.performanceToEdit.id, {
+      updatePerformance(this.workout.id, this.exercise.id, this.performanceToEdit.id, {
         series: this.performanceToEdit.series.map(serie => ({
           ...serie,
           type: serie.type.value
         })),
         date: this.performanceToEdit.date
       })
-        .then(async () => {
+        .then(() => {
           this.$emit('reloadPerformances')
           successNotify('Votre performance a bien été modifiée')
           this.editForm = false
@@ -203,10 +203,8 @@ export default {
       }
       this.editForm = true
     },
-    async loadPerformances() {
-      this.performances = await getPerformances(this.workout.id, this.exercice.id).catch(() => {
-        errorNotify('Erreur lors de la récupération des performances')
-      })
+    loadPerformances() {
+      this.performances = getPerformances(this.workout.id, this.exercise.id)
     },
     showDeleteModal(performance) {
       let deleteLoading = false
@@ -228,8 +226,8 @@ export default {
       })
         .onOk(() => {
           deleteLoading = true
-          deletePerformance(this.workout.id, this.exercice.id, performance.id)
-            .then(async () => {
+          deletePerformance(this.workout.id, this.exercise.id, performance.id)
+            .then(() => {
               this.$emit('reloadPerformances')
               successNotify('Votre performance a bien été supprimée')
             })

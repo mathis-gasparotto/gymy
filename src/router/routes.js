@@ -1,3 +1,4 @@
+import { child } from 'firebase/database'
 
 const routes = [
   {
@@ -28,7 +29,19 @@ const routes = [
       {
         path: '/workouts',
         name: 'workouts',
-        component: () => import('pages/WorkoutsPage.vue')
+        component: () => import('pages/WorkoutsPage.vue'),
+        // children: [
+        //   {
+        //     path: ':workoutId',
+        //     name: 'exercises',
+        //     component: () => import('pages/ExercisesPage.vue')
+        //   },
+        //   {
+        //     path: ':workoutId/exercises/:exerciseId',
+        //     name: 'performances',
+        //     component: () => import('pages/PerformancesPage.vue')
+        //   }
+        // ]
       },
       {
         path: '/account',

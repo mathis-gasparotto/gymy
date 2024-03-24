@@ -84,14 +84,14 @@ export default {
     this.loadWorkouts()
   },
   methods: {
-    async loadWorkouts() {
-      this.workouts = await getWorkouts()
+    loadWorkouts() {
+      this.workouts = getWorkouts()
     },
     onAddSubmit(payload) {
       this.addLoading = true
       addWorkout(payload)
-        .then(async () => {
-          await this.loadWorkouts()
+        .then(() => {
+          this.loadWorkouts()
           successNotify('Votre entrainement a bien été ajouté')
           this.addForm = false
           this.addLoading = false
@@ -104,8 +104,8 @@ export default {
     onEditSubmit(payload) {
       this.editLoading = true
       updateWorkout(payload.id, { label: payload.label })
-        .then(async () => {
-          await this.loadWorkouts()
+        .then(() => {
+          this.loadWorkouts()
           successNotify('Votre entrainement a bien été modifié')
           this.editForm = false
           this.editLoading = false
@@ -140,8 +140,8 @@ export default {
         .onOk(() => {
           deleteLoading = true
           deleteWorkout(workout.id)
-            .then(async () => {
-              await this.loadWorkouts()
+            .then(() => {
+              this.loadWorkouts()
               successNotify('Votre entrainement a bien été supprimé')
             })
             .catch((err) => {

@@ -57,11 +57,11 @@ export async function deleteUser() {
   LocalStorage.remove(LOCALSTORAGE_DB_USER)
 }
 
-export async function initUser(uid = null) {
+export function initUser(uid = null) {
   if (uid) {
     return initData('users/' + uid, LOCALSTORAGE_DB_USER)
   }
-  const user = await getUser()
+  const user = getUser()
   if (user && user.uid) {
     return initData('users/' + user.uid, LOCALSTORAGE_DB_USER)
   } else if (auth.currentUser) {

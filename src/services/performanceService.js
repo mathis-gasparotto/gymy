@@ -4,8 +4,8 @@ import { createData, removeData, updateData } from './firebaseService'
 import { LOCALSTORAGE_DB_USER } from 'src/helpers/databaseHelper'
 import { PERFORMANCE_TYPE_BAR, PERFORMANCE_TYPE_DEFAULT } from 'src/helpers/performanceHelper'
 
-export async function getPerformances(workoutId, exerciceId) {
-  const performancesObject = await LocalStorage.getItem(LOCALSTORAGE_DB_USER).workouts[workoutId].exercices[exerciceId].performances
+export function getPerformances(workoutId, exerciseId) {
+  const performancesObject = LocalStorage.getItem(LOCALSTORAGE_DB_USER).workouts[workoutId].exercises[exerciseId].performances
   if (!performancesObject) return []
   return Object.keys(performancesObject).map(key => {
     return {
@@ -15,8 +15,8 @@ export async function getPerformances(workoutId, exerciceId) {
   }).sort((a, b) => new Date(b.date) - new Date(a.date))
 }
 
-export async function getPerformance(workoutId, exerciceId, id) {
-  const data = await LocalStorage.getItem(LOCALSTORAGE_DB_USER).workouts[workoutId].exercices[exerciceId].performances[id]
+export function getPerformance(workoutId, exerciseId, id) {
+  const data = LocalStorage.getItem(LOCALSTORAGE_DB_USER).workouts[workoutId].exercises[exerciseId].performances[id]
   if (!data) return null
   return {
     id: id,
@@ -24,8 +24,8 @@ export async function getPerformance(workoutId, exerciceId, id) {
   }
 }
 
-export async function getPerformanceAverage(workoutId, exerciceId, id) {
-  const performance = await getPerformance(workoutId, exerciceId, id)
+export function getPerformanceAverage(workoutId, exerciseId, id) {
+  const performance = getPerformance(workoutId, exerciseId, id)
 
   if (!performance) return null
   if (performance.series.length === 0) return null
@@ -44,10 +44,10 @@ export async function getPerformanceAverage(workoutId, exerciceId, id) {
   return Math.round(value * 100) / 100
 }
 
-export async function addPerformance(workoutId, exerciceId, payload) {
+export async function addPerformance(workoutId, exerciseId, payload) {
   const id = uid()
 
-  createData('users/' + auth.currentUser.uid + '/workouts/' + workoutId + '/exercices/' + exerciceId + '/performances/' + id, payload)
+  await createData('users/' + auth.currentUser.uid + '/workouts/' + workoutId + '/exercises/' + exerciseId + '/performances/' + id, payload)
 
   return {
     id: id,
@@ -55,12 +55,12 @@ export async function addPerformance(workoutId, exerciceId, payload) {
   }
 }
 
-export async function updatePerformance(workoutId, exerciceId, id, payload) {
-  updateData('users/' + auth.currentUser.uid + '/workouts/' + workoutId + '/exercices/' + exerciceId + '/performances/' + id, payload)
+export async function updatePerformance(workoutId, exerciseId, id, payload) {
+  await updateData('users/' + auth.currentUser.uid + '/workouts/' + workoutId + '/exercises/' + exerciseId + '/performances/' + id, payload)
 
   return payload
 }
 
-export async function deletePerformance(workoutId, exerciceId, id) {
-  removeData('users/' + auth.currentUser.uid + '/workouts/' + workoutId + '/exercices/' + exerciceId + '/performances/' + id)
+export async function deletePerformance(workoutId, exerciseId, id) {
+  await removeData('users/' + auth.currentUser.uid + '/workouts/' + workoutId + '/exercises/' + exerciseId + '/performances/' + id)
 }

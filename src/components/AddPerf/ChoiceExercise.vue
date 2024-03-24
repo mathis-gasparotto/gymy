@@ -1,10 +1,10 @@
 <template>
   <div class="flex column">
-    <GymyHeader :text="'Exercices - ' + workout.label" />
-    <div v-if="exercices && exercices.length > 0">
-      <draggable :list="exercices" class="list-group" ghost-class="ghost" itemKey="id" @end="onDragEnd">
+    <GymyHeader :text="'Exercises - ' + workout.label" />
+    <div v-if="exercises && exercises.length > 0">
+      <draggable :list="exercises" class="list-group" ghost-class="ghost" itemKey="id" @end="onDragEnd">
         <template #item="{ element }">
-          <q-card @click="$emit('selectExercice', element)"
+          <q-card @click="$emit('selectExercise', element)"
             class="q-mb-md flex-center column q-px-md cursor-pointer">
             <q-card-section class="gt-xs">
               <div class="text-h6 text-center">
@@ -34,14 +34,14 @@
         </template>
       </draggable>
     </div>
-    <span v-else class="text-center">Aucun exercice de disponible dans cet entrainement</span>
+    <span v-else class="text-center">Aucun exercise de disponible dans cet entrainement</span>
     <q-dialog v-model="editForm">
       <q-card class="q-px-xs q-py-xs">
         <q-card-section>
-          <div class="text-h6 text-center">Modifier l'exercice {{ exerciceToEdit.label }}</div>
+          <div class="text-h6 text-center">Modifier l'exercise {{ exerciseToEdit.label }}</div>
         </q-card-section>
         <q-card-section>
-          <ExerciceForm :initData="exerciceToEdit" buttonLabel="Confirmer" :loading="editLoading"
+          <ExerciseForm :initData="exerciseToEdit" buttonLabel="Confirmer" :loading="editLoading"
             @submit="onEditSubmit" />
         </q-card-section>
         <q-card-actions align="center">
@@ -52,10 +52,10 @@
     <q-dialog v-model="addForm">
       <q-card class="q-px-xs q-py-xs">
         <q-card-section>
-          <div class="text-h6 text-center">Ajouter un exercice</div>
+          <div class="text-h6 text-center">Ajouter un exercise</div>
         </q-card-section>
         <q-card-section>
-          <ExerciceForm buttonLabel="Ajouter" buttonIcon="add" :loading="addLoading" @submit="onAddSubmit" />
+          <ExerciseForm buttonLabel="Ajouter" buttonIcon="add" :loading="addLoading" @submit="onAddSubmit" />
         </q-card-section>
         <q-card-actions align="center">
           <q-btn label="Annuler" color="negative" v-close-popup />
@@ -69,19 +69,19 @@
 </template>
 
 <script>
-import { addExercice, deleteExercice, getExercices, moveExercice, updateExercice } from 'src/services/exerciceService'
+import { addExercise, deleteExercise, getExercises, moveExercise, updateExercise } from 'src/services/exerciseService'
 import GymyHeader from 'src/components/GymyHeader.vue'
 import { Dialog } from 'quasar'
 import { errorNotify, successNotify } from 'src/helpers/notifyHelper'
-import ExerciceForm from 'src/components/Manage/ExerciceForm.vue'
+import ExerciseForm from 'src/components/Manage/ExerciseForm.vue'
 import draggable from 'vuedraggable'
 
 export default {
-  name: 'ChoiceExercice',
-  emits: ['selectExercice'],
+  name: 'ChoiceExercise',
+  emits: ['selectExercise'],
   components: {
     GymyHeader,
-    ExerciceForm,
+    ExerciseForm,
     draggable
   },
   props: {
@@ -92,67 +92,67 @@ export default {
   },
   data() {
     return {
-      exercices: [],
+      exercises: [],
       addForm: false,
       addLoading: false,
       editForm: false,
       editLoading: false,
-      exerciceToEdit: {},
+      exerciseToEdit: {},
     }
   },
   created() {
-    this.loadExercices()
+    this.loadExercises()
   },
   methods: {
     onDragEnd(e) {
       const newPosition = e.newIndex + 1
-      moveExercice(this.workout.id, e.item['_underlying_vm_'].id, newPosition)
+      moveExercise(this.workout.id, e.item['_underlying_vm_'].id, newPosition)
         .catch((err) => {
           console.log(err)
-          errorNotify('Une erreur est survenue lors du déplacement de votre exercice')
-          this.loadExercices()
+          errorNotify('Une erreur est survenue lors du déplacement de votre exercise')
+          this.loadExercises()
         })
     },
-    async loadExercices() {
-      this.exercices = await getExercices(this.workout.id)
+    loadExercises() {
+      this.exercises = getExercises(this.workout.id)
     },
     onAddSubmit(payload) {
       this.addLoading = true
-      addExercice(this.workout.id, payload)
-        .then(async () => {
-          await this.loadExercices()
-          successNotify('Votre exercice a bien été ajouté')
+      addExercise(this.workout.id, payload)
+        .then(() => {
+          this.loadExercises()
+          successNotify('Votre exercise a bien été ajouté')
           this.addForm = false
           this.addLoading = false
         })
         .catch((err) => {
           this.addLoading = false
-          errorNotify('Une erreur est survenue lors de l\'ajout de votre exercice')
+          errorNotify('Une erreur est survenue lors de l\'ajout de votre exercise')
         })
     },
     onEditSubmit(payload) {
       this.editLoading = true
-      updateExercice(this.workout.id, payload.id, { label: payload.label, config: payload.config || null})
-        .then(async () => {
-          await this.loadExercices()
-          successNotify('Votre exercice a bien été modifié')
+      updateExercise(this.workout.id, payload.id, { label: payload.label, config: payload.config || null})
+        .then(() => {
+          this.loadExercises()
+          successNotify('Votre exercise a bien été modifié')
           this.editForm = false
           this.editLoading = false
         })
         .catch((err) => {
           this.editLoading = false
-          errorNotify('Une erreur est survenue lors de l\'édition de votre exercice')
+          errorNotify('Une erreur est survenue lors de l\'édition de votre exercise')
         })
     },
-    edit(exercice) {
-      this.exerciceToEdit = exercice
+    edit(exercise) {
+      this.exerciseToEdit = exercise
       this.editForm = true
     },
-    showDeleteModal(exercice) {
+    showDeleteModal(exercise) {
       let deleteLoading = false
       Dialog.create({
-        title: 'Suppression d\'exercice',
-        message: 'Êtes-vous sûr de vouloir supprimer votre exercice ' + exercice.label + ' ?',
+        title: 'Suppression d\'exercise',
+        message: 'Êtes-vous sûr de vouloir supprimer votre exercise ' + exercise.label + ' ?',
         // persistent: true,
         ok: {
           label: 'Supprimer',
@@ -168,14 +168,14 @@ export default {
       })
         .onOk(() => {
           deleteLoading = true
-          deleteExercice(this.workout.id, exercice.id)
-            .then(async () => {
-              await this.loadExercices()
-              successNotify('Votre exercice a bien été supprimé')
+          deleteExercise(this.workout.id, exercise.id)
+            .then(() => {
+              this.loadExercises()
+              successNotify('Votre exercise a bien été supprimé')
             })
             .catch((err) => {
               deleteLoading = false
-              errorNotify('Une erreur est survenue lors de la suppression de votre exercice')
+              errorNotify('Une erreur est survenue lors de la suppression de votre exercise')
             })
         })
         .onCancel(() => {

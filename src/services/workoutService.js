@@ -3,8 +3,8 @@ import { LocalStorage, uid } from 'quasar'
 import { createData, removeData, updateData } from './firebaseService'
 import { LOCALSTORAGE_DB_USER } from 'src/helpers/databaseHelper'
 
-export async function getWorkouts() {
-  const workoutsObject = await LocalStorage.getItem(LOCALSTORAGE_DB_USER).workouts
+export function getWorkouts() {
+  const workoutsObject = LocalStorage.getItem(LOCALSTORAGE_DB_USER).workouts
   if (!workoutsObject) return []
   return Object.keys(workoutsObject).map(key => {
     return {
@@ -14,8 +14,8 @@ export async function getWorkouts() {
   }).sort((a, b) => new Date(b.createdAt) - Date(a.createdAt))
 }
 
-export async function getWorkout(id) {
-  const data = await LocalStorage.getItem(LOCALSTORAGE_DB_USER).workouts[id]
+export function getWorkout(id) {
+  const data = LocalStorage.getItem(LOCALSTORAGE_DB_USER).workouts[id]
   if (!data) return null
   return {
     id: id,
@@ -26,7 +26,7 @@ export async function getWorkout(id) {
 export async function addWorkout(payload) {
   const id = uid()
 
-  createData('users/' + auth.currentUser.uid + '/workouts/' + id, payload)
+  await createData('users/' + auth.currentUser.uid + '/workouts/' + id, payload)
 
   return {
     id: id,
@@ -35,11 +35,11 @@ export async function addWorkout(payload) {
 }
 
 export async function updateWorkout(id, payload) {
-  updateData('users/' + auth.currentUser.uid + '/workouts/' + id, payload)
+  await updateData('users/' + auth.currentUser.uid + '/workouts/' + id, payload)
 
   return payload
 }
 
 export async function deleteWorkout(id) {
-  removeData('users/' + auth.currentUser.uid + '/workouts/' + id)
+  await removeData('users/' + auth.currentUser.uid + '/workouts/' + id)
 }
