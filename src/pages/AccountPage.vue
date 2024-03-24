@@ -3,7 +3,7 @@
     <div class="page-content column items-center">
       <GymyHeader text="Compte" />
       <div class="w-100" v-if="user">
-        <div class="w-100 flex account-info-line row no-wrap">
+        <div class="w-100 flex account-info-line row no-wrap" v-if="user.uid !== USER_GUEST_UID">
           <div class="w-50 text-bold text-right">
             Nom d'utilisateur
           </div>
@@ -11,7 +11,7 @@
             {{ user.username }}
           </div>
         </div>
-        <div class="w-100 flex account-info-line row no-wrap">
+        <div class="w-100 flex account-info-line row no-wrap" v-if="user.uid !== USER_GUEST_UID">
           <div class="w-50 text-bold text-right">
             Email
           </div>
@@ -39,7 +39,7 @@
       <q-btn @click="showEditDefaultNumberOfSeries = true" color="primary" class="w-content q-mt-lg">Modifier le nombre de séries par défaut</q-btn>
       <q-btn @click="showEditRestTime = true" color="primary" class="w-content q-mt-lg">Modifier le temps de repos</q-btn>
       <q-btn @click="logout" color="negative" class="w-content q-mt-xl">Se déconnecter</q-btn>
-      <q-btn @click="deleteAccount" color="negative" class="w-content q-mt-xl">Supprimer mon compte</q-btn>
+      <q-btn @click="deleteAccount" color="negative" class="w-content q-mt-xl" v-if="user.uid !== USER_GUEST_UID">Supprimer mon compte</q-btn>
       <q-dialog v-model="showEditDefaultNumberOfSeries">
         <q-card class="q-px-xs q-py-xs">
           <q-card-section align="center">
@@ -55,7 +55,7 @@
                 type="number"
                 inputmode="numeric"
                 v-model="newDefaultNumberOfSeries"
-                min="0"
+                min="1"
                 :rules="[
                   (val) => (val !== null && val !== '') || 'Veuillez remplir ce champ',
                   (val) => val >= 1 || 'Veuillez renseigner une valeur positif supérieur à 0',
@@ -128,6 +128,7 @@ import { getUser, updateUser } from 'src/services/userService'
 import { errorNotify, successNotify } from 'src/helpers/notifyHelper'
 import { Dialog } from 'quasar'
 import formatting from 'src/helpers/formatting'
+import { USER_GUEST_UID } from 'src/helpers/userHelper'
 
 export default {
   name: 'AccountPage',
@@ -136,7 +137,8 @@ export default {
   },
   setup() {
     return {
-      formatting
+      formatting,
+      USER_GUEST_UID
     }
   },
   data() {
@@ -167,6 +169,8 @@ export default {
         }).catch(() => {
           this.newRestTimeValid = false
         })
+      } else if (this.newRestTime) {
+        this.newRestTimeValid = true
       } else {
         this.newRestTimeValid = false
       }
@@ -211,16 +215,13 @@ export default {
         message: 'Toutes vos données seront perdues et cette action est irréversible.',
         cancel: {
           label: 'Annuler',
-          color: 'primary',
-          unelevated: true
+          color: 'primary'
         },
         ok: {
           label: 'Supprimer',
           color: 'negative',
-          unelevated: true,
           loading: deleteLoading
-        },
-        persistent: true
+        }
       }).onOk(() => {
         deleteLoading = true
         deleteAllUserData().then(() => {
@@ -232,6 +233,24 @@ export default {
       })
     },
     logout() {
+      if (this.user.uid === USER_GUEST_UID) {
+        return Dialog.create({
+          title: 'Se déconnecter en tant qu\'invité',
+          message: 'Toutes vos données seront perdues et cette action est irréversible.',
+          cancel: {
+            label: 'Annuler',
+            color: 'primary'
+          },
+          ok: {
+            label: 'Supprimer',
+            color: 'negative'
+          }
+        }).onOk(() => {
+          logoutFirebase().then(() => {
+            this.$router.push({ name: 'login' })
+          })
+        })
+      }
       logoutFirebase().then(() => {
         this.$router.push({ name: 'login' })
       })

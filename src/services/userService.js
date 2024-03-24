@@ -1,6 +1,6 @@
 import { auth } from 'src/boot/firebase'
 import { LocalStorage } from 'quasar'
-import { DEFAULT_NUMBER_OF_SERIES, DEFAULT_REST_TIME } from 'src/helpers/signupHelper'
+import { DEFAULT_NUMBER_OF_SERIES, DEFAULT_REST_TIME, USER_GUEST_UID } from 'src/helpers/userHelper'
 import { createData, initData, removeData, updateData } from './firebaseService'
 import { LOCALSTORAGE_DB_USER } from 'src/helpers/databaseHelper'
 
@@ -41,19 +41,29 @@ export async function addUser(userUid, payload, username) {
 
 export async function updateUser(payload, userUid = null) {
   if (!userUid) {
-    userUid = auth.currentUser.uid
+    userUid = auth.currentUser ? auth.currentUser.uid : getUser().uid
   }
   const newData = {
     ...payload,
     updatedAt: new Date().toISOString()
   }
-  updateData('users/' + userUid, newData)
+  const user = getUser()
+  if (user.uid === USER_GUEST_UID) {
+    LocalStorage.set(LOCALSTORAGE_DB_USER, {
+      ...user,
+      ...newData
+    })
+  } else {
+    await updateData('users/' + userUid, newData)
+  }
 
   return newData
 }
 
 export async function deleteUser() {
-  await removeData('users/' + auth.currentUser.uid)
+  if (getUser().uid !== USER_GUEST_UID) {
+    await removeData('users/' + auth.currentUser.uid)
+  }
   LocalStorage.remove(LOCALSTORAGE_DB_USER)
 }
 

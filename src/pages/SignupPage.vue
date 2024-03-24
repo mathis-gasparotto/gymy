@@ -97,7 +97,7 @@
         type="number"
         inputmode="numeric"
         v-model="form.defaultNumberOfSeries"
-        min="0"
+        min="1"
         :rules="[
           (val) => (val !== null && val !== '') || 'Veuillez remplir ce champ',
           (val) => val >= 1 || 'Veuillez renseigner une valeur positif supérieur à 0',
@@ -160,7 +160,7 @@
 import { signup } from 'src/services/authService'
 import translate from '../helpers/translatting'
 import { openURL } from 'quasar'
-import { DEFAULT_NUMBER_OF_SERIES, DEFAULT_REST_TIME } from 'src/helpers/signupHelper'
+import { DEFAULT_NUMBER_OF_SERIES, DEFAULT_REST_TIME } from 'src/helpers/userHelper'
 import { errorNotify, successNotify } from 'src/helpers/notifyHelper'
 import GymyHeader from 'src/components/GymyHeader.vue'
 import formatting from 'src/helpers/formatting'

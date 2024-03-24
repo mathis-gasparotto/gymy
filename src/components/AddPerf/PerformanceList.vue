@@ -215,13 +215,11 @@ export default {
         ok: {
           label: 'Supprimer',
           color: 'negative',
-          unelevated: true,
           loading: deleteLoading
         },
         cancel: {
           label: 'Annuler',
-          color: 'primary',
-          unelevated: true
+          color: 'primary'
         }
       })
         .onOk(() => {
