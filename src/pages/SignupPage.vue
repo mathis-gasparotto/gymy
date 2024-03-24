@@ -14,7 +14,7 @@
         v-model="form.username"
         lazy-rules
         :rules="[
-          (val) => val.trim().length > 3 || 'Veullez renseigner minimum 4 caractères'
+          (val) => val.trim().length > 3 || 'Veuillez renseigner minimum 4 caractères'
         ]"
         hide-bottom-space
       ></q-input>
@@ -31,7 +31,7 @@
         lazy-rules
         :rules="[
           (val, rules) =>
-            rules.email(val) || 'Veullez rensigner une addresse email valide'
+            rules.email(val) || 'Veuillez renseigner une adresse email valide'
         ]"
         hide-bottom-space
       ></q-input>
@@ -48,10 +48,10 @@
         hint="8 caractères minimum, une majuscule, une minuscule, un chiffre et un caractère spécial"
         hide-hint
         :rules="[
-          (val) => val.trim().length > 0 || 'Veullez remplir ce champ',
+          (val) => val.trim().length > 0 || 'Veuillez remplir ce champ',
           (val) =>
             /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W]).{8,}/g.test(val) ||
-            'Veullez renseigner un mot de passe contetant un caractère spécial, une majuscule, une minuscule et un chiffre, et d\'au moins 8 caractères'
+            'Veuillez renseigner un mot de passe contetant un caractère spécial, une majuscule, une minuscule et un chiffre, et d\'au moins 8 caractères'
         ]"
         hide-bottom-space
       >
@@ -75,7 +75,7 @@
         v-model="form.confirmPassword"
         lazy-rules
         :rules="[
-          (val) => val.trim().length > 0 || 'Veullez remplir ce champ',
+          (val) => val.trim().length > 0 || 'Veuillez remplir ce champ',
           (val) =>
             val === form.password || 'Veuillez confirmer votre mot de passe'
         ]"
@@ -99,8 +99,8 @@
         v-model="form.defaultNumberOfSeries"
         min="0"
         :rules="[
-          (val) => (val !== null && val !== '') || 'Veullez remplir ce champ',
-          (val) => val >= 1 || 'Veullez renseigner une valeur positif supérieur à 0',
+          (val) => (val !== null && val !== '') || 'Veuillez remplir ce champ',
+          (val) => val >= 1 || 'Veuillez renseigner une valeur positif supérieur à 0',
         ]"
         label="Nombre de séries par défaut*"
         lazy-rules
@@ -114,8 +114,8 @@
         type="text"
         v-model="form.restTime"
         :rules="[
-          (val) => /^-?[\d]?[\d]:[0-5]\d$/.test(val) || 'Veullez renseigner une durée valide',
-          (val) => (val !== null && val !== '') || 'Veullez remplir ce champ',
+          (val) => /^-?[\d]?[\d]:[0-5]\d$/.test(val) || 'Veuillez renseigner une durée valide',
+          (val) => (val !== null && val !== '') || 'Veuillez remplir ce champ',
         ]"
         hint="Format : 00:00"
         label="Temps de repos*"

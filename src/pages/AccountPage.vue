@@ -39,7 +39,7 @@
       <q-btn @click="showEditDefaultNumberOfSeries = true" color="primary" class="w-content q-mt-lg">Modifier le nombre de séries par défaut</q-btn>
       <q-btn @click="showEditRestTime = true" color="primary" class="w-content q-mt-lg">Modifier le temps de repos</q-btn>
       <q-btn @click="logout" color="negative" class="w-content q-mt-xl">Se déconnecter</q-btn>
-      <q-btn @click="deleteAccount" color="negative" class="w-content q-mt-xl">Supprimer son compte</q-btn>
+      <q-btn @click="deleteAccount" color="negative" class="w-content q-mt-xl">Supprimer mon compte</q-btn>
       <q-dialog v-model="showEditDefaultNumberOfSeries">
         <q-card class="q-px-xs q-py-xs">
           <q-card-section align="center">
@@ -57,8 +57,8 @@
                 v-model="newDefaultNumberOfSeries"
                 min="0"
                 :rules="[
-                  (val) => (val !== null && val !== '') || 'Veullez remplir ce champ',
-                  (val) => val >= 1 || 'Veullez renseigner une valeur positif supérieur à 0',
+                  (val) => (val !== null && val !== '') || 'Veuillez remplir ce champ',
+                  (val) => val >= 1 || 'Veuillez renseigner une valeur positif supérieur à 0',
                 ]"
                 label="Nombre de séries par défaut"
                 lazy-rules
@@ -94,8 +94,8 @@
                 type="text"
                 v-model="newRestTime"
                 :rules="[
-                  (val) => /^-?[\d]?[\d]:[0-5]\d$/.test(val) || 'Veullez renseigner une durée valide',
-                  (val) => (val !== null && val !== '') || 'Veullez remplir ce champ',
+                  (val) => /^-?[\d]?[\d]:[0-5]\d$/.test(val) || 'Veuillez renseigner une durée valide',
+                  (val) => (val !== null && val !== '') || 'Veuillez remplir ce champ',
                 ]"
                 hint="Format : 00:00"
                 label="Temps de repos"
@@ -207,8 +207,8 @@ export default {
     deleteAccount() {
       let deleteLoading = false
       Dialog.create({
-        title: 'Supprimer son compte',
-        message: 'Êtes-vous sûr de vouloir supprimer votre compte ?',
+        title: 'Supprimer mon compte',
+        message: 'Toutes vos données seront perdues et cette action est irréversible.',
         cancel: {
           label: 'Annuler',
           color: 'primary',

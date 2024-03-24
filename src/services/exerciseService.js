@@ -27,11 +27,11 @@ export async function addExercise(workoutId, payload) {
   const id = uid()
 
   const exercises = getExercises(workoutId)
-  const lastOrder = exercises.length > 0 ? exercises[exercises.length - 1].position : 0
+  const lastPosition = exercises.length > 0 ? exercises[exercises.length - 1].position : 0
 
   payload = {
     ...payload,
-    position: lastOrder + 1
+    position: lastPosition + 1
   }
 
   await createData('users/' + auth.currentUser.uid + '/workouts/' + workoutId + '/exercises/' + id, payload)
@@ -88,7 +88,7 @@ export async function moveExercise(workoutId, id, newPosition) {
   }
 }
 
-export function deleteExercise(workoutId, id) {
+export async function deleteExercise(workoutId, id) {
   const exercises = getExercises(workoutId)
   const exerciseToDelete = exercises.find(e => e.id === id)
   if (!exerciseToDelete) throw new Error('Exercise not found')
@@ -101,5 +101,5 @@ export function deleteExercise(workoutId, id) {
       })
     })
   }
-  removeData('users/' + auth.currentUser.uid + '/workouts/' + workoutId + '/exercises/' + id)
+  await removeData('users/' + auth.currentUser.uid + '/workouts/' + workoutId + '/exercises/' + id)
 }
