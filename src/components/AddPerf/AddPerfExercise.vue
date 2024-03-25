@@ -20,8 +20,7 @@
           v-model="serie.value"
           min="0"
           :rules="[
-            (val) => (val !== null && val !== '') || 'Veuillez remplir ce champ',
-            (val) => val >= 0 || 'Veuillez renseigner une valeur positif',
+            (val) => (!val || val >= 0) || 'Veuillez renseigner une valeur positive',
           ]"
           label="Performance"
           lazy-rules
@@ -88,6 +87,7 @@ import { PERFORMANCE_TYPE_DEFAULT, PERFORMANCE_TYPE_BAR, PERFORMANCE_TYPE_ARM } 
 import { errorNotify, successNotify } from 'src/helpers/notifyHelper'
 import { addPerformance } from 'src/services/performanceService'
 import { getUser } from 'src/services/userService'
+import translatting from 'src/helpers/translatting'
 
 export default {
   name: 'AddPerfExercise',
@@ -129,8 +129,8 @@ export default {
   },
   computed: {
     inputsValid () {
-      const allDefault = this.series.every(serie => serie.type.value === PERFORMANCE_TYPE_DEFAULT)
-      const allNoDefault = this.series.every(serie => serie.type.value !== PERFORMANCE_TYPE_DEFAULT)
+      const allDefault = this.series.filter(serie => serie.value !== null && serie.value!== '').every(serie => serie.type.value === PERFORMANCE_TYPE_DEFAULT)
+      const allNoDefault = this.series.filter(serie => serie.value !== null && serie.value!== '').every(serie => serie.type.value !== PERFORMANCE_TYPE_DEFAULT)
       return this.series && this.series.filter(serie => serie.value !== null && serie.value !== '' && serie.value >= 0).length >= 1 && ((allDefault && !allNoDefault) || (allNoDefault && !allDefault)) && this.date
     }
   },
@@ -162,21 +162,17 @@ export default {
       if (!this.inputsValid) return
       const payload = {
         date: this.date,
-        series: this.series.map(serie => {
-          if (serie.value !== null && serie.value !== '' && serie.value >= 0) {
-            return {
-              value: Number(serie.value),
-              type: serie.type.value
-            }
-          }
-        })
+        series: this.series.map(serie => ({
+          value: serie.value,
+          type: serie.type.value
+        }))
       }
       addPerformance(this.workout.id, this.exercise.id, payload).then(() => {
         this.$emit('reloadPerformances')
         successNotify('Performance ajoutée')
         this.initInputs()
-      }).catch(() => {
-        errorNotify('Erreur lors de l\'ajout de la performance')
+      }).catch((err) => {
+        errorNotify(translatting().translateError(err, 'Erreur lors de l\'ajout de la performance'))
       })
     }
   }

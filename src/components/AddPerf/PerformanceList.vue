@@ -30,8 +30,7 @@
             v-model="serie.value"
             min="0"
             :rules="[
-              (val) => (val !== null && val !== '') || 'Veuillez remplir ce champ',
-              (val) => val >= 0 || 'Veuillez renseigner une valeur positif',
+              (val) => (!val || val >= 0) || 'Veuillez renseigner une valeur positive',
             ]"
             label="Performance"
             lazy-rules
@@ -102,6 +101,7 @@ import { errorNotify, successNotify } from 'src/helpers/notifyHelper'
 import { deletePerformance, getPerformances, updatePerformance } from 'src/services/performanceService'
 import formatting from 'src/helpers/formatting'
 import { Dialog } from 'quasar'
+import translatting from 'src/helpers/translatting'
 
 export default {
   name: 'PerformanceList',
@@ -148,8 +148,8 @@ export default {
   },
   computed: {
     inputsValid () {
-      const allDefault = this.performanceToEdit.series.every(serie => serie.type.value === PERFORMANCE_TYPE_DEFAULT)
-      const allNoDefault = this.performanceToEdit.series.every(serie => serie.type.value !== PERFORMANCE_TYPE_DEFAULT)
+      const allDefault = this.performanceToEdit.series.filter(serie => serie.value !== null && serie.value!== '').every(serie => serie.type.value === PERFORMANCE_TYPE_DEFAULT)
+      const allNoDefault = this.performanceToEdit.series.filter(serie => serie.value !== null && serie.value!== '').every(serie => serie.type.value !== PERFORMANCE_TYPE_DEFAULT)
       return this.performanceToEdit.series && this.performanceToEdit.series.filter(serie => serie.value !== null && serie.value !== '' && serie.value >= 0).length >= 1 && this.performanceToEdit.date && ((allDefault && !allNoDefault) || (allNoDefault && !allDefault))
     }
   },
@@ -169,7 +169,7 @@ export default {
       updatePerformance(this.workout.id, this.exercise.id, this.performanceToEdit.id, {
         series: this.performanceToEdit.series.map(serie => ({
           ...serie,
-          value: Number(serie.value),
+          value: serie.value,
           type: serie.type.value
         })),
         date: this.performanceToEdit.date
@@ -182,7 +182,7 @@ export default {
         })
         .catch((err) => {
           this.editLoading = false
-          errorNotify('Une erreur est survenue lors de l\'édition de votre performance')
+          errorNotify(translatting().translateError(err, 'Une erreur est survenue lors de l\'édition de votre performance'))
         })
     },
     addSerie () {
