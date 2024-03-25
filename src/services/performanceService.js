@@ -49,6 +49,8 @@ export function getPerformanceAverage(workoutId, exerciseId, id) {
 export async function addPerformance(workoutId, exerciseId, payload) {
   const id = uid()
 
+  payload = checkPerformance(payload)
+
   const user = getUser()
   if (user.uid === USER_GUEST_UID) {
     LocalStorage.set(LOCALSTORAGE_DB_USER, {
@@ -81,6 +83,10 @@ export async function addPerformance(workoutId, exerciseId, payload) {
 }
 
 export async function updatePerformance(workoutId, exerciseId, id, payload) {
+
+  payload = checkPerformance(payload)
+  console.log(payload)
+
   const user = getUser()
   if (user.uid === USER_GUEST_UID) {
     LocalStorage.set(LOCALSTORAGE_DB_USER, {
@@ -139,4 +145,23 @@ export async function deletePerformance(workoutId, exerciseId, id) {
   } else {
     await removeData('users/' + (auth.currentUser ? auth.currentUser.uid : getUser().uid) + '/workouts/' + workoutId + '/exercises/' + exerciseId + '/performances/' + id)
   }
+}
+
+function checkPerformance(payload) {
+  if (payload.series.length > 0) {
+    payload.series = payload.series.filter(serie => serie.value !== null && serie.value!== '' && serie.value >= 0)
+    payload.series = payload.series.map(serie => {
+      return {
+        ...serie,
+        value: Number(serie.value)
+      }
+    })
+    const allDefault = payload.series.every(serie => serie.type === PERFORMANCE_TYPE_DEFAULT)
+    const allNoDefault = payload.series.every(serie => serie.type !== PERFORMANCE_TYPE_DEFAULT)
+
+    if (!allNoDefault && !allDefault) {
+      throw new Error('All series must be of the same type')
+    }
+  }
+  return payload
 }

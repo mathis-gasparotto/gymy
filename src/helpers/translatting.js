@@ -64,86 +64,12 @@ export default () => ({
         return 'Une erreur est survenue'
     }
   },
-  translateDeleteBetError(error) {
+  translateError(error, defaultMessage = null) {
     switch (error.message) {
-      case 'Vous ne pouvez pas supprimer ce pari':
-        return error.message
+      case 'All series must be of the same type':
+        return 'Toutes les séries saisies doivent toutes être soit en type défaut, soit d\'un type autre que défaut'
       default:
-        return 'Une erreur est survenue'
-    }
-  },
-  translateAddBetError(error) {
-    switch (error.message) {
-      case 'Veuillez renseigner la récompense personnalisée et la mise en jeu personnalisée':
-        return error.message
-      case 'Veuillez renseigner au moins deux choix':
-        return error.message
-      case 'Vous ne pouvez pas ajouter plus de 20 choix':
-        return error.message
-      default:
-        return 'Une erreur est survenue'
-    }
-  },
-  translateAddParticipationError(error) {
-    switch (error.message) {
-      case 'Vous participez déjà à ce pari':
-        return error.message
-      case "Vous n'avez pas assez de jetons":
-        return error.message
-      default:
-        return 'Une erreur est survenue'
-    }
-  },
-  translateDeleteParticipationError(error) {
-    switch (error.message) {
-      case 'Vous participez déjà à ce pari':
-        return error.message
-      default:
-        return 'Une erreur est survenue'
-    }
-  },
-  translateSetWinnerChoiceError(error) {
-    switch (error.message) {
-      case 'Le choix ne correspond pas au pari':
-        return error.message
-      default:
-        return 'Une erreur est survenue'
-    }
-  },
-  translateUpdateBetPrivacyError(error) {
-    switch (error.message) {
-      case "Vous ne pouvez pas modifier ce pari, vous n'en êtes pas l'auteur":
-        return error.message
-      default:
-        return 'Une erreur est survenue lors de la modification du pari'
-    }
-  },
-  translateGetBetCategoriesError(error) {
-    switch (error.message) {
-      default:
-        return 'Une erreur est survenue lors du chargement des catégories'
-    }
-  },
-  translateGetHebdoBetsError(error) {
-    switch (error.message) {
-      default:
-        return 'Une erreur est survenue lors du chargement du pari hebdomadaire'
-    }
-  },
-  translateGetParticipationError(error) {
-    switch (error.message) {
-      default:
-        return 'Une erreur est survenue lors de la récupération de votre participation au pari'
-    }
-  },
-  translateUpdateParticipationError(error) {
-    switch (error.message) {
-      case 'Vous ne pouvez pas modifier votre participation à un pari annulé':
-        return error.message
-      case 'Vous ne pouvez pas modifier votre participation à un pari terminé':
-        return error.message
-      default:
-        return 'Une erreur est survenue lors de la modification de votre participation au pari'
+        return defaultMessage || 'Une erreur est survenue'
     }
   }
 })

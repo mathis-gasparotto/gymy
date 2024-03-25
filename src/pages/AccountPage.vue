@@ -58,7 +58,7 @@
                 min="1"
                 :rules="[
                   (val) => (val !== null && val !== '') || 'Veuillez remplir ce champ',
-                  (val) => val >= 1 || 'Veuillez renseigner une valeur positif supérieur à 0',
+                  (val) => val >= 1 || 'Veuillez renseigner une valeur positive supérieur à 0',
                 ]"
                 label="Nombre de séries par défaut"
                 lazy-rules
