@@ -150,3 +150,11 @@
   cursor: pointer;
   text-decoration: underline;
 }
+
+.relative {
+  position: relative;
+}
+
+.no-hover{
+  pointer-events: none;
+}
