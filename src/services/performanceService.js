@@ -85,7 +85,6 @@ export async function addPerformance(workoutId, exerciseId, payload) {
 export async function updatePerformance(workoutId, exerciseId, id, payload) {
 
   payload = checkPerformance(payload)
-  console.log(payload)
 
   const user = getUser()
   if (user.uid === USER_GUEST_UID) {
@@ -148,6 +147,10 @@ export async function deletePerformance(workoutId, exerciseId, id) {
 }
 
 function checkPerformance(payload) {
+  payload = {
+    ...payload,
+    comment: payload.comment && payload.comment.trim().length > 0 ? payload.comment.trim() : null
+  }
   if (payload.series.length > 0) {
     payload.series = payload.series.filter(serie => serie.value !== null && serie.value!== '' && serie.value >= 0)
     payload.series = payload.series.map(serie => {
