@@ -60,11 +60,24 @@
         <q-input
           rounded
           outlined
+          name="date"
           v-model="date"
           type="date"
           mask="date"
+          class="q-mb-sm"
           lazy-rules
           label="Date de la performance"
+          hide-bottom-space
+        >
+        </q-input>
+        <q-input
+          rounded
+          outlined
+          name="comment"
+          v-model="comment"
+          type="text"
+          lazy-rules
+          label="Commentaire (optionnel)"
           hide-bottom-space
         >
         </q-input>
@@ -120,6 +133,7 @@ export default {
         },
       ],
       date: null,
+      comment: null,
       defaultNumberOfSeries: null
     }
   },
@@ -165,7 +179,8 @@ export default {
         series: this.series.map(serie => ({
           value: serie.value,
           type: serie.type.value
-        }))
+        })),
+        comment: this.comment
       }
       addPerformance(this.workout.id, this.exercise.id, payload).then(() => {
         this.$emit('reloadPerformances')

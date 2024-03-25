@@ -6,8 +6,11 @@
           {{ formatting().dateToDisplay(performance.date) }}
         </div>
       </q-card-section>
-      <q-card-section>
+      <q-card-section class="column flex-center">
         {{ performance.series.map(serie => serie.value + (serie.type === PERFORMANCE_TYPE_DEFAULT ? '' : ' (' + getPerfromanceType(serie.type) + ')')).join(' - ') }}
+        <div v-if="performance.comment">
+          {{ performance.comment }}
+        </div>
       </q-card-section>
       <q-card-actions horizontal class="no-wrap q-pa-none">
         <q-btn flat round color="primary" icon="edit" @click.stop="edit(performance)" />
@@ -69,11 +72,24 @@
           <q-input
             rounded
             outlined
+            name="date"
             v-model="performanceToEdit.date"
             type="date"
             mask="date"
+            class="q-mb-sm"
             lazy-rules
             label="Date de la performance"
+            hide-bottom-space
+          >
+          </q-input>
+          <q-input
+            rounded
+            outlined
+            name="comment"
+            v-model="performanceToEdit.comment"
+            type="text"
+            lazy-rules
+            label="Commentaire (optionnel)"
             hide-bottom-space
           >
           </q-input>
@@ -172,7 +188,8 @@ export default {
           value: serie.value,
           type: serie.type.value
         })),
-        date: this.performanceToEdit.date
+        date: this.performanceToEdit.date,
+        comment: this.performanceToEdit.comment
       })
         .then(() => {
           this.$emit('reloadPerformances')
@@ -199,6 +216,7 @@ export default {
     },
     edit(performance) {
       this.performanceToEdit = {
+        comment: null,
         ...performance,
         series: performance.series.map(serie => ({ ...serie, type: this.types.find(type => type.value === serie.type)}))
       }
