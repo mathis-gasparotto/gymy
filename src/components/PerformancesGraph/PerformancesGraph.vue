@@ -8,6 +8,15 @@
             <LineComp :dataKeys="['date', 'value']" type="step" />
             <LabelsLayer :dataKeys="['date', 'value']" />
           </template>
+          <template #widgets>
+            <Tooltip
+              :config="{
+                value: { hide: true, label: 'poids/temps' },
+                comment: { label: 'commentaire' },
+                date: { hide: true, label: 'date' },
+              }"
+            />
+          </template>
         </Chart>
       </div>
     </template>
@@ -15,14 +24,21 @@
 </template>
 
 <script>
-import { Responsive, Chart, Grid, Line as LineComp } from 'vue3-charts'
+import { Responsive, Chart, Grid, Line as LineComp, Tooltip } from 'vue3-charts'
 import { getPerformanceAverage, getPerformances } from 'src/services/performanceService'
 import formatting from 'src/helpers/formatting'
 import LabelsLayer from './LabelsLayer.vue'
 
 export default {
   name: 'PerformancesGraph',
-  components: { Responsive, Chart, Grid, LineComp, LabelsLayer },
+  components: {
+    Responsive,
+    Chart,
+    Grid,
+    LineComp,
+    LabelsLayer,
+    Tooltip
+  },
   props: {
     workoutId: {
       type: String,
@@ -65,7 +81,8 @@ export default {
         const value = getPerformanceAverage(this.workoutId, this.exerciseId, perf.id)
         this.data.push({
           date: formatting().dateToDisplay(perf.date),
-          value: value
+          value: value,
+          comment: perf.comment
         })
       })
       this.showChart = true
