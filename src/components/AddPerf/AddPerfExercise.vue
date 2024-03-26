@@ -152,6 +152,7 @@ export default {
     initInputs() {
       this.series = []
       this.date = new Date().toISOString().substr(0, 10)
+      this.comment = null
       for (let i = 0; i < this.defaultNumberOfSeries; i++) {
         this.series.push({
           id: new Date().getTime() + i,
