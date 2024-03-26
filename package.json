@@ -11,7 +11,7 @@
     "test": "echo \"No test specified\" && exit 0",
     "dev": "npx quasar dev",
     "build:web": "npm run build:pwa",
-    "build:mobile": "npm run build:capacitor:android:ide",
+    "build:android": "npm run build:capacitor:android:ide",
     "build:pwa": "npx quasar build -m pwa",
     "build:capacitor:android": "npx quasar build -m capacitor -T android",
     "build:capacitor:android:ide": "npx quasar build -m capacitor -T android --ide"
