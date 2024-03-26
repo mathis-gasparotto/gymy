@@ -1,6 +1,6 @@
 <template>
   <q-page class="flex h-100 column page-content">
-    <q-linear-progress :value="(selectStep-1)/3" class="q-mb-lg q-mt-md w-80 q-mx-auto" />
+    <q-linear-progress :value="(selectStep-1)/2" class="q-mb-lg q-mt-md w-80 q-mx-auto" />
     <q-btn
       color="primary"
       label="Retour"
