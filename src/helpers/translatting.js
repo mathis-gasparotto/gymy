@@ -10,6 +10,12 @@ export default () => ({
         return defaultMessage || 'Une erreur est survenue'
     }
   },
+  translateResetPasswordError(error, defaultMessage = null) {
+    switch (error.message) {
+      default:
+        return defaultMessage || 'Une erreur est survenue'
+    }
+  },
   translateSigninError(error, defaultMessage = null) {
     switch (error.message) {
       case 'Firebase: Error (auth/wrong-password).':

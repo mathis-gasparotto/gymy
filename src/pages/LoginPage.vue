@@ -65,6 +65,11 @@
         </p>
       </q-card-section>
       <q-separator spaced size="2px" color="white" rounded />
+      <q-card-section class="text-center text-bold link">
+        <span @click="showForgotPassword">
+          Mot de passe oublié ?
+        </span>
+      </q-card-section>
       <q-card-section>
         <p class="q-my-xs text-center">
           Tu n'as pas de compte ?
@@ -77,11 +82,50 @@
         </p>
       </q-card-section>
     </q-card>
+    <q-dialog v-model="forgotPassword">
+      <q-card class="q-px-xs q-py-xs">
+        <q-card-section align="center">
+          <div class="text-h6 text-center">Réinitialisez votre mot de passe</div>
+        </q-card-section>
+        <q-card-section align="center" class="column">
+          <q-form ref="sendResetPasswordForm" @submit.prevent="sendResetPassword">
+            <q-input
+              name="email"
+              outlined
+              class="q-mb-md"
+              type="email"
+              inputmode="email"
+              v-model="emailForForgotPassword"
+              min="1"
+              :rules="[
+                (val, rules) =>
+                  rules.email(val) || 'Veuillez renseigner une adresse email valide'
+              ]"
+              label="Adresse mail"
+              lazy-rules
+              hide-bottom-space
+            >
+            </q-input>
+            <p v-if="resetPasswordNotif" :class="'text-' + resetPasswordNotif.variant" v-html="resetPasswordNotif.message"></p>
+            <q-btn
+              label="Envoyer"
+              icon="send"
+              type="submit"
+              :loading="sendResetPasswordLoading"
+              color="primary"
+            />
+          </q-form>
+        </q-card-section>
+        <q-card-actions align="center">
+          <q-btn label="Fermer" color="negative" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </div>
 </template>
 
 <script>
-import { login, loginAsGuest } from 'src/services/authService'
+import { login, loginAsGuest, sendResetPassword as sendResetPasswordFirebase } from 'src/services/authService'
 import translate from 'src/helpers/translatting'
 import { errorNotify, successNotify } from 'src/helpers/notifyHelper'
 import { Dialog } from 'quasar'
@@ -95,6 +139,10 @@ export default {
         password: ''
       },
       showPassword: false,
+      forgotPassword: false,
+      sendResetPasswordLoading: false,
+      emailForForgotPassword: '',
+      resetPasswordNotif: null,
       loading: false,
       validate: false
     }
@@ -119,6 +167,20 @@ export default {
     }
   },
   methods: {
+    showForgotPassword() {
+      this.forgotPassword = true
+      this.emailForForgotPassword = this.form.email
+    },
+    sendResetPassword() {
+      this.sendResetPasswordLoading = true
+      sendResetPasswordFirebase(this.emailForForgotPassword).then(() => {
+        this.resetPasswordNotif = { variant: 'positive', message: 'Un email de réinitialisation de mot de passe vous a été envoyé.<br/>Pensez à vérifier vos spams !' }
+        this.sendResetPasswordLoading = false
+      }).catch((err) => {
+        this.resetPasswordNotif = { variant: 'negative', message: translate().translateResetPasswordError(err, 'Une erreur est survenue lors de l\'envoi de l\'email de réinitialisation de mot de passe') }
+        this.sendResetPasswordLoading = false
+      })
+    },
     onsubmit() {
       this.loading = true
       this.$refs.loginForm.validate().then((success) => {
