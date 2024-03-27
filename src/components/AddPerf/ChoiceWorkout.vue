@@ -9,10 +9,16 @@
               <div class="text-h6 text-center">
                 {{ element.label }}
               </div>
+              <div v-if="element.comment" class="text-center">
+                {{ element.comment }}
+              </div>
             </q-card-section>
             <q-card-section class="q-pb-none lt-sm">
               <div class="text-h6 text-center">
                 {{ element.label }}
+              </div>
+              <div v-if="element.comment" class="text-center">
+                {{ element.comment }}
               </div>
             </q-card-section>
             <q-card-actions horizontal class="absolute-right gt-xs no-wrap">
@@ -123,7 +129,7 @@ export default {
     },
     onEditSubmit(payload) {
       this.editLoading = true
-      updateWorkout(payload.id, { label: payload.label })
+      updateWorkout(payload.id, payload)
         .then(() => {
           this.loadWorkouts()
           successNotify('Votre entrainement a bien été modifié')

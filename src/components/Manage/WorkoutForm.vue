@@ -15,6 +15,17 @@
       ]"
       hide-bottom-space
     ></q-input>
+    <q-input
+      name="comment"
+      rounded
+      outlined
+      label="Commentaire"
+      autofocus
+      class="q-mb-md"
+      type="text"
+      v-model="workoutForm.comment"
+      hide-bottom-space
+    ></q-input>
     <q-btn
       v-if="buttonIcon"
       color="primary"
@@ -64,7 +75,8 @@ export default {
     return {
       addLoading: false,
       workoutForm: {
-        label: ''
+        label: '',
+        comment: ''
       }
     }
   },
@@ -81,7 +93,12 @@ export default {
   methods: {
     onsubmit() {
       if (!this.formValid) return
-      this.$emit('submit', this.workoutForm)
+      const payload = {
+        ...this.workoutForm,
+        label: this.workoutForm.label.trim(),
+        comment: this.workoutForm.comment && this.workoutForm.comment.trim() !== '' ? this.workoutForm.comment.trim() : null
+      }
+      this.$emit('submit', payload)
     }
   }
 }
