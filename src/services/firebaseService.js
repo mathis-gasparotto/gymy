@@ -20,25 +20,19 @@ export function createData(refStr, data) {
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
   }
-  set(ref(db, refStr), data).catch((error) => {
-    throw new Error(error.message)
-  })
+  set(ref(db, refStr), data)
 }
 
-export function updateData(refStr, data) {
+export async function updateData(refStr, data) {
   data = {
     ...data,
     updatedAt: new Date().toISOString()
   }
-  update(ref(db, refStr), data).catch((error) => {
-    throw new Error(error.message)
-  })
+  return await update(ref(db, refStr), data)
 }
 
-export function removeData(refStr) {
-  remove(ref(db, refStr)).catch((error) => {
-    throw new Error(error.message)
-  })
+export async function removeData(refStr) {
+  return await remove(ref(db, refStr))
 }
 
 export function initData(refStr, localStorageKey, initValue = null) {
