@@ -5,7 +5,6 @@
       rounded
       outlined
       label="Nom de la planification"
-      autofocus
       class="q-mb-md"
       type="text"
       v-model="planForm.label"

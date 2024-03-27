@@ -15,7 +15,6 @@
         rounded
         outlined
         label="Adresse mail"
-        autofocus
         class="q-mb-md login-input"
         type="email"
         inputmode="email"

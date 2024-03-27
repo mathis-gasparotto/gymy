@@ -5,7 +5,6 @@
       rounded
       outlined
       label="Nom de l'entrainement"
-      autofocus
       class="q-mb-md"
       type="text"
       v-model="workoutForm.label"
@@ -20,7 +19,6 @@
       rounded
       outlined
       label="Commentaire"
-      autofocus
       class="q-mb-md"
       type="text"
       v-model="workoutForm.comment"

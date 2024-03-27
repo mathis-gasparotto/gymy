@@ -49,7 +49,6 @@
             <q-form ref="defaultNumberOfSeriesForm" @submit.prevent="submitDefaultNumberOfSeries">
               <q-input
                 name="defaultNumberOfSeries"
-                autofocus
                 outlined
                 class="q-mb-md"
                 type="number"
@@ -88,7 +87,6 @@
             <q-form ref="restTimeForm" @submit.prevent="submitRestTime">
               <q-input
                 name="restTime"
-                autofocus
                 outlined
                 class="q-mb-md"
                 type="text"
