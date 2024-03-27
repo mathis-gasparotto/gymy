@@ -4,7 +4,8 @@ import {
   signInWithEmailAndPassword,
   setPersistence,
   browserLocalPersistence,
-  deleteUser
+  deleteUser,
+  updatePassword as updatePasswordFirebase
 } from 'firebase/auth'
 import { app, auth, db } from 'src/boot/firebase'
 import { LocalStorage } from 'quasar'
@@ -87,4 +88,12 @@ export async function deleteAllUserData() {
   await deleteUser(auth.currentUser).catch((error) => {
     throw new Error(error.message)
   })
+}
+
+export async function updatePassword(oldPass, newPass) {
+  if (!auth.currentUser) return
+  const user = auth.currentUser
+  await signInWithEmailAndPassword(auth, user.email, oldPass)
+  await auth.currentUser.reload()
+  updatePasswordFirebase(user, newPass)
 }

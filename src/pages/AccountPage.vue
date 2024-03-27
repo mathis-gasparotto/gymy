@@ -38,6 +38,7 @@
       </div>
       <q-btn @click="showEditDefaultNumberOfSeries = true" color="primary" class="w-content q-mt-lg">Modifier le nombre de séries par défaut</q-btn>
       <q-btn @click="showEditRestTime = true" color="primary" class="w-content q-mt-lg">Modifier le temps de repos</q-btn>
+      <q-btn @click="() => {initUpdatePasswordForm(); showUpdatePassword = true}" color="primary" class="w-content q-mt-lg" v-if="user.uid !== USER_GUEST_UID">Modifier son mot de passe</q-btn>
       <q-btn @click="logout" color="negative" class="w-content q-mt-xl">Se déconnecter</q-btn>
       <q-btn @click="deleteAccount" color="negative" class="w-content q-mt-xl" v-if="user.uid !== USER_GUEST_UID">Supprimer mon compte</q-btn>
       <q-dialog v-model="showEditDefaultNumberOfSeries">
@@ -115,18 +116,114 @@
           </q-card-actions>
         </q-card>
       </q-dialog>
+      <q-dialog v-model="showUpdatePassword">
+        <q-card class="q-px-xs q-py-xs update-password-modal">
+          <q-card-section align="center">
+            <div class="text-h6 text-center">Modifier votre mot de passe</div>
+          </q-card-section>
+          <q-card-section align="center" class="column">
+            <q-form ref="updatePasswordForm" @submit.prevent="updatePassword">
+              <q-input
+                name="password"
+                outlined
+                label="Ancien mot de passe"
+                class="q-mb-md w-100"
+                bg-color="white"
+                :type="updatePasswordForm.current.show ? 'text' : 'password'"
+                v-model="updatePasswordForm.current.value"
+                lazy-rules
+                autofocus
+                :rules="[(val) => val.trim().length > 0 || 'Veullez remplir ce champ']"
+                hide-bottom-space
+              >
+                <template v-slot:append>
+                  <q-icon
+                    :name="updatePasswordForm.current.show ? 'visibility' : 'visibility_off'"
+                    class="cursor-pointer"
+                    color="primary"
+                    @click="updatePasswordForm.current.show = !updatePasswordForm.current.show"
+                  />
+                </template>
+              </q-input>
+              <q-input
+                name="password"
+                outlined
+                label="Nouveau mot de passe"
+                class="q-mb-md w-100"
+                bg-color="white"
+                :type="updatePasswordForm.new.show ? 'text' : 'password'"
+                v-model="updatePasswordForm.new.value"
+                lazy-rules
+                hint="8 caractères minimum, une majuscule, une minuscule, un chiffre et un caractère spécial"
+                hide-hint
+                :rules="[
+                  (val) => val.trim().length > 0 || 'Veullez remplir ce champ',
+                  (val) =>
+                    /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W]).{8,}/g.test(val) ||
+                    'Veullez renseigner un mot de passe contetant un caractère spécial, une majuscule, une minuscule et un chiffre, et d\'au moins 8 caractères'
+                ]"
+                hide-bottom-space
+              >
+                <template v-slot:append>
+                  <q-icon
+                    :name="updatePasswordForm.new.show ? 'visibility' : 'visibility_off'"
+                    class="cursor-pointer"
+                    color="primary"
+                    @click="updatePasswordForm.new.show = !updatePasswordForm.new.show"
+                  />
+                </template>
+              </q-input>
+              <q-input
+                name="confirmPassword"
+                outlined
+                label="Confirmation du nouveau mot de passe"
+                class="q-mb-md w-100"
+                bg-color="white"
+                :type="updatePasswordForm.confirmNew.show ? 'text' : 'password'"
+                v-model="updatePasswordForm.confirmNew.value"
+                lazy-rules
+                :rules="[
+                  (val) => val.trim().length > 0 || 'Veullez remplir ce champ',
+                  (val) => val === updatePasswordForm.new.value || 'Veuillez confirmer votre nouveau mot de passe'
+                ]"
+                hide-bottom-space
+              >
+                <template v-slot:append>
+                  <q-icon
+                    :name="updatePasswordForm.confirmNew.show ? 'visibility' : 'visibility_off'"
+                    class="cursor-pointer"
+                    color="primary"
+                    @click="updatePasswordForm.confirmNew.show = !updatePasswordForm.confirmNew.show"
+                  />
+                </template>
+              </q-input>
+              <q-btn
+                label="Enregistrer"
+                type="submit"
+                :disable="!updatePasswordValid"
+                :loading="updatePasswordLoading"
+                color="primary"
+              />
+            </q-form>
+          </q-card-section>
+          <q-card-actions align="center">
+            <q-btn label="Annuler" color="negative" v-close-popup />
+          </q-card-actions>
+        </q-card>
+      </q-dialog>
     </div>
   </q-page>
 </template>
 
 <script>
-import { deleteAllUserData, logout as logoutFirebase } from 'src/services/authService'
+import { deleteAllUserData, logout as logoutFirebase, updatePassword as updatePasswordFirebase } from 'src/services/authService'
 import GymyHeader from 'src/components/GymyHeader.vue'
 import { getUser, updateUser } from 'src/services/userService'
 import { errorNotify, successNotify } from 'src/helpers/notifyHelper'
 import { Dialog } from 'quasar'
 import formatting from 'src/helpers/formatting'
 import { USER_GUEST_UID } from 'src/helpers/userHelper'
+import translatting from 'src/helpers/translatting'
 
 export default {
   name: 'AccountPage',
@@ -148,7 +245,23 @@ export default {
       newRestTime: null,
       showEditRestTime: false,
       restTimeLoading: false,
-      newRestTimeValid: false
+      newRestTimeValid: false,
+      showUpdatePassword: false,
+      updatePasswordLoading: false,
+      updatePasswordForm: {
+        current: {
+          value: '',
+          show: false
+        },
+        new: {
+          value: '',
+          show: false
+        },
+        confirmNew: {
+          value: '',
+          show: false
+        }
+      }
     }
   },
   created() {
@@ -158,6 +271,9 @@ export default {
     newDefaultNumberOfSeriesValid() {
       return this.newDefaultNumberOfSeries !== null && this.newDefaultNumberOfSeries !== '' && this.newDefaultNumberOfSeries >= 1
     },
+    updatePasswordValid() {
+      return this.updatePasswordForm.current.value.trim().length > 0 && this.updatePasswordForm.new.value.trim().length > 0 && this.updatePasswordForm.confirmNew.value.trim().length > 0 && this.updatePasswordForm.new.value === this.updatePasswordForm.confirmNew.value
+    }
   },
   watch: {
     newRestTime() {
@@ -175,6 +291,35 @@ export default {
     }
   },
   methods: {
+    initUpdatePasswordForm() {
+      this.updatePasswordForm = {
+        current: {
+          value: '',
+          show: false
+        },
+        new: {
+          value: '',
+          show: false
+        },
+        confirmNew: {
+          value: '',
+          show: false
+        }
+      }
+    },
+    updatePassword () {
+      if (!this.updatePasswordValid) return
+      this.updatePasswordLoading = true
+      updatePasswordFirebase(this.updatePasswordForm.current.value.trim(), this.updatePasswordForm.new.value.trim()).then(() => {
+        successNotify('Votre mot de passe a bien été mis à jour')
+        this.initUpdatePasswordForm()
+        this.showUpdatePassword = false
+        this.updatePasswordLoading = false
+      }).catch((err) => {
+        errorNotify(translatting().translateUpdatePasswordError(err, 'Une erreur est survenue lors de la mise à jour de votre mot de passe'))
+        this.updatePasswordLoading = false
+      })
+    },
     loadUser() {
       this.user = getUser()
       this.newDefaultNumberOfSeries = this.user.defaultNumberOfSeries
@@ -260,5 +405,8 @@ export default {
 <styles scoped lang="scss">
 .account-info-line {
   gap: 10px;
+}
+.update-password-modal {
+  width: 500px;
 }
 </styles>
