@@ -7,11 +7,17 @@ import { USER_GUEST_UID } from 'src/helpers/userHelper'
 
 export async function retrieveData(refStr) {
   const dataRef = ref(db, refStr)
-  let data
-  await onValue(dataRef, (snapshot) => {
-    data = snapshot.val()
-  })
-  return data
+  return await get(dataRef)
+    .then((snapshot) => {
+      if (snapshot.exists()) {
+        return snapshot.val()
+      } else {
+        return null
+      }
+    })
+    .catch((error) => {
+      throw new Error(error)
+    })
 }
 
 export function createData(refStr, data) {
@@ -36,7 +42,7 @@ export async function removeData(refStr) {
 }
 
 export function initData(refStr, localStorageKey, initValue = null) {
-  if (getUser().uid ===  USER_GUEST_UID) return
+  if (getUser() && getUser().uid ===  USER_GUEST_UID) return
   const dataRef = ref(db, refStr)
   return onValue(dataRef, (snapshot) => {
     const data = snapshot.val()
