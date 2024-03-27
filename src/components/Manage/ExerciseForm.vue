@@ -5,7 +5,6 @@
       rounded
       outlined
       label="Nom de l'exercise"
-      autofocus
       class="q-mb-md"
       type="text"
       v-model="exerciseForm.label"

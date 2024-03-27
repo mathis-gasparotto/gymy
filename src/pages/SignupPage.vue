@@ -7,7 +7,6 @@
         rounded
         outlined
         label="Nom d'utilisateur*"
-        autofocus
         class="q-mb-md signup-input"
         bg-color="white"
         type="text"
