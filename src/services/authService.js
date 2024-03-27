@@ -5,7 +5,8 @@ import {
   setPersistence,
   browserLocalPersistence,
   deleteUser,
-  updatePassword as updatePasswordFirebase
+  updatePassword as updatePasswordFirebase,
+  sendPasswordResetEmail
 } from 'firebase/auth'
 import { app, auth, db } from 'src/boot/firebase'
 import { LocalStorage } from 'quasar'
@@ -96,4 +97,8 @@ export async function updatePassword(oldPass, newPass) {
   await signInWithEmailAndPassword(auth, user.email, oldPass)
   await auth.currentUser.reload()
   updatePasswordFirebase(user, newPass)
+}
+
+export async function sendResetPassword(email) {
+  return await sendPasswordResetEmail(auth, email)
 }
