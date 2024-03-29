@@ -1,5 +1,3 @@
-import { child } from 'firebase/database'
-
 const routes = [
   {
     path: '/welcome',
@@ -8,12 +6,12 @@ const routes = [
       {
         path: 'login',
         name: 'login',
-        component: () => import('pages/LoginPage.vue')
+        component: () => import('pages/Welcome/LoginPage.vue')
       },
       {
         path: 'signup',
         name: 'signup',
-        component: () => import('pages/SignupPage.vue')
+        component: () => import('pages/Welcome/SignupPage.vue')
       }
     ]
   },
@@ -33,17 +31,17 @@ const routes = [
           {
             path: '',
             name: 'workouts',
-            component: () => import('pages/WorkoutsPage.vue')
+            component: () => import('pages/Workouts/WorkoutsPage.vue')
           },
           {
             path: ':workoutId',
             name: 'exercises',
-            component: () => import('pages/ExercisesPage.vue')
+            component: () => import('pages/Workouts/ExercisesPage.vue')
           },
           {
             path: ':workoutId/exercises/:exerciseId',
             name: 'performances',
-            component: () => import('pages/PerformancesPage.vue')
+            component: () => import('pages/Workouts/PerformancesPage.vue')
           }
         ]
       },
@@ -59,12 +57,12 @@ const routes = [
           {
             path: '',
             name: 'plans',
-            component: () => import('pages/PlansPage.vue')
+            component: () => import('pages/Plans/PlansPage.vue')
           },
           {
             path: ':planId',
             name: 'plan',
-            component: () => import('pages/PlanPage.vue')
+            component: () => import('pages/Plans/PlanPage.vue')
           }
         ]
       },

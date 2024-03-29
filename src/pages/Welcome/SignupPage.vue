@@ -157,7 +157,7 @@
 
 <script>
 import { signup } from 'src/services/authService'
-import translate from '../helpers/translatting'
+import translate from 'src/helpers/translatting'
 import { openURL } from 'quasar'
 import { DEFAULT_NUMBER_OF_SERIES, DEFAULT_REST_TIME } from 'src/helpers/userHelper'
 import { errorNotify, successNotify } from 'src/helpers/notifyHelper'
