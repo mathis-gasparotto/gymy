@@ -12,8 +12,8 @@
             <Tooltip
               :config="{
                 value: { hide: true, label: 'poids/temps' },
+                date: { label: 'date' },
                 comment: { label: 'commentaire' },
-                date: { hide: true, label: 'date' },
               }"
             />
           </template>
