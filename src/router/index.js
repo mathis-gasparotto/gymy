@@ -2,6 +2,9 @@ import { route } from 'quasar/wrappers'
 import { createRouter, createMemoryHistory, createWebHistory, createWebHashHistory } from 'vue-router'
 import routes from './routes'
 import { LocalStorage } from 'quasar'
+import { getWorkout } from 'src/services/workoutService'
+import { getPlan } from 'src/services/planService'
+import { getExercise } from 'src/services/exerciseService'
 
 /*
  * If not building with SSR mode, you can
@@ -42,6 +45,42 @@ export default route(function (/* { store, ssrContext } */) {
         name:
           from.name === 'login' || to.name === 'signup' ? 'index' : from.name,
       })
+    } else if (to.name === 'exercises') {
+      const workout = getWorkout(to.params.workoutId)
+      if (!workout) {
+        return next({
+          name: 'workouts',
+        })
+      } else {
+        return next()
+      }
+    } else if (to.name === 'performances') {
+      const workout = getWorkout(to.params.workoutId)
+      if (!workout) {
+        return next({
+          name: 'workouts',
+        })
+      }
+      const exercise = getExercise(to.params.workoutId, to.params.exerciseId)
+      if (!exercise) {
+        return next({
+          name: 'exercises',
+          params: {
+            workoutId: to.params.workoutId,
+          },
+        })
+      } else {
+        return next()
+      }
+    } else if (to.name === 'plan') {
+      const plan = getPlan(to.params.planId)
+      if (!plan) {
+        return next({
+          name: 'plans',
+        })
+      } else {
+        return next()
+      }
     } else {
       return next()
     }

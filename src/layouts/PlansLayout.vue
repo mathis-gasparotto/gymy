@@ -1,6 +1,6 @@
 <template>
-  <q-page class="flex h-100 column page-content">
-    <q-linear-progress :value="selectStep/2" class="q-mb-lg q-mt-md w-80 q-mx-auto" />
+  <q-page class="h-100 column page-content">
+    <q-linear-progress :value="selectStep/1" class="q-mb-lg q-mt-md w-80 q-mx-auto" />
     <q-btn
       color="primary"
       label="Retour"
@@ -16,14 +16,12 @@
 <script>
 
 export default {
-  name: 'WorkoutsLayout',
+  name: 'PlansLayout',
   computed: {
     selectStep() {
       switch (this.$route.name) {
-        case 'exercises':
+        case 'plan':
           return 1
-        case 'performances':
-          return 2
         default:
           return 0
       }
@@ -32,10 +30,8 @@ export default {
   methods: {
     goBack() {
       switch (this.$route.name) {
-        case 'exercises':
-          return this.$router.push({name: 'workouts'})
-        case 'performances':
-          return this.$router.push({name: 'exercises', params: {workoutId: this.$route.params.workoutId}})
+        case 'plan':
+          return this.$router.push({name: 'plans'})
       }
     }
   }

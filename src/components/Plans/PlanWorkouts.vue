@@ -1,6 +1,6 @@
 <template>
   <div class="flex column">
-    <GymyHeader :text="plan.label + ' - Entrainements'" />
+    <GymyHeader :text="'Entrainements<br/>' + plan.label" />
     <div v-if="planWorkouts && planWorkouts.length > 0">
       <div class="relative">
         <div class="plan-template absolute">
@@ -75,7 +75,7 @@
 import { getWorkouts } from 'src/services/workoutService'
 import { getPlanWorkouts, updatePlan } from 'src/services/planService'
 import GymyHeader from 'src/components/GymyHeader.vue'
-import { errorNotify, successNotify } from 'src/helpers/notifyHelper'
+import { errorNotify } from 'src/helpers/notifyHelper'
 import draggable from 'vuedraggable'
 import { uid } from 'quasar'
 
