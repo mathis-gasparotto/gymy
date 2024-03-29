@@ -8,6 +8,7 @@
 import AddPerfExercise from 'src/components/AddPerf/AddPerfExercise.vue'
 import PerformanceList from 'src/components/AddPerf/PerformanceList.vue'
 import PerformancesGraph from 'src/components/PerformancesGraph/PerformancesGraph.vue'
+import { errorNotify } from 'src/helpers/notifyHelper'
 import { getExercise } from 'src/services/exerciseService'
 import { getWorkout } from 'src/services/workoutService'
 

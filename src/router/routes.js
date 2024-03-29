@@ -54,8 +54,19 @@ const routes = [
       },
       {
         path: '/plans',
-        name: 'plans',
-        component: () => import('pages/PlansPage.vue')
+        component: () => import('layouts/PlansLayout.vue'),
+        children: [
+          {
+            path: '',
+            name: 'plans',
+            component: () => import('pages/PlansPage.vue')
+          },
+          {
+            path: ':planId',
+            name: 'plan',
+            component: () => import('pages/PlanPage.vue')
+          }
+        ]
       },
     ]
   },
