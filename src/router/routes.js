@@ -28,20 +28,24 @@ const routes = [
       },
       {
         path: '/workouts',
-        name: 'workouts',
-        component: () => import('pages/WorkoutsPage.vue'),
-        // children: [
-        //   {
-        //     path: ':workoutId',
-        //     name: 'exercises',
-        //     component: () => import('pages/ExercisesPage.vue')
-        //   },
-        //   {
-        //     path: ':workoutId/exercises/:exerciseId',
-        //     name: 'performances',
-        //     component: () => import('pages/PerformancesPage.vue')
-        //   }
-        // ]
+        component: () => import('layouts/WorkoutsLayout.vue'),
+        children: [
+          {
+            path: '',
+            name: 'workouts',
+            component: () => import('pages/WorkoutsPage.vue')
+          },
+          {
+            path: ':workoutId',
+            name: 'exercises',
+            component: () => import('pages/ExercisesPage.vue')
+          },
+          {
+            path: ':workoutId/exercises/:exerciseId',
+            name: 'performances',
+            component: () => import('pages/PerformancesPage.vue')
+          }
+        ]
       },
       {
         path: '/account',
