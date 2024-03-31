@@ -201,7 +201,7 @@ export default {
     continueAsGuest() {
       Dialog.create({
         title: 'Continuer en tant qu\'invité',
-        message: '<b>Tu ne pourra pas retouver tes données depuis un autre appareil, et si tu désinstalles l\'application, tu perdras toutes tes données.</b><br/>Tu ne pourra pas non plus te connecter plus tard pour sauvegarder tes données en ligne.',
+        message: 'Tu ne pourra pas retouver tes données depuis un autre appareil, et si tu désinstalles l\'application, tu perdras toutes tes données.<br/><b>Tu pourra te connecter plus tard pour sauvegarder tes données en ligne et y accéder depuis un autre appareil 😉</b>',
         html: true,
         ok: {
           label: 'Continuer',

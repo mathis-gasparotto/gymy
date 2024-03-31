@@ -91,6 +91,7 @@
       </q-input>
       <q-input
         name="defaultNumberOfSeries"
+        rounded
         outlined
         class="q-mb-md signup-input"
         type="number"
@@ -108,6 +109,7 @@
       </q-input>
       <q-input
         name="restTime"
+        rounded
         outlined
         class="q-mb-md signup-input"
         type="text"

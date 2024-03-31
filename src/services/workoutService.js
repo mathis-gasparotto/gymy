@@ -42,7 +42,11 @@ export async function addWorkout(payload) {
       ...user,
       workouts: {
         ...user.workouts,
-        [id]: payload
+        [id]: {
+          ...payload,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        }
       }
     })
   } else {
@@ -64,7 +68,8 @@ export async function updateWorkout(id, payload) {
         ...user.workouts,
         [id]: {
           ...user.workouts[id],
-          ...payload
+          ...payload,
+          updatedAt: new Date().toISOString()
         }
       }
     })

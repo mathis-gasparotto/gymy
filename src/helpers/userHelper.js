@@ -7,3 +7,5 @@ export const USER_GUEST = {
   restTime: DEFAULT_REST_TIME,
   username: 'Invité'
 }
+
+export const DEFAULT_USERNAME = 'guest_' + new Date().getTime() + Math.floor(Math.random() * 100)

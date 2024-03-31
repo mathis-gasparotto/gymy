@@ -16,7 +16,7 @@ import { LOCALSTORAGE_DATABASES, LOCALSTORAGE_DB_USER } from 'src/helpers/databa
 import { ref, update } from 'firebase/database'
 import { USER_GUEST, USER_GUEST_UID } from 'src/helpers/userHelper'
 
-export async function signup(email, password, username, defaultNumberOfSeries, restTime) {
+export async function signup(email, password, username, defaultNumberOfSeries, restTime, payload = {}) {
   const users = await retrieveData('users')
   if (users && Object.values(users).find((u) => u.username == username)) {
     throw new Error("Nom d'utilisateur déjà utilisé")
@@ -24,7 +24,8 @@ export async function signup(email, password, username, defaultNumberOfSeries, r
   await setPersistence(auth, browserLocalPersistence)
   const user = await createUserWithEmailAndPassword(auth, email.trim(), password.trim())
     .then(async (userCredential) => {
-      let payload = {
+      payload = {
+        ...payload,
         email: userCredential.user.email,
         defaultNumberOfSeries,
         restTime,
