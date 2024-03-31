@@ -20,12 +20,9 @@ export async function addUser(userUid, payload, username) {
   let userPayload = {
     uid: userUid,
     username,
-    email: payload.email,
+    ...payload,
     defaultNumberOfSeries: payload.defaultNumberOfSeries ? payload.defaultNumberOfSeries : DEFAULT_NUMBER_OF_SERIES,
-    restTime: payload.restTime ? payload.restTime : DEFAULT_REST_TIME,
-    createdAt: payload.createdAt,
-    updatedAt: payload.updatedAt,
-    lastLoginAt: payload.lastLoginAt
+    restTime: payload.restTime ? payload.restTime : DEFAULT_REST_TIME
   }
 
   const toReturn = {
@@ -51,7 +48,8 @@ export async function updateUser(payload, userUid = null) {
   if (user.uid === USER_GUEST_UID) {
     LocalStorage.set(LOCALSTORAGE_DB_USER, {
       ...user,
-      ...newData
+      ...newData,
+      updatedAt: new Date().toISOString()
     })
   } else {
     await updateData('users/' + userUid, newData)

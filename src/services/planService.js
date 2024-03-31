@@ -64,7 +64,11 @@ export async function addPlan(payload) {
       ...user,
       plans: {
         ...user.plans,
-        [id]: payload
+        [id]: {
+          ...payload,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        }
       }
     })
   } else {
@@ -86,7 +90,8 @@ export async function updatePlan(id, payload) {
         ...user.plans,
         [id]: {
           ...user.plans[id],
-          ...payload
+          ...payload,
+          updatedAt: new Date().toISOString()
         }
       }
     })

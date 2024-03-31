@@ -39,6 +39,7 @@
       <q-btn @click="showEditDefaultNumberOfSeries = true" color="primary" class="w-content q-mt-lg">Modifier le nombre de séries par défaut</q-btn>
       <q-btn @click="showEditRestTime = true" color="primary" class="w-content q-mt-lg">Modifier le temps de repos</q-btn>
       <q-btn @click="() => {initUpdatePasswordForm(); showUpdatePassword = true}" color="primary" class="w-content q-mt-lg" v-if="user.uid !== USER_GUEST_UID">Modifier son mot de passe</q-btn>
+      <q-btn @click="() => {initSignupAsGuestForm(); showSignupAsGuest = true}" color="primary" class="w-content q-mt-lg" v-if="user.uid === USER_GUEST_UID">S'inscrire</q-btn>
       <q-btn @click="logout" color="negative" class="w-content q-mt-xl">Se déconnecter</q-btn>
       <q-btn @click="deleteAccount" color="negative" class="w-content q-mt-xl" v-if="user.uid !== USER_GUEST_UID">Supprimer mon compte</q-btn>
       <q-dialog v-model="showEditDefaultNumberOfSeries">
@@ -79,10 +80,155 @@
           </q-card-actions>
         </q-card>
       </q-dialog>
+      <q-dialog v-model="showSignupAsGuest">
+        <q-card class="q-pa-md w-100">
+          <q-card-section align="center">
+            <div class="text-h6 text-center">S'inscrire</div>
+          </q-card-section>
+          <q-card-section align="center" class="column">
+            <q-form ref="signupAsGuestForm" @submit.prevent="submitSignupAsGuest">
+              <q-input
+                name="username"
+                rounded
+                outlined
+                label="Nom d'utilisateur*"
+                class="q-mb-md"
+                type="text"
+                v-model="signupAsGuestForm.username"
+                lazy-rules
+                :rules="[
+                  (val) => val.trim().length > 3 || 'Veuillez renseigner minimum 4 caractères'
+                ]"
+                hide-bottom-space
+              ></q-input>
+              <q-input
+                name="email"
+                rounded
+                outlined
+                label="Addresse email*"
+                class="q-mb-md"
+                type="email"
+                inputmode="email"
+                v-model="signupAsGuestForm.email"
+                lazy-rules
+                :rules="[
+                  (val, rules) =>
+                    rules.email(val) || 'Veuillez renseigner une adresse email valide'
+                ]"
+                hide-bottom-space
+              ></q-input>
+              <q-input
+                name="password"
+                rounded
+                outlined
+                label="Mot de passe*"
+                class="q-mb-md"
+                :type="signupAsGuestForm.password.show ? 'text' : 'password'"
+                v-model="signupAsGuestForm.password.value"
+                lazy-rules
+                hint="8 caractères minimum, une majuscule, une minuscule, un chiffre et un caractère spécial"
+                hide-hint
+                :rules="[
+                  (val) => val.trim().length > 0 || 'Veuillez remplir ce champ',
+                  (val) =>
+                    /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W]).{8,}/g.test(val) ||
+                    'Veuillez renseigner un mot de passe contetant un caractère spécial, une majuscule, une minuscule et un chiffre, et d\'au moins 8 caractères'
+                ]"
+                hide-bottom-space
+              >
+                <template v-slot:append>
+                  <q-icon
+                    :name="signupAsGuestForm.password.show ? 'visibility' : 'visibility_off'"
+                    class="cursor-pointer"
+                    color="primary"
+                    @click="signupAsGuestForm.password.show = !signupAsGuestForm.password.show"
+                  />
+                </template>
+              </q-input>
+              <q-input
+                name="confirmPassword"
+                rounded
+                outlined
+                label="Confirmation du mot de passe*"
+                class="q-mb-md"
+                :type="signupAsGuestForm.confirmPassword.show ? 'text' : 'password'"
+                v-model="signupAsGuestForm.confirmPassword.value"
+                lazy-rules
+                :rules="[
+                  (val) => val.trim().length > 0 || 'Veuillez remplir ce champ',
+                  (val) =>
+                    val === signupAsGuestForm.password.value || 'Veuillez confirmer votre mot de passe'
+                ]"
+                hide-bottom-space
+              >
+                <template v-slot:append>
+                  <q-icon
+                    :name="signupAsGuestForm.confirmPassword.show ? 'visibility' : 'visibility_off'"
+                    class="cursor-pointer"
+                    color="primary"
+                    @click="signupAsGuestForm.confirmPassword.show = !signupAsGuestForm.confirmPassword.show"
+                  />
+                </template>
+              </q-input>
+              <q-input
+                name="defaultNumberOfSeries"
+                rounded
+                outlined
+                class="q-mb-md"
+                type="number"
+                inputmode="numeric"
+                v-model="signupAsGuestForm.defaultNumberOfSeries"
+                min="1"
+                :rules="[
+                  (val) => (val !== null && val !== '') || 'Veuillez remplir ce champ',
+                  (val) => val >= 1 || 'Veuillez renseigner une valeur positive supérieur à 0',
+                ]"
+                label="Nombre de séries par défaut*"
+                lazy-rules
+                hide-bottom-space
+              >
+              </q-input>
+              <q-input
+                name="restTime"
+                rounded
+                outlined
+                class="q-mb-md"
+                type="text"
+                v-model="signupAsGuestForm.restTime"
+                :rules="[
+                  (val) => /^-?[\d]?[\d]:[0-5]\d$/.test(val) || 'Veuillez renseigner une durée valide',
+                  (val) => (val !== null && val !== '') || 'Veuillez remplir ce champ',
+                ]"
+                hint="Format : 00:00"
+                label="Temps de repos*"
+                lazy-rules
+                hide-bottom-space
+              >
+              </q-input>
+
+              <p class="flex-end text-right signup-text">*Champ obligatoire</p>
+
+              <q-btn
+                label="S'inscrire"
+                type="submit"
+                :class="`form-btn btn btn-${signupAsGuestValid ? 'primary' : 'disabled'}`"
+                :disable="!signupAsGuestValid"
+                rounded
+                :loading="signupAsGuestLoading"
+                padding="sm 50px"
+                size="20px"
+              />
+            </q-form>
+          </q-card-section>
+          <q-card-actions align="center">
+            <q-btn label="Annuler" color="negative" v-close-popup />
+          </q-card-actions>
+        </q-card>
+      </q-dialog>
       <q-dialog v-model="showEditRestTime">
         <q-card class="q-px-xs q-py-xs">
           <q-card-section align="center">
-            <div class="text-h6 text-center">Modifier votre nombre de série par défaut</div>
+            <div class="text-h6 text-center">Modifier votre temps de repos</div>
           </q-card-section>
           <q-card-section align="center" class="column">
             <q-form ref="restTimeForm" @submit.prevent="submitRestTime">
@@ -216,7 +362,7 @@
 </template>
 
 <script>
-import { deleteAllUserData, logout as logoutFirebase, updatePassword as updatePasswordFirebase } from 'src/services/authService'
+import { deleteAllUserData, logout, logout as logoutFirebase, signup, updatePassword as updatePasswordFirebase } from 'src/services/authService'
 import GymyHeader from 'src/components/GymyHeader.vue'
 import { getUser, updateUser } from 'src/services/userService'
 import { errorNotify, successNotify } from 'src/helpers/notifyHelper'
@@ -224,6 +370,7 @@ import { Dialog } from 'quasar'
 import formatting from 'src/helpers/formatting'
 import { USER_GUEST_UID } from 'src/helpers/userHelper'
 import translatting from 'src/helpers/translatting'
+import { formatUserLocalStorageDatabase } from 'src/helpers/databaseHelper'
 
 export default {
   name: 'AccountPage',
@@ -261,7 +408,24 @@ export default {
           value: '',
           show: false
         }
-      }
+      },
+      showSignupAsGuest: false,
+      signupAsGuestLoading: false,
+      signupAsGuestForm: {
+        username: '',
+        email: '',
+        password: {
+          value: '',
+          show: false
+        },
+        confirmPassword: {
+          value: '',
+          show: false
+        },
+        defaultNumberOfSeries: null,
+        restTime: null
+      },
+      signupAsGuestValid: true
     }
   },
   created() {
@@ -291,6 +455,40 @@ export default {
     }
   },
   methods: {
+    submitSignupAsGuest() {
+      this.$refs.signupAsGuestForm.validate().then((res) => {
+        this.signupAsGuestValid = res
+        if (res) {
+          this.signupAsGuestLoading = true
+          const currentUserData = formatUserLocalStorageDatabase(getUser())
+          signup(this.signupAsGuestForm.email.trim(), this.signupAsGuestForm.password.value.trim(), this.signupAsGuestForm.username.trim(), this.signupAsGuestForm.defaultNumberOfSeries, this.signupAsGuestForm.restTime, currentUserData).then(() => {
+            logout().then(() => {
+              this.$router.push({ name: 'login' })
+            })
+            successNotify('Votre inscription a bien été prise en compte')
+          }).catch((err) => {
+            errorNotify(translatting().translateSignupError(err, 'Une erreur est survenue lors de votre inscription'))
+            this.signupAsGuestLoading = false
+          })
+        }
+      })
+    },
+    initSignupAsGuestForm() {
+      this.signupAsGuestForm = {
+        username: '',
+        email: '',
+        password: {
+          value: '',
+          show: false
+        },
+        confirmPassword: {
+          value: '',
+          show: false
+        },
+        defaultNumberOfSeries: this.user.defaultNumberOfSeries,
+        restTime: this.user.restTime
+      }
+    },
     initUpdatePasswordForm() {
       this.updatePasswordForm = {
         current: {
@@ -385,7 +583,7 @@ export default {
             color: 'primary'
           },
           ok: {
-            label: 'Supprimer',
+            label: 'se déconnecter',
             color: 'negative'
           }
         }).onOk(() => {

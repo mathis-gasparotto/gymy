@@ -65,7 +65,11 @@ export async function addPerformance(workoutId, exerciseId, payload) {
               ...user.workouts[workoutId].exercises[exerciseId],
               performances: {
                 ...user.workouts[workoutId].exercises[exerciseId].performances,
-                [id]: payload
+                [id]: {
+                  ...payload,
+                  createdAt: new Date().toISOString(),
+                  updatedAt: new Date().toISOString()
+                }
               }
             }
           }
@@ -102,7 +106,8 @@ export async function updatePerformance(workoutId, exerciseId, id, payload) {
                 ...user.workouts[workoutId].exercises[exerciseId].performances,
                 [id]: {
                   ...user.workouts[workoutId].exercises[exerciseId].performances[id],
-                  ...payload
+                  ...payload,
+                  updatedAt: new Date().toISOString()
                 }
               }
             }
