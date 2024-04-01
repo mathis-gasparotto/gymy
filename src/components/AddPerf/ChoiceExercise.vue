@@ -113,7 +113,6 @@ export default {
       const newPosition = e.newIndex + 1
       moveExercise(this.workout.id, e.item['_underlying_vm_'].id, newPosition)
         .catch((err) => {
-          console.log(err)
           errorNotify('Une erreur est survenue lors du déplacement de votre exercise')
           this.loadExercises()
         })

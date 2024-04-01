@@ -1,8 +1,9 @@
 import { auth } from 'src/boot/firebase'
 import { LocalStorage } from 'quasar'
 import { DEFAULT_NUMBER_OF_SERIES, DEFAULT_REST_TIME, USER_GUEST_UID } from 'src/helpers/userHelper'
-import { createData, initData, removeData, retrieveData, updateData } from './firebaseService'
+import { createData, initData, removeData, removeListenner, retrieveData, updateData } from './firebaseService'
 import { LOCALSTORAGE_DB_USER } from 'src/helpers/databaseHelper'
+import { onAuthStateChanged, signInWithEmailAndPassword, verifyBeforeUpdateEmail } from 'firebase/auth'
 
 export function getUser() {
   return LocalStorage.getItem(LOCALSTORAGE_DB_USER)
@@ -65,18 +66,20 @@ export async function deleteUser() {
   LocalStorage.remove(LOCALSTORAGE_DB_USER)
 }
 
-export function initUser(uid = null) {
-  if (uid) {
-    return initData('users/' + uid, LOCALSTORAGE_DB_USER)
-  }
-  const user = getUser()
-  if (user && user.uid) {
-    return initData('users/' + user.uid, LOCALSTORAGE_DB_USER)
-  } else if (auth.currentUser) {
-    return initData('users/' + auth.currentUser.uid, LOCALSTORAGE_DB_USER)
-  } else {
-    return LocalStorage.remove(LOCALSTORAGE_DB_USER)
-  }
+export function initUser() {
+  onAuthStateChanged(auth, async (user) => {
+    if (user && user.uid) {
+      initData('users/' + user.uid, LOCALSTORAGE_DB_USER)
+      if (retrieveData('users/' + user.uid).email !== user.email) {
+        return updateUser({ email: user.email })
+      }
+      return
+    } else {
+      const localUser = getUser()
+      if (localUser) removeListenner('users/' + localUser.uid)
+      return LocalStorage.remove(LOCALSTORAGE_DB_USER)
+    }
+  })
 }
 
 export async function checkUsername(username) {
@@ -89,4 +92,9 @@ export async function checkUsername(username) {
 export async function updateUsername(username) {
   await checkUsername(username)
   return updateUser({ username })
+}
+
+export async function updateEmail(password, email) {
+  const userCredential = await signInWithEmailAndPassword(auth, getUser().email, password)
+  return verifyBeforeUpdateEmail(userCredential.user, email)
 }

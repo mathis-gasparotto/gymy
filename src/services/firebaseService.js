@@ -60,7 +60,7 @@ export function removeListenner(refStr) {
 export function registerUser(email, password) {
   return createUserWithEmailAndPassword(auth, email, password)
   .then((userCredential) => {
-    initUser(userCredential.user.uid)
+    initUser()
     return userCredential.user
   })
   .catch((error) => {
@@ -71,7 +71,7 @@ export function registerUser(email, password) {
 export function loginUser(email, password) {
   return signInWithEmailAndPassword(auth, email, password)
   .then((userCredential) => {
-    initUser(userCredential.user.uid)
+    initUser()
     return userCredential.user
   })
   .catch((error) => {
