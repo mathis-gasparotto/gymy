@@ -1,13 +1,13 @@
 <template>
   <div>
-    <q-btn @click="show = true" color="primary" class="w-content">Modifier le nombre de séries par défaut</q-btn>
+    <q-btn @click="show = true" color="primary" class="w-content">Modifier mon nombre de séries par défaut</q-btn>
     <q-dialog v-model="show">
       <q-card class="q-px-xs q-py-xs">
         <q-card-section align="center">
           <div class="text-h6 text-center">Modifier votre nombre de série par défaut</div>
         </q-card-section>
         <q-card-section align="center" class="column">
-          <q-form ref="defaultNumberOfSeriesForm" @submit.prevent="submitDefaultNumberOfSeries">
+          <q-form ref="defaultNumberOfSeriesForm" @submit.prevent="submit">
             <q-input
               name="defaultNumberOfSeries"
               outlined
@@ -28,7 +28,7 @@
             <q-btn
               label="Enregistrer"
               type="submit"
-              :disable="!newDefaultNumberOfSeriesValid"
+              :disable="!isValid"
               :loading="loading"
               color="primary"
             />
@@ -66,13 +66,13 @@ export default {
     this.newDefaultNumberOfSeries = this.initData
   },
   computed: {
-    newDefaultNumberOfSeriesValid() {
+    isValid() {
       return this.newDefaultNumberOfSeries !== null && this.newDefaultNumberOfSeries !== '' && this.newDefaultNumberOfSeries >= 1
     }
   },
   methods: {
-    submitDefaultNumberOfSeries() {
-      if (!this.newDefaultNumberOfSeriesValid) return
+    submit() {
+      if (!this.isValid) return
       this.loading = true
       updateUser({ defaultNumberOfSeries: Number(this.newDefaultNumberOfSeries) }).then(() => {
         this.$emit('reloadUser')

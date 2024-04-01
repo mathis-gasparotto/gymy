@@ -38,6 +38,7 @@
       </div>
       <EditDefaultNumberOfSeries :initData="user.defaultNumberOfSeries" @reloadUser="loadUser" class="q-mt-lg" />
       <EditRestTime :initData="user.restTime" @reloadUser="loadUser" class="q-mt-lg" />
+      <EditUsername v-if="user.uid !== USER_GUEST_UID" @reloadUser="loadUser" class="q-mt-lg" />
       <UpdatePassword v-if="user.uid !== USER_GUEST_UID" class="q-mt-lg" />
       <SignupAsGuest :user="user" v-if="user.uid === USER_GUEST_UID" class="q-mt-lg" />
       <q-btn @click="logout" color="negative" class="w-content q-mt-xl">Se déconnecter</q-btn>
@@ -58,6 +59,7 @@ import EditDefaultNumberOfSeries from 'src/components/Account/EditDefaultNumberO
 import EditRestTime from 'src/components/Account/EditRestTime.vue'
 import UpdatePassword from 'src/components/Account/UpdatePassword.vue'
 import SignupAsGuest from 'src/components/Account/SignupAsGuest.vue'
+import EditUsername from 'src/components/Account/EditUsername.vue'
 
 export default {
   name: 'AccountPage',
@@ -66,7 +68,8 @@ export default {
     EditDefaultNumberOfSeries,
     EditRestTime,
     UpdatePassword,
-    SignupAsGuest
+    SignupAsGuest,
+    EditUsername
   },
   setup() {
     return {

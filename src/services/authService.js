@@ -10,17 +10,14 @@ import {
 } from 'firebase/auth'
 import { app, auth, db } from 'src/boot/firebase'
 import { LocalStorage } from 'quasar'
-import { addUser, getUser, initUser } from './userService'
-import { initData, removeData, removeListenner, retrieveData, updateData } from './firebaseService'
+import { addUser, checkUsername, getUser, initUser } from './userService'
+import { initData, removeData, removeListenner } from './firebaseService'
 import { LOCALSTORAGE_DATABASES, LOCALSTORAGE_DB_USER } from 'src/helpers/databaseHelper'
 import { ref, update } from 'firebase/database'
 import { USER_GUEST, USER_GUEST_UID } from 'src/helpers/userHelper'
 
 export async function signup(email, password, username, defaultNumberOfSeries, restTime, payload = {}) {
-  const users = await retrieveData('users')
-  if (users && Object.values(users).find((u) => u.username == username)) {
-    throw new Error("Nom d'utilisateur déjà utilisé")
-  }
+  await checkUsername(username)
   await setPersistence(auth, browserLocalPersistence)
   const user = await createUserWithEmailAndPassword(auth, email.trim(), password.trim())
     .then(async (userCredential) => {

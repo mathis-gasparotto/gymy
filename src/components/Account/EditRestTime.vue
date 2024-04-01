@@ -1,13 +1,13 @@
 <template>
   <div>
-    <q-btn @click="show = true" color="primary" class="w-content">Modifier le temps de repos</q-btn>
+    <q-btn @click="show = true" color="primary" class="w-content">Modifier mon temps de repos</q-btn>
     <q-dialog v-model="show">
       <q-card class="q-px-xs q-py-xs">
         <q-card-section align="center">
           <div class="text-h6 text-center">Modifier votre temps de repos</div>
         </q-card-section>
         <q-card-section align="center" class="column">
-          <q-form ref="restTimeForm" @submit.prevent="submitRestTime">
+          <q-form ref="restTimeForm" @submit.prevent="submit">
             <q-input
               name="restTime"
               outlined
@@ -82,7 +82,7 @@ export default {
     }
   },
   methods: {
-    submitRestTime() {
+    submit() {
       if (!this.isValid) return
       this.loading = true
       updateUser({ restTime: formatting().durationFormatFromString(this.newRestTime) }).then(() => {
