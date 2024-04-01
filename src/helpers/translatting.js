@@ -72,6 +72,13 @@ export default () => ({
         return defaultMessage || 'Une erreur est survenue'
     }
   },
+  translateUpdateUsername(error, defaultMessage = null) {
+    if (error.message === "Nom d'utilisateur déjà utilisé") return error.message
+    switch (error.message) {
+      default:
+        return defaultMessage || 'Une erreur est survenue'
+    }
+  },
   translateError(error, defaultMessage = null) {
     switch (error.message) {
       case 'All series must be of the same type':

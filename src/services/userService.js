@@ -1,7 +1,7 @@
 import { auth } from 'src/boot/firebase'
 import { LocalStorage } from 'quasar'
 import { DEFAULT_NUMBER_OF_SERIES, DEFAULT_REST_TIME, USER_GUEST_UID } from 'src/helpers/userHelper'
-import { createData, initData, removeData, updateData } from './firebaseService'
+import { createData, initData, removeData, retrieveData, updateData } from './firebaseService'
 import { LOCALSTORAGE_DB_USER } from 'src/helpers/databaseHelper'
 
 export function getUser() {
@@ -77,4 +77,16 @@ export function initUser(uid = null) {
   } else {
     return LocalStorage.remove(LOCALSTORAGE_DB_USER)
   }
+}
+
+export async function checkUsername(username) {
+  const users = await retrieveData('users')
+  if (users && Object.values(users).find((u) => u.username == username)) {
+    throw new Error("Nom d'utilisateur déjà utilisé")
+  }
+}
+
+export async function updateUsername(username) {
+  await checkUsername(username)
+  return updateUser({ username })
 }
