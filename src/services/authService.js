@@ -6,7 +6,8 @@ import {
   browserLocalPersistence,
   deleteUser,
   updatePassword as updatePasswordFirebase,
-  sendPasswordResetEmail
+  sendPasswordResetEmail,
+  sendEmailVerification
 } from 'firebase/auth'
 import { app, auth, db } from 'src/boot/firebase'
 import { LocalStorage } from 'quasar'
@@ -21,6 +22,7 @@ export async function signup(email, password, username, defaultNumberOfSeries, r
   await setPersistence(auth, browserLocalPersistence)
   const user = await createUserWithEmailAndPassword(auth, email.trim(), password.trim())
     .then(async (userCredential) => {
+      sendEmailVerification(userCredential.user)
       payload = {
         ...payload,
         email: userCredential.user.email,
@@ -51,7 +53,7 @@ export async function login(email, password) {
   return signInWithEmailAndPassword(auth, email, password)
     .then(async (userCredential) => {
       await LocalStorage.set(LOCALSTORAGE_DB_USER, userCredential.user)
-      await initUser(userCredential.user.uid)
+      await initUser()
       await update(ref(db, 'users/' + userCredential.user.uid), {lastLoginAt: new Date().toISOString()}).catch((error) => {
         throw new Error(error.message)
       })
@@ -70,7 +72,7 @@ export async function logout() {
   return auth
     .signOut()
     .then(() => {
-      removeListenner('users/' + LocalStorage.getItem(LOCALSTORAGE_DB_USER).uid)
+      // removeListenner('users/' + LocalStorage.getItem(LOCALSTORAGE_DB_USER).uid)
       LOCALSTORAGE_DATABASES.forEach((db) => {
         LocalStorage.remove(db)
       })
