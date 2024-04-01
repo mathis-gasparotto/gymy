@@ -12,7 +12,7 @@ import {
 import { app, auth, db } from 'src/boot/firebase'
 import { LocalStorage } from 'quasar'
 import { addUser, checkUsername, getUser, initUser } from './userService'
-import { initData, removeData, removeListenner } from './firebaseService'
+import { removeData } from './firebaseService'
 import { LOCALSTORAGE_DATABASES, LOCALSTORAGE_DB_USER } from 'src/helpers/databaseHelper'
 import { ref, update } from 'firebase/database'
 import { USER_GUEST, USER_GUEST_UID } from 'src/helpers/userHelper'
@@ -28,12 +28,10 @@ export async function signup(email, password, username, defaultNumberOfSeries, r
         email: userCredential.user.email,
         defaultNumberOfSeries,
         restTime,
-        lastLoginAt: new Date().toISOString()
+        lastLoginAt: new Date().toISOString(),
+        active: false
       }
       return addUser(userCredential.user.uid, payload, username.trim())
-        .then((res) => {
-          initData('users/' + userCredential.user.uid, LOCALSTORAGE_DB_USER)
-        })
         .catch((error) => {
           deleteAllUserData(userCredential.user.uid)
           throw new Error(error.message)
@@ -52,6 +50,11 @@ export async function login(email, password) {
   await setPersistence(auth, browserLocalPersistence)
   return signInWithEmailAndPassword(auth, email, password)
     .then(async (userCredential) => {
+      if (!userCredential.user.emailVerified) {
+        throw new Error('Votre email n\'a pas encore été vérifiée')
+      } else {
+        update(ref(db, 'users/' + userCredential.user.uid), {active: true})
+      }
       await LocalStorage.set(LOCALSTORAGE_DB_USER, userCredential.user)
       await initUser()
       await update(ref(db, 'users/' + userCredential.user.uid), {lastLoginAt: new Date().toISOString()}).catch((error) => {

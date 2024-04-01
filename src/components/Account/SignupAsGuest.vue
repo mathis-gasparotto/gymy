@@ -187,7 +187,7 @@ export default {
   },
   methods: {
     submit() {
-      this.$refs.updatePasswordForm.validate().then((res) => {
+      this.$refs.signupAsGuestForm.validate().then((res) => {
         this.isValid = res
         if (res) {
           this.loading = true
@@ -196,7 +196,7 @@ export default {
             logout().then(() => {
               this.$router.push({ name: 'login' })
             })
-            successNotify('Votre inscription a bien été prise en compte')
+            successNotify('Un email de confirmation vous a été envoyé. Veuillez vérifier votre boîte de réception pour activer votre compte.')
           }).catch((err) => {
             errorNotify(translatting().translateSignupError(err, 'Une erreur est survenue lors de votre inscription'))
             this.loading = false

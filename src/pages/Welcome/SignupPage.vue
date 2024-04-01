@@ -235,8 +235,8 @@ export default {
             // this.form.newsletterCheck
           )
             .then(() => {
-              this.$router.push({ name: 'index' })
-              successNotify('Vous êtes désormais inscrit')
+              this.$router.push({ name: 'login' })
+              successNotify('Un email de confirmation vous a été envoyé. Veuillez vérifier votre boîte de réception pour activer votre compte.')
             })
             .catch((err) => {
               this.loading = false

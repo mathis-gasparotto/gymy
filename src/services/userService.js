@@ -66,11 +66,18 @@ export async function deleteUser() {
   LocalStorage.remove(LOCALSTORAGE_DB_USER)
 }
 
-export function initUser() {
+export async function initUser() {
+  if (getUser().uid === USER_GUEST_UID) return
   onAuthStateChanged(auth, async (user) => {
+    if (user && !user.emailVerified) {
+      const localUser = getUser()
+      if (localUser) removeListenner('users/' + localUser.uid)
+      return LocalStorage.remove(LOCALSTORAGE_DB_USER)
+    }
     if (user && user.uid) {
       initData('users/' + user.uid, LOCALSTORAGE_DB_USER)
-      if (retrieveData('users/' + user.uid).email !== user.email) {
+      const dbUser = await retrieveData('users/' + user.uid)
+      if (dbUser && dbUser.email !== user.email) {
         return updateUser({ email: user.email })
       }
       return
