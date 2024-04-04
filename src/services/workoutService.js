@@ -50,7 +50,7 @@ export async function addWorkout(payload) {
       }
     })
   } else {
-    await createData('users/' + (auth.currentUser ? auth.currentUser.uid : getUser().uid) + '/workouts/' + id, payload)
+    await createData('users/' + auth.currentUser.uid + '/workouts/' + id, payload)
   }
 
   return {
@@ -74,7 +74,7 @@ export async function updateWorkout(id, payload) {
       }
     })
   } else {
-    await updateData('users/' + (auth.currentUser ? auth.currentUser.uid : getUser().uid) + '/workouts/' + id, payload)
+    await updateData('users/' + auth.currentUser.uid + '/workouts/' + id, payload)
   }
 
   return payload
@@ -146,6 +146,6 @@ export async function deleteWorkout(id) {
       }, {})
     })
   } else {
-    await removeData('users/' + (auth.currentUser ? auth.currentUser.uid : getUser().uid) + '/workouts/' + id)
+    await removeData('users/' + auth.currentUser.uid + '/workouts/' + id)
   }
 }
