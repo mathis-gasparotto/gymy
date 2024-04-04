@@ -27,7 +27,7 @@ export default () => ({
         return 'Identifiants incorrects'
       case 'Firebase: Access to this account has been temporarily disabled due to many failed login attempts. You can immediately restore it by resetting your password or you can try again later. (auth/too-many-requests).':
         return 'Vous avez effectué trop de tentative, veuillez attendre un moment avant de réessayer'
-      case 'Votre email n\'a pas encore été vérifiée':
+      case 'Votre email n\'a pas encore été vérifiée. Un email de vérification vous a été de nouveau envoyé.':
         return error.message
       default:
         return defaultMessage || 'Une erreur est survenue'
