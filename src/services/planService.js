@@ -72,7 +72,7 @@ export async function addPlan(payload) {
       }
     })
   } else {
-    await createData('users/' + (auth.currentUser ? auth.currentUser.uid : getUser().uid) + '/plans/' + id, payload)
+    await createData('users/' + auth.currentUser.uid + '/plans/' + id, payload)
   }
 
   return {
@@ -96,7 +96,7 @@ export async function updatePlan(id, payload) {
       }
     })
   } else {
-    await updateData('users/' + (auth.currentUser ? auth.currentUser.uid : getUser().uid) + '/plans/' + id, payload)
+    await updateData('users/' + auth.currentUser.uid + '/plans/' + id, payload)
   }
 
   return payload
@@ -168,6 +168,6 @@ export async function deletePlan(id) {
       }, {})
     })
   } else {
-    await removeData('users/' + (auth.currentUser ? auth.currentUser.uid : getUser().uid) + '/plans/' + id)
+    await removeData('users/' + auth.currentUser.uid + '/plans/' + id)
   }
 }
