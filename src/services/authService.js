@@ -51,8 +51,12 @@ export async function login(email, password) {
   return signInWithEmailAndPassword(auth, email, password)
     .then(async (userCredential) => {
       if (!userCredential.user.emailVerified) {
-        sendEmailVerification(userCredential.user)
-        throw new Error('Votre email n\'a pas encore été vérifiée')
+        try {
+          await sendEmailVerification(userCredential.user)
+        } catch (error) {
+          throw new Error('Votre email n\'a pas encore été vérifiée. Un email de vérification vous a été déjà été envoyé.')
+        }
+        throw new Error('Votre email n\'a pas encore été vérifiée. Un email de vérification vous a de nouveau été envoyé.')
       } else {
         update(ref(db, 'users/' + userCredential.user.uid), {active: true})
       }
