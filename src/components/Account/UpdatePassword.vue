@@ -151,14 +151,20 @@ export default {
     submit () {
       if (!this.isValid) return
       this.loading = true
-      updatePassword(this.form.current.value.trim(), this.form.new.value.trim()).then(() => {
-        successNotify('Votre mot de passe a bien été mis à jour')
-        this.init()
-        this.show = false
-        this.loading = false
-      }).catch((err) => {
-        errorNotify(translatting().translateUpdatePasswordError(err, 'Une erreur est survenue lors de la mise à jour de votre mot de passe'))
-        this.loading = false
+      this.$refs.updatePasswordForm.validate().then((success) => {
+        if (success) {
+          updatePassword(this.form.current.value.trim(), this.form.new.value.trim()).then(() => {
+            successNotify('Votre mot de passe a bien été mis à jour')
+            this.init()
+            this.show = false
+            this.loading = false
+          }).catch((err) => {
+            errorNotify(translatting().translateUpdatePasswordError(err, 'Une erreur est survenue lors de la mise à jour de votre mot de passe'))
+            this.loading = false
+          })
+        } else {
+          this.loading = false
+        }
       })
     }
   }

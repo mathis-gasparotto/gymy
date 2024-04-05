@@ -59,7 +59,7 @@ export async function addPlan(payload) {
   }
 
   const user = getUser()
-  if (user.uid === USER_GUEST_UID) {
+  if (user && user.uid === USER_GUEST_UID) {
     LocalStorage.set(LOCALSTORAGE_DB_USER, {
       ...user,
       plans: {
@@ -83,7 +83,7 @@ export async function addPlan(payload) {
 
 export async function updatePlan(id, payload) {
   const user = getUser()
-  if (user.uid === USER_GUEST_UID) {
+  if (user && user.uid === USER_GUEST_UID) {
     LocalStorage.set(LOCALSTORAGE_DB_USER, {
       ...user,
       plans: {
@@ -157,7 +157,7 @@ export async function deletePlan(id) {
   }
 
   const user = getUser()
-  if (user.uid === USER_GUEST_UID) {
+  if (user && user.uid === USER_GUEST_UID) {
     LocalStorage.set(LOCALSTORAGE_DB_USER, {
       ...user,
       plans: Object.keys(user.plans).reduce((acc, key) => {

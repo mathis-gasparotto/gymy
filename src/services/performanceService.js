@@ -52,7 +52,7 @@ export async function addPerformance(workoutId, exerciseId, payload) {
   payload = checkPerformance(payload)
 
   const user = getUser()
-  if (user.uid === USER_GUEST_UID) {
+  if (user && user.uid === USER_GUEST_UID) {
     LocalStorage.set(LOCALSTORAGE_DB_USER, {
       ...user,
       workouts: {
@@ -91,7 +91,7 @@ export async function updatePerformance(workoutId, exerciseId, id, payload) {
   payload = checkPerformance(payload)
 
   const user = getUser()
-  if (user.uid === USER_GUEST_UID) {
+  if (user && user.uid === USER_GUEST_UID) {
     LocalStorage.set(LOCALSTORAGE_DB_USER, {
       ...user,
       workouts: {
@@ -124,7 +124,7 @@ export async function updatePerformance(workoutId, exerciseId, id, payload) {
 
 export async function deletePerformance(workoutId, exerciseId, id) {
   const user = getUser()
-  if (user.uid === USER_GUEST_UID) {
+  if (user && user.uid === USER_GUEST_UID) {
     LocalStorage.set(LOCALSTORAGE_DB_USER, {
       ...user,
       workouts: {

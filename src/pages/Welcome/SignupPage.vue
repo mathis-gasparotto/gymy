@@ -195,57 +195,30 @@ export default {
       siteUrl: process.env.SITE_URL
     }
   },
-  watch: {
-    form: {
-      handler() {
-        if (
-          // this.form.minAgeCheck &&
-          this.form.username &&
-          this.form.email &&
-          this.form.password &&
-          this.form.confirmPassword &&
-          this.form.defaultNumberOfSeries &&
-          this.form.restTime
-        ) {
-          this.$refs.signupForm.validate().then((success) => {
-            if (success) {
-              this.validate = true
-            } else {
-              this.validate = false
-            }
-          })
-        } else {
-          this.validate = false
-        }
-      },
-      deep: true
-    }
-  },
   methods: {
-    onsubmit() {
+    async onsubmit() {
       this.loading = true
-      this.$refs.signupForm.validate().then((success) => {
-        if (success) {
-          signup(
-            this.form.email.trim(),
-            this.form.password.trim(),
-            this.form.username.trim(),
-            this.form.defaultNumberOfSeries,
-            formatting().durationFormatFromString(this.form.restTime)
-            // this.form.newsletterCheck
-          )
-            .then(() => {
-              this.$router.push({ name: 'login' })
-              successNotify('Un email de confirmation vous a été envoyé. Veuillez vérifier votre boîte de réception pour activer votre compte.')
-            })
-            .catch((err) => {
-              this.loading = false
-              errorNotify(translate().translateSignupError(err))
-            })
-        } else {
-          this.loading = false
-        }
-      })
+      this.validate = await this.$refs.signupForm.validate()
+      if (this.validate) {
+        signup(
+          this.form.email.trim(),
+          this.form.password.trim(),
+          this.form.username.trim(),
+          this.form.defaultNumberOfSeries,
+          formatting().durationFormatFromString(this.form.restTime)
+          // this.form.newsletterCheck
+        )
+          .then(() => {
+            this.$router.push({ name: 'login' })
+            successNotify('Un email de confirmation vous a été envoyé. Veuillez vérifier votre boîte de réception pour activer votre compte.')
+          })
+          .catch((err) => {
+            this.loading = false
+            errorNotify(translate().translateSignupError(err))
+          })
+      } else {
+        this.loading = false
+      }
     }
   }
 }
