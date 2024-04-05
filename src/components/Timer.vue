@@ -13,7 +13,7 @@
         <span class="separator"></span>
       </span>
       <div class="number-container">
-        <span class="number-title">SECONDS</span>
+        <span class="number-title">SECONDES</span>
         <div class="digital-container">
           <span class="single-digit">{{ seconds > 9 ? Math.floor(seconds/10) : 0 }}</span>
           <span class="single-digit">{{ seconds % 10 }}</span>
