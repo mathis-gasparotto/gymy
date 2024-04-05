@@ -38,21 +38,21 @@ export async function addUser(userUid, payload, username) {
 }
 
 export async function updateUser(payload, userUid = null) {
-  if (!userUid) {
-    userUid = auth.currentUser ? auth.currentUser.uid : getUser().uid
-  }
   const newData = {
     ...payload,
     updatedAt: new Date().toISOString()
   }
-  const user = getUser()
-  if (user.uid === USER_GUEST_UID) {
+  const localUser = getUser()
+  if (localUser && localUser.uid === USER_GUEST_UID) {
     LocalStorage.set(LOCALSTORAGE_DB_USER, {
       ...user,
       ...newData,
       updatedAt: new Date().toISOString()
     })
   } else {
+    if (!userUid) {
+      userUid = auth.currentUser.uid
+    }
     await updateData('users/' + userUid, newData)
   }
 
@@ -60,14 +60,15 @@ export async function updateUser(payload, userUid = null) {
 }
 
 export async function deleteUser() {
-  if (getUser().uid !== USER_GUEST_UID) {
+  const localUser = getUser()
+  if (localUser && localUser.uid !== USER_GUEST_UID) {
     await removeData('users/' + auth.currentUser.uid)
   }
   LocalStorage.remove(LOCALSTORAGE_DB_USER)
 }
 
 export async function initUser() {
-  if (getUser().uid === USER_GUEST_UID) return
+  if (getUser() && getUser().uid === USER_GUEST_UID) return
   onAuthStateChanged(auth, async (user) => {
     if (user && !user.emailVerified) {
       const localUser = getUser()

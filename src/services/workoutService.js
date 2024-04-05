@@ -37,7 +37,7 @@ export async function addWorkout(payload) {
   }
 
   const user = getUser()
-  if (user.uid === USER_GUEST_UID) {
+  if (user && user.uid === USER_GUEST_UID) {
     LocalStorage.set(LOCALSTORAGE_DB_USER, {
       ...user,
       workouts: {
@@ -61,7 +61,7 @@ export async function addWorkout(payload) {
 
 export async function updateWorkout(id, payload) {
   const user = getUser()
-  if (user.uid === USER_GUEST_UID) {
+  if (user && user.uid === USER_GUEST_UID) {
     LocalStorage.set(LOCALSTORAGE_DB_USER, {
       ...user,
       workouts: {
@@ -135,7 +135,7 @@ export async function deleteWorkout(id) {
   }
 
   const user = getUser()
-  if (user.uid === USER_GUEST_UID) {
+  if (user && user.uid === USER_GUEST_UID) {
     LocalStorage.set(LOCALSTORAGE_DB_USER, {
       ...user,
       workouts: Object.keys(user.workouts).reduce((acc, key) => {
