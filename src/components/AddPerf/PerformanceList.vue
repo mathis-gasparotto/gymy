@@ -97,7 +97,7 @@
         <q-card-section align="center" class="q-pt-none q-mb-sm">
           <q-btn
             color="primary"
-            label="Modifier"
+            label="Confirmer"
             @click="onEditSubmit"
             :loading="editLoading"
             :disable="!inputsValid"
