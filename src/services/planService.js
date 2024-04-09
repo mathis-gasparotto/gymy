@@ -171,3 +171,39 @@ export async function deletePlan(id) {
     await removeData('users/' + auth.currentUser.uid + '/plans/' + id)
   }
 }
+
+export function getTodayWorkouts() {
+  const plans = getPlans()
+  const today = new Date().getDay()
+  return plans.map(plan => {
+    let workoutId
+    switch (today) {
+      case 1:
+        workoutId = plan.mondayWorkoutId
+        break
+      case 2:
+        workoutId = plan.tuesdayWorkoutId
+        break
+      case 3:
+        workoutId = plan.wednesdayWorkoutId
+        break
+      case 4:
+        workoutId = plan.thursdayWorkoutId
+        break
+      case 5:
+        workoutId = plan.fridayWorkoutId
+        break
+      case 6:
+        workoutId = plan.saturdayWorkoutId
+        break
+      case 0:
+        workoutId = plan.sundayWorkoutId
+        break
+    }
+    return {
+      id: plan.id,
+      label: plan.label,
+      workout: workoutId ? getWorkout(workoutId) : null
+    }
+  })
+}
