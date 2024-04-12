@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-center performance-list">
-    <q-card v-for="performance in performances" :key="performance.id" @click="$emit('selectWorkout', performance)" class="cursor-pointer flex-center column q-px-md">
+    <q-card v-for="performance in performances" :key="performance.id" @click="$emit('selectWorkout', performance)" class="flex-center column q-px-md">
       <q-card-section>
         <div class="text-h6">
           {{ formatting().dateToDisplay(performance.date) }}
