@@ -1,6 +1,6 @@
 <template>
   <div class="flex column">
-    <GymyHeader :text="'Exercises - ' + workout.label" />
+    <GymyHeader :text="'Exercices - ' + workout.label" />
     <div v-if="exercises && exercises.length > 0">
       <draggable :list="exercises" class="list-group" ghost-class="ghost" itemKey="id" handle=".draggable-btn" @end="onDragEnd" @start="drag=true">
         <template #item="{ element }">
@@ -37,11 +37,11 @@
         </template>
       </draggable>
     </div>
-    <span v-else class="text-center">Aucun exercise de disponible dans cet entrainement</span>
+    <span v-else class="text-center">Aucun exercice de disponible dans cet entrainement</span>
     <q-dialog v-model="editForm">
       <q-card class="q-px-xs q-py-xs">
         <q-card-section>
-          <div class="text-h6 text-center">Modifier l'exercise {{ exerciseToEdit.label }}</div>
+          <div class="text-h6 text-center">Modifier l'exercice {{ exerciseToEdit.label }}</div>
         </q-card-section>
         <q-card-section>
           <ExerciseForm :initData="exerciseToEdit" buttonLabel="Confirmer" :loading="editLoading"
@@ -55,7 +55,7 @@
     <q-dialog v-model="addForm">
       <q-card class="q-px-xs q-py-xs">
         <q-card-section>
-          <div class="text-h6 text-center">Ajouter un exercise</div>
+          <div class="text-h6 text-center">Ajouter un exercice</div>
         </q-card-section>
         <q-card-section>
           <ExerciseForm buttonLabel="Ajouter" buttonIcon="add" :loading="addLoading" @submit="onAddSubmit" />
@@ -113,7 +113,7 @@ export default {
       const newPosition = e.newIndex + 1
       moveExercise(this.workout.id, e.item['_underlying_vm_'].id, newPosition)
         .catch((err) => {
-          errorNotify('Une erreur est survenue lors du déplacement de votre exercise')
+          errorNotify('Une erreur est survenue lors du déplacement de votre exercice')
           this.loadExercises()
         })
     },
@@ -125,13 +125,13 @@ export default {
       addExercise(this.workout.id, payload)
         .then(() => {
           this.loadExercises()
-          successNotify('Votre exercise a bien été ajouté')
+          successNotify('Votre exercice a bien été ajouté')
           this.addForm = false
           this.addLoading = false
         })
         .catch((err) => {
           this.addLoading = false
-          errorNotify('Une erreur est survenue lors de l\'ajout de votre exercise')
+          errorNotify('Une erreur est survenue lors de l\'ajout de votre exercice')
         })
     },
     onEditSubmit(payload) {
@@ -139,13 +139,13 @@ export default {
       updateExercise(this.workout.id, payload.id, payload)
         .then(() => {
           this.loadExercises()
-          successNotify('Votre exercise a bien été modifié')
+          successNotify('Votre exercice a bien été modifié')
           this.editForm = false
           this.editLoading = false
         })
         .catch((err) => {
           this.editLoading = false
-          errorNotify('Une erreur est survenue lors de l\'édition de votre exercise')
+          errorNotify('Une erreur est survenue lors de l\'édition de votre exercice')
         })
     },
     edit(exercise) {
@@ -155,8 +155,8 @@ export default {
     showDeleteModal(exercise) {
       let deleteLoading = false
       Dialog.create({
-        title: 'Suppression d\'exercise',
-        message: 'Êtes-vous sûr de vouloir supprimer votre exercise ' + exercise.label + ' ?',
+        title: 'Suppression d\'exercice',
+        message: 'Êtes-vous sûr de vouloir supprimer votre exercice ' + exercice.label + ' ?',
         // persistent: true,
         ok: {
           label: 'Supprimer',
@@ -173,11 +173,11 @@ export default {
           deleteExercise(this.workout.id, exercise.id)
             .then(() => {
               this.loadExercises()
-              successNotify('Votre exercise a bien été supprimé')
+              successNotify('Votre exercice a bien été supprimé')
             })
             .catch((err) => {
               deleteLoading = false
-              errorNotify('Une erreur est survenue lors de la suppression de votre exercise')
+              errorNotify('Une erreur est survenue lors de la suppression de votre exercice')
             })
         })
         .onCancel(() => {

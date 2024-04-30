@@ -40,7 +40,7 @@ export default {
     loadExercise() {
       this.exercise = getExercise(this.$route.params.workoutId, this.$route.params.exerciseId)
       if (!this.exercise) {
-        errorNotify('Impossible de charger l\'exercise')
+        errorNotify('Impossible de charger l\'exercice')
         this.$router.push({name: 'exercises', params: {workoutId: this.$route.params.workoutId}})
       }
     },

@@ -4,7 +4,7 @@
       name="label"
       rounded
       outlined
-      label="Nom de l'exercise"
+      label="Nom de l'exercice"
       class="q-mb-md"
       type="text"
       v-model="exerciseForm.label"
@@ -18,7 +18,7 @@
       name="config"
       rounded
       outlined
-      label="Config de l'exercise"
+      label="Config de l'exercice"
       class="q-mb-md"
       type="text"
       v-model="exerciseForm.config"
