@@ -43,7 +43,7 @@ export default route(function (/* { store, ssrContext } */) {
     ) {
       return next({
         name:
-          from.name === 'login' || to.name === 'signup' ? 'index' : from.name,
+          from.name === 'login' || from.name === 'signup' ? 'index' : from.name,
       })
     } else if (to.name === 'exercises') {
       const workout = getWorkout(to.params.workoutId)
