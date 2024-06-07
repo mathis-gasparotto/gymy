@@ -12,7 +12,7 @@
       <router-view />
     </q-page-container>
 
-    <q-footer class="main-nav-bar-container">
+    <q-footer class="main-nav-bar-container" v-model="showFooter">
       <q-tabs align="center" class="bg-dark main-nav-bar nav-bar" indicator-color="transparent" active-color="primary">
         <q-route-tab :to="{ name: 'index' }" icon="home" label="Accueil" />
         <q-route-tab :to="{ name: 'workouts' }" icon="fitness_center" label="Entrainements" />
@@ -24,9 +24,25 @@
 </template>
 
 <script>
+import { Keyboard } from '@capacitor/keyboard'
 
 export default {
-  name: 'MainLayout'
+  name: 'MainLayout',
+  data() {
+    return {
+      showFooter: true
+    }
+  },
+  created() {
+    if (this.$q.platform.is.capacitor) {
+      Keyboard.addListener('keyboardWillShow', () => {
+        this.showFooter = false
+      })
+      Keyboard.addListener('keyboardWillHide', () => {
+        this.showFooter = true
+      })
+    }
+  }
 }
 </script>
 
@@ -40,12 +56,15 @@ export default {
     .q-tab {
       flex: 1 1 auto;
       padding: 0;
+
       &__label {
         font-size: 12px;
+
         @media (min-width: 992px) {
           font-size: 14px;
         }
       }
+
       @media (min-width: 992px) {
         padding: 0 16px;
       }
