@@ -158,3 +158,47 @@
 .no-hover{
   pointer-events: none;
 }
+
+.bordered {
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  &-top {
+    border-top: 1px solid rgba(0, 0, 0, 0.12);
+    &-none {
+      border-top: none;
+    }
+  }
+  &-bottom {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+    &-none {
+      border-bottom: none;
+    }
+  }
+  &-left {
+    border-left: 1px solid rgba(0, 0, 0, 0.12);
+    &-none {
+      border-left: none;
+    }
+  }
+  &-right {
+    border-right: 1px solid rgba(0, 0, 0, 0.12);
+    &-none {
+      border-right: none;
+    }
+  }
+  &-x {
+    border-left: 1px solid rgba(0, 0, 0, 0.12);
+    border-right: 1px solid rgba(0, 0, 0, 0.12);
+    &-none {
+      border-left: none;
+      border-right: none;
+    }
+  }
+  &-y {
+    border-top: 1px solid rgba(0, 0, 0, 0.12);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+    &-none {
+      border-top: none;
+      border-bottom: none;
+    }
+  }
+}
