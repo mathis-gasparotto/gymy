@@ -30,13 +30,13 @@ export function getPlanWorkouts(planId) {
   const plan = getPlan(planId)
   if (!plan) throw new Error('Plan not found')
   return [
-    plan.mondayWorkoutId ? getWorkout(plan.mondayWorkoutId) : null,
-    plan.tuesdayWorkoutId ? getWorkout(plan.tuesdayWorkoutId) : null,
-    plan.wednesdayWorkoutId ? getWorkout(plan.wednesdayWorkoutId) : null,
-    plan.thursdayWorkoutId ? getWorkout(plan.thursdayWorkoutId) : null,
-    plan.fridayWorkoutId ? getWorkout(plan.fridayWorkoutId) : null,
-    plan.saturdayWorkoutId ? getWorkout(plan.saturdayWorkoutId) : null,
-    plan.sundayWorkoutId ? getWorkout(plan.sundayWorkoutId) : null
+    plan.mondayWorkoutId ? getWorkout(plan.mondayWorkoutId) : plan.mondayWorkoutLabel ? {label: plan.mondayWorkoutLabel} : null,
+    plan.tuesdayWorkoutId ? getWorkout(plan.tuesdayWorkoutId) : plan.tuesdayWorkoutLabel ? {label: plan.tuesdayWorkoutLabel} : null,
+    plan.wednesdayWorkoutId ? getWorkout(plan.wednesdayWorkoutId) : plan.wednesdayWorkoutLabel ? {label: plan.wednesdayWorkoutLabel} : null,
+    plan.thursdayWorkoutId ? getWorkout(plan.thursdayWorkoutId) : plan.thursdayWorkoutLabel ? {label: plan.thursdayWorkoutLabel} : null,
+    plan.fridayWorkoutId ? getWorkout(plan.fridayWorkoutId) : plan.fridayWorkoutLabel ? {label: plan.fridayWorkoutLabel} : null,
+    plan.saturdayWorkoutId ? getWorkout(plan.saturdayWorkoutId) : plan.saturdayWorkoutLabel ? {label: plan.saturdayWorkoutLabel} : null,
+    plan.sundayWorkoutId ? getWorkout(plan.sundayWorkoutId) : plan.sundayWorkoutLabel ? {label: plan.sundayWorkoutLabel} : null
   ]
 }
 
@@ -48,12 +48,19 @@ export async function addPlan(payload) {
 
   payload = {
     mondayWorkoutId: null,
+    mondayWorkoutLabel: null,
     tuesdayWorkoutId: null,
+    tuesdayWorkoutLabel: null,
     wednesdayWorkoutId: null,
+    wednesdayWorkoutLabel: null,
     thursdayWorkoutId: null,
+    thursdayWorkoutLabel: null,
     fridayWorkoutId: null,
+    fridayWorkoutLabel: null,
     saturdayWorkoutId: null,
+    saturdayWorkoutLabel: null,
     sundayWorkoutId: null,
+    sundayWorkoutLabel: null,
     ...payload,
     position: lastPosition + 1
   }
@@ -177,33 +184,41 @@ export function getTodayWorkouts() {
   const today = new Date().getDay()
   return plans.map(plan => {
     let workoutId
+    let workoutLabel
     switch (today) {
       case 1:
-        workoutId = plan.mondayWorkoutId
+        if (plan.mondayWorkoutId) workoutId = plan.mondayWorkoutId
+        if (plan.mondayWorkoutLabel) workoutLabel = plan.mondayWorkoutLabel
         break
       case 2:
-        workoutId = plan.tuesdayWorkoutId
+        if (plan.tuesdayWorkoutId) workoutId = plan.tuesdayWorkoutId
+        if (plan.tuesdayWorkoutLabel) workoutLabel = plan.tuesdayWorkoutLabel
         break
       case 3:
-        workoutId = plan.wednesdayWorkoutId
+        if (plan.wednesdayWorkoutId) workoutId = plan.wednesdayWorkoutId
+        if (plan.wednesdayWorkoutLabel) workoutLabel = plan.wednesdayWorkoutLabel
         break
       case 4:
-        workoutId = plan.thursdayWorkoutId
+        if (plan.thursdayWorkoutId) workoutId = plan.thursdayWorkoutId
+        if (plan.thursdayWorkoutLabel) workoutLabel = plan.thursdayWorkoutLabel
         break
       case 5:
-        workoutId = plan.fridayWorkoutId
+        if (plan.fridayWorkoutId) workoutId = plan.fridayWorkoutId
+        if (plan.fridayWorkoutLabel) workoutLabel = plan.fridayWorkoutLabel
         break
       case 6:
-        workoutId = plan.saturdayWorkoutId
+        if (plan.saturdayWorkoutId) workoutId = plan.saturdayWorkoutId
+        if (plan.saturdayWorkoutLabel) workoutLabel = plan.saturdayWorkoutLabel
         break
       case 0:
-        workoutId = plan.sundayWorkoutId
+        if (plan.sundayWorkoutId) workoutId = plan.sundayWorkoutId
+        if (plan.sundayWorkoutLabel) workoutLabel = plan.sundayWorkoutLabel
         break
     }
     return {
       id: plan.id,
       label: plan.label,
-      workout: workoutId ? getWorkout(workoutId) : null
+      workout: workoutId ? getWorkout(workoutId) : workoutLabel ? {label: workoutLabel} : null
     }
   })
 }

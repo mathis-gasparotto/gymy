@@ -73,7 +73,17 @@ const planProps = [
     default: null
   },
   {
+    name: 'mondayWorkoutLabel',
+    type: 'string',
+    default: null
+  },
+  {
     name: 'tuesdayWorkoutId',
+    type: 'string',
+    default: null
+  },
+  {
+    name: 'tuesdayWorkoutLabel',
     type: 'string',
     default: null
   },
@@ -83,7 +93,17 @@ const planProps = [
     default: null
   },
   {
+    name: 'wednesdayWorkoutLabel',
+    type: 'string',
+    default: null
+  },
+  {
     name: 'thursdayWorkoutId',
+    type: 'string',
+    default: null
+  },
+  {
+    name: 'thursdayWorkoutLabel',
     type: 'string',
     default: null
   },
@@ -93,12 +113,27 @@ const planProps = [
     default: null
   },
   {
+    name: 'fridayWorkoutLabel',
+    type: 'string',
+    default: null
+  },
+  {
     name: 'saturdayWorkoutId',
     type: 'string',
     default: null
   },
   {
+    name: 'saturdayWorkoutLabel',
+    type: 'string',
+    default: null
+  },
+  {
     name: 'sundayWorkoutId',
+    type: 'string',
+    default: null
+  },
+  {
+    name: 'sundayWorkoutLabel',
     type: 'string',
     default: null
   }
