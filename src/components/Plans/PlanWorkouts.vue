@@ -54,7 +54,7 @@
       </div>
     </div>
     <span v-else class="text-center">Aucun entrainement de disponible</span>
-    <q-dialog v-model="showAddPlan">
+    <q-dialog v-model="showAddPlan" @hide="resetForm">
       <q-card class="q-px-xs q-py-xs">
         <q-card-section class="text-h5 text-center">
           Choisissez un entrainement
@@ -344,6 +344,11 @@ export default {
         errorNotify('Une erreur est survenue lors de l\'ajout de votre entrainement au programme')
         this.loadPlanWorkouts()
       })
+    },
+    resetForm() {
+      this.customWorkout = {
+        label: ''
+      }
     }
   }
 }
