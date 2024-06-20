@@ -4,35 +4,7 @@
     <div v-if="workouts && workouts.length > 0">
       <draggable :list="workouts" class="list-group" ghost-class="ghost" itemKey="id" handle=".draggable-btn" @end="onDragEnd" @start="drag=true">
         <template #item="{ element }">
-          <q-card @click="$emit('selectWorkout', element)" class="cursor-pointer q-mb-md flex-center column q-px-md" >
-            <q-card-section class="gt-xs">
-              <div class="text-h6 text-center">
-                {{ element.label }}
-              </div>
-              <div v-if="element.comment" class="text-center">
-                {{ element.comment }}
-              </div>
-            </q-card-section>
-            <q-card-section class="q-pb-none lt-sm">
-              <div class="text-h6 text-center">
-                {{ element.label }}
-              </div>
-              <div v-if="element.comment" class="text-center">
-                {{ element.comment }}
-              </div>
-            </q-card-section>
-            <q-card-actions horizontal class="absolute-right gt-xs no-wrap">
-              <q-btn flat round color="primary" icon="edit" @click.stop="edit(element)" />
-              <q-btn flat round color="negative" icon="delete" @click.stop="showDeleteModal(element)" />
-            </q-card-actions>
-            <q-card-actions horizontal class="lt-sm no-wrap q-pa-none">
-              <q-btn flat round color="primary" icon="edit" @click.stop="edit(element)" />
-              <q-btn flat round color="negative" icon="delete" @click.stop="showDeleteModal(element)" />
-            </q-card-actions>
-            <div class="draggable-btn-container">
-              <q-icon :class="'draggable-btn ' + (drag ? 'cursor-grabbing' : 'cursor-grab')" size="sm" name="menu"></q-icon>
-            </div>
-          </q-card>
+          <WorkoutCard :workout="element" draggable :drag="drag" @edit="edit(element)" @showDeleteModal="showDeleteModal(element)" @click="$emit('selectWorkout', element)" />
         </template>
       </draggable>
     </div>
@@ -74,8 +46,9 @@ import { addWorkout, deleteWorkout, getWorkouts, updateWorkout, moveWorkout } fr
 import GymyHeader from 'src/components/GymyHeader.vue'
 import { Dialog } from 'quasar'
 import { errorNotify, successNotify } from 'src/helpers/notifyHelper'
-import WorkoutForm from 'src/components/Manage/WorkoutForm.vue'
+import WorkoutForm from 'src/components/Workouts/WorkoutForm.vue'
 import draggable from 'vuedraggable'
+import WorkoutCard from 'src/components/Workouts/WorkoutCard.vue'
 
 export default {
   name: 'ChoiceWorkout',
@@ -83,7 +56,8 @@ export default {
   components: {
     GymyHeader,
     WorkoutForm,
-    draggable
+    draggable,
+    WorkoutCard
   },
   data() {
     return {
@@ -180,14 +154,4 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
-.draggable-btn {
-  &-container {
-    position: absolute;
-    left: 10px;
-    height: 100%;
-    display: flex;
-    align-items: center;
-  }
-}
-</style>
+<style scoped lang="scss"></style>

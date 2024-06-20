@@ -47,9 +47,9 @@ import { addExercise, deleteExercise, getExercises, moveExercise, updateExercise
 import GymyHeader from 'src/components/GymyHeader.vue'
 import { Dialog } from 'quasar'
 import { errorNotify, successNotify } from 'src/helpers/notifyHelper'
-import ExerciseForm from 'src/components/Manage/ExerciseForm.vue'
+import ExerciseForm from 'src/components/Exercises/ExerciseForm.vue'
 import draggable from 'vuedraggable'
-import ExerciseCard from 'src/components/Exercise/ExerciseCard.vue'
+import ExerciseCard from 'src/components/Exercises/ExerciseCard.vue'
 
 export default {
   name: 'ChoiceExercise',
