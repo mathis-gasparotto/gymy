@@ -14,10 +14,11 @@
 
     <q-footer class="main-nav-bar-container" v-model="showFooter">
       <q-tabs align="center" class="bg-dark main-nav-bar nav-bar" indicator-color="transparent" active-color="primary">
-        <q-route-tab :to="{ name: 'index' }" icon="home" label="Accueil" />
-        <q-route-tab :to="{ name: 'workouts' }" icon="fitness_center" label="Entrainements" />
-        <q-route-tab :to="{ name: 'plans' }" icon="format_list_bulleted" label="Planifications" />
-        <q-route-tab :to="{ name: 'account' }" icon="account_circle" label="Compte" />
+        <q-route-tab :to="{ name: 'index' }" icon="home" class="q-py-md" />
+        <q-route-tab :to="{ name: 'workouts' }" icon="fitness_center" class="q-py-md" />
+        <q-route-tab :to="{ name: 'abs' }" icon="fa-solid fa-stopwatch-20" class="q-py-md" />
+        <q-route-tab :to="{ name: 'plans' }" icon="format_list_bulleted" class="q-py-md" />
+        <q-route-tab :to="{ name: 'account' }" icon="account_circle" class="q-py-md" />
       </q-tabs>
     </q-footer>
   </q-layout>
@@ -55,7 +56,6 @@ export default {
 
     .q-tab {
       flex: 1 1 auto;
-      padding: 0;
 
       &__label {
         font-size: 12px;

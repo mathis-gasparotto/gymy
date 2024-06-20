@@ -129,7 +129,7 @@ export default {
       let deleteLoading = false
       Dialog.create({
         title: 'Suppression d\'exercice',
-        message: 'Êtes-vous sûr de vouloir supprimer votre exercice ' + exercice.label + ' ?',
+        message: 'Êtes-vous sûr de vouloir supprimer votre exercice ' + exercise.label + ' ?',
         // persistent: true,
         ok: {
           label: 'Supprimer',

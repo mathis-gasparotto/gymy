@@ -91,7 +91,7 @@
 </template>
 
 <script>
-import { getWorkouts } from 'src/services/workoutService'
+import { getNoAbsWorkouts } from 'src/services/workoutService'
 import { getPlanWorkouts, updatePlan } from 'src/services/planService'
 import GymyHeader from 'src/components/GymyHeader.vue'
 import { errorNotify } from 'src/helpers/notifyHelper'
@@ -130,7 +130,7 @@ export default {
     }
   },
   created() {
-    this.workouts = getWorkouts()
+    this.workouts = getNoAbsWorkouts()
     this.loadPlanWorkouts()
   },
   computed: {

@@ -2,7 +2,7 @@
   <q-page class="h-100">
     <div class="page-content flex items-center column">
       <h1 class="text-h4">Bonjour {{ user.username }}</h1>
-      <!-- <img alt="Gymy logo" src="~assets/icon.png" style="width: 100px"> -->
+      <img v-if="false" alt="Gymy logo" src="~assets/icon.png" style="width: 100px">
       <Timer />
       <TodayWorkouts class="q-mt-xl" />
     </div>

@@ -43,5 +43,10 @@ export default () => ({
     const minutes = Number(duration.split(':')[0])
     const seconds = Number(duration.split(':')[1])
     return `${minutes > 9 ? minutes : '0' + minutes}:${seconds > 9 ? seconds : '0' + seconds}`
+  },
+  durationFromSeconds(duration) {
+    const minutes = Math.floor(duration / 60)
+    const seconds = duration % 60
+    return `${minutes > 9 ? minutes : '0' + minutes}:${seconds > 9 ? seconds : '0' + seconds}`
   }
 })
