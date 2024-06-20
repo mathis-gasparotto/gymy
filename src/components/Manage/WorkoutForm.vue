@@ -19,11 +19,18 @@
       rounded
       outlined
       label="Commentaire"
-      class="q-mb-md"
+      class="q-mb-sm"
       type="text"
       v-model="workoutForm.comment"
       hide-bottom-space
     ></q-input>
+    <q-checkbox
+      v-model="workoutForm.isAbs"
+      label="Entrainement Abs"
+      checked-icon="task_alt"
+      unchecked-icon="highlight_off"
+      class="q-mb-md"
+    />
     <q-btn
       v-if="buttonIcon"
       color="primary"
@@ -74,13 +81,14 @@ export default {
       addLoading: false,
       workoutForm: {
         label: '',
-        comment: ''
+        comment: '',
+        isAbs: false
       }
     }
   },
   created() {
     if (this.initData) {
-      this.workoutForm = {...this.initData}
+      this.workoutForm = {isAbs: false, ...this.initData}
     }
   },
   computed: {
