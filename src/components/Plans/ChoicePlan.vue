@@ -68,7 +68,7 @@ import { addPlan, deletePlan, getPlans, updatePlan, movePlan } from 'src/service
 import GymyHeader from 'src/components/GymyHeader.vue'
 import { Dialog } from 'quasar'
 import { errorNotify, successNotify } from 'src/helpers/notifyHelper'
-import PlanForm from 'src/components/Manage/PlanForm.vue'
+import PlanForm from 'src/components/Plans/PlanForm.vue'
 import draggable from 'vuedraggable'
 
 export default {
