@@ -18,6 +18,9 @@
       <div v-if="exercise.config" class="text-center">
         ({{ exercise.config }})
       </div>
+      <div v-if="exercise.forLastSeries && forAbs" class="text-center">
+        Finisher !
+      </div>
     </q-card-section>
     <q-card-section v-if="exercise.duration && forAbs" class="lt-sm duration-section">
       <div class="text-h6 text-center">

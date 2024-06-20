@@ -25,6 +25,11 @@ const routes = [
         component: () => import('pages/IndexPage.vue')
       },
       {
+        path: '/abs',
+        name: 'abs',
+        component: () => import('pages/Abs.vue')
+      },
+      {
         path: '/workouts',
         component: () => import('layouts/WorkoutsLayout.vue'),
         children: [

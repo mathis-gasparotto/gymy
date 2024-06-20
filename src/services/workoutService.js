@@ -16,6 +16,28 @@ export function getWorkouts() {
   }).sort((a, b) => a.position - b.position)
 }
 
+export function getNoAbsWorkouts() {
+  const workoutsObject = LocalStorage.getItem(LOCALSTORAGE_DB_USER).workouts
+  if (!workoutsObject) return []
+  return Object.keys(workoutsObject).map(key => {
+    return {
+      id: key,
+      ...workoutsObject[key]
+    }
+  }).filter(e => !e.isAbs).sort((a, b) => a.position - b.position)
+}
+
+export function getAbsWorkouts() {
+  const workoutsObject = LocalStorage.getItem(LOCALSTORAGE_DB_USER).workouts
+  if (!workoutsObject) return []
+  return Object.keys(workoutsObject).map(key => {
+    return {
+      id: key,
+      ...workoutsObject[key]
+    }
+  }).filter(e => e.isAbs).sort((a, b) => a.position - b.position)
+}
+
 export function getWorkout(id) {
   const data = LocalStorage.getItem(LOCALSTORAGE_DB_USER).workouts[id]
   if (!data) return null

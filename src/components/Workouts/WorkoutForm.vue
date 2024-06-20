@@ -31,6 +31,22 @@
       unchecked-icon="highlight_off"
       class="q-mb-md"
     />
+    <q-input
+      v-if="workoutForm.isAbs"
+      name="restTime"
+      rounded
+      outlined
+      label="Temps de repos entre chaque série"
+      class="q-mb-md"
+      type="number"
+      inputmode="numeric"
+      :rules="[
+        (val) => val !== '' || 'Veuillez renseigner un temps de repos'
+      ]"
+      v-model="workoutForm.restTime"
+      hide-bottom-space
+      suffix="s"
+    ></q-input>
     <q-btn
       v-if="buttonIcon"
       color="primary"
@@ -82,18 +98,19 @@ export default {
       workoutForm: {
         label: '',
         comment: '',
-        isAbs: false
+        isAbs: false,
+        restTime: ''
       }
     }
   },
   created() {
     if (this.initData) {
-      this.workoutForm = {isAbs: false, ...this.initData}
+      this.workoutForm = {isAbs: false, restTime: '', ...this.initData}
     }
   },
   computed: {
     formValid() {
-      return this.workoutForm.label.trim().length > 2
+      return this.workoutForm.label.trim().length > 2 && (!this.workoutForm.isAbs || this.workoutForm.restTime)
     }
   },
   methods: {
@@ -101,6 +118,7 @@ export default {
       if (!this.formValid) return
       const payload = {
         ...this.workoutForm,
+        restTime: this.workoutForm.restTime ? parseInt(this.workoutForm.restTime) : null,
         label: this.workoutForm.label.trim(),
         comment: this.workoutForm.comment && this.workoutForm.comment.trim() !== '' ? this.workoutForm.comment.trim() : null
       }

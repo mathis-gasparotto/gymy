@@ -34,12 +34,20 @@
       type="number"
       inputmode="numeric"
       :rules="[
-        (val) => val !== undefined || 'Veuillez renseigner une durée'
+        (val) => val !== '' || 'Veuillez renseigner une durée'
       ]"
       v-model="exerciseForm.duration"
       hide-bottom-space
       suffix="s"
     ></q-input>
+    <q-checkbox
+      v-if="forAbsWorkout"
+      v-model="exerciseForm.forLastSeries"
+      label="Juste pour la dernière série"
+      checked-icon="task_alt"
+      unchecked-icon="highlight_off"
+      class="q-mb-md"
+    />
     <q-btn
       v-if="buttonIcon"
       color="primary"
@@ -96,18 +104,19 @@ export default {
       exerciseForm: {
         label: '',
         config: '',
-        duration: ''
+        duration: '',
+        forLastSeries: false
       }
     }
   },
   created() {
     if (this.initData) {
-      this.exerciseForm = {duration: '', ...this.exerciseForm, ...this.initData}
+      this.exerciseForm = {duration: '', forLastSeries: false, ...this.exerciseForm, ...this.initData}
     }
   },
   computed: {
     formValid() {
-      return this.exerciseForm.label.trim().length > 2
+      return this.exerciseForm.label.trim().length > 2 && (!this.forAbsWorkout || this.exerciseForm.duration)
     }
   },
   methods: {
@@ -115,6 +124,7 @@ export default {
       if (!this.formValid) return
       const payload = {
         ...this.exerciseForm,
+        duration: this.exerciseForm.duration ? parseInt(this.exerciseForm.duration) : null,
         label: this.exerciseForm.label.trim(),
         config: this.exerciseForm.config && this.exerciseForm.config.trim().length > 0 ? this.exerciseForm.config.trim() : null
       }

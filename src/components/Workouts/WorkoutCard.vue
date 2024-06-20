@@ -22,7 +22,7 @@
       </div>
     </q-card-section>
     <q-card-section v-if="workout.isAbs" class="lt-sm abs-indicator-section">
-      <img src="/src/assets/picto-abs.png" width="50px" />
+      <img src="~assets/picto-abs.png" width="50px" />
     </q-card-section>
     <q-card-actions horizontal class="absolute-right gt-xs no-wrap">
       <q-btn flat round color="primary" icon="edit" @click.stop="$emit('edit')" />

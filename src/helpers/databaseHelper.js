@@ -167,6 +167,11 @@ const workoutProps = [
     name: 'isAbs',
     type: 'boolean',
     default: false
+  },
+  {
+    name: 'restTime',
+    type: 'number',
+    default: null
   }
 ]
 
@@ -189,6 +194,11 @@ const exerciseProps = [
     name: 'duration',
     type: 'number',
     default: null
+  },
+  {
+    name: 'forLastSeries',
+    type: 'boolean',
+    default: false
   },
   {
     name: 'label',

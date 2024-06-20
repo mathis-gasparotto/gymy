@@ -31,7 +31,7 @@
 <script>
 import { getUser } from 'src/services/userService'
 import { useSound } from '@vueuse/sound'
-import buttonSfx from 'src/assets/sounds/timerEnd.mp3'
+import buttonSfx from 'src/assets/sounds/rest-timer-end.mp3'
 
 export default {
   name: 'Timer',
