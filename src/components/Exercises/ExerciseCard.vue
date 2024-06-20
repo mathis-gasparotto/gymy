@@ -74,10 +74,10 @@ export default {
   }
 }
 .duration-section {
-    position: absolute;
-    right: 10px;
-    height: 100%;
-    display: flex;
-    align-items: center;
+  position: absolute;
+  right: 10px;
+  height: 100%;
+  display: flex;
+  align-items: center;
 }
 </style>
