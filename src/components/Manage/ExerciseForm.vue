@@ -18,11 +18,27 @@
       name="config"
       rounded
       outlined
-      label="Config de l'exercice"
+      :label="forAbsWorkout ? 'Commentaire' : 'Config de l\'exercice'"
       class="q-mb-md"
       type="text"
       v-model="exerciseForm.config"
       hide-bottom-space
+    ></q-input>
+    <q-input
+      v-if="forAbsWorkout"
+      name="duration"
+      rounded
+      outlined
+      label="Durée de l'exercice"
+      class="q-mb-md"
+      type="number"
+      inputmode="numeric"
+      :rules="[
+        (val) => val !== undefined || 'Veuillez renseigner une durée'
+      ]"
+      v-model="exerciseForm.duration"
+      hide-bottom-space
+      suffix="s"
     ></q-input>
     <q-btn
       v-if="buttonIcon"
@@ -67,6 +83,11 @@ export default {
       type: Boolean,
       required: false,
       default: false
+    },
+    forAbsWorkout: {
+      type: Boolean,
+      required: false,
+      default: false
     }
   },
   data() {
@@ -74,13 +95,14 @@ export default {
       addLoading: false,
       exerciseForm: {
         label: '',
-        config: ''
+        config: '',
+        duration: ''
       }
     }
   },
   created() {
     if (this.initData) {
-      this.exerciseForm = {...this.exerciseForm, ...this.initData}
+      this.exerciseForm = {duration: '', ...this.exerciseForm, ...this.initData}
     }
   },
   computed: {

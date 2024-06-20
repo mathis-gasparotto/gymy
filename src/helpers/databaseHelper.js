@@ -162,6 +162,11 @@ const workoutProps = [
     name: 'comment',
     type: 'string',
     default: null
+  },
+  {
+    name: 'isAbs',
+    type: 'boolean',
+    default: false
   }
 ]
 
@@ -179,6 +184,11 @@ const exerciseProps = [
   {
     name: 'position',
     type: 'number'
+  },
+  {
+    name: 'duration',
+    type: 'number',
+    default: null
   },
   {
     name: 'label',

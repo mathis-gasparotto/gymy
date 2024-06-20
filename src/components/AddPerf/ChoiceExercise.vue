@@ -1,39 +1,10 @@
 <template>
   <div class="flex column">
-    <GymyHeader :text="'Exercices - ' + workout.label" />
+    <GymyHeader :text="(workout.isAbs ? 'Abs - ' : 'Exercices - ')+ workout.label" />
     <div v-if="exercises && exercises.length > 0">
       <draggable :list="exercises" class="list-group" ghost-class="ghost" itemKey="id" handle=".draggable-btn" @end="onDragEnd" @start="drag=true">
         <template #item="{ element }">
-          <q-card @click="$emit('selectExercise', element)"
-            class="q-mb-md flex-center column q-px-md cursor-pointer">
-            <q-card-section class="gt-xs">
-              <div class="text-h6 text-center">
-                {{ element.label }}
-              </div>
-              <div v-if="element.config" class="text-center">
-                ({{ element.config }})
-              </div>
-            </q-card-section>
-            <q-card-section class="q-pb-none lt-sm">
-              <div class="text-h6 text-center">
-                {{ element.label }}
-              </div>
-              <div v-if="element.config" class="text-center">
-                ({{ element.config }})
-              </div>
-            </q-card-section>
-            <q-card-actions horizontal class="absolute-right gt-xs no-wrap">
-              <q-btn flat round color="primary" icon="edit" @click.stop="edit(element)" />
-              <q-btn flat round color="negative" icon="delete" @click.stop="showDeleteModal(element)" />
-            </q-card-actions>
-            <q-card-actions horizontal class="lt-sm no-wrap q-pa-none">
-              <q-btn flat round color="primary" icon="edit" @click.stop="edit(element)" />
-              <q-btn flat round color="negative" icon="delete" @click.stop="showDeleteModal(element)" />
-            </q-card-actions>
-            <div class="draggable-btn-container">
-              <q-icon :class="'draggable-btn ' + (drag ? 'cursor-grabbing' : 'cursor-grab')" size="sm" name="menu"></q-icon>
-            </div>
-          </q-card>
+          <ExerciseCard :forAbs="workout.isAbs" :exercise="element" draggable :drag="drag" @edit="edit(element)" @showDeleteModal="showDeleteModal(element)" @click="() => { if (!workout.isAbs) $emit('selectExercise', element) }" />
         </template>
       </draggable>
     </div>
@@ -45,7 +16,7 @@
         </q-card-section>
         <q-card-section>
           <ExerciseForm :initData="exerciseToEdit" buttonLabel="Confirmer" :loading="editLoading"
-            @submit="onEditSubmit" />
+            @submit="onEditSubmit" :for-abs-workout="workout.isAbs" />
         </q-card-section>
         <q-card-actions align="center">
           <q-btn label="Annuler" color="negative" v-close-popup />
@@ -58,7 +29,7 @@
           <div class="text-h6 text-center">Ajouter un exercice</div>
         </q-card-section>
         <q-card-section>
-          <ExerciseForm buttonLabel="Ajouter" buttonIcon="add" :loading="addLoading" @submit="onAddSubmit" />
+          <ExerciseForm buttonLabel="Ajouter" buttonIcon="add" :loading="addLoading" @submit="onAddSubmit" :for-abs-workout="workout.isAbs" />
         </q-card-section>
         <q-card-actions align="center">
           <q-btn label="Annuler" color="negative" v-close-popup />
@@ -78,6 +49,7 @@ import { Dialog } from 'quasar'
 import { errorNotify, successNotify } from 'src/helpers/notifyHelper'
 import ExerciseForm from 'src/components/Manage/ExerciseForm.vue'
 import draggable from 'vuedraggable'
+import ExerciseCard from 'src/components/Exercise/ExerciseCard.vue'
 
 export default {
   name: 'ChoiceExercise',
@@ -85,7 +57,8 @@ export default {
   components: {
     GymyHeader,
     ExerciseForm,
-    draggable
+    draggable,
+    ExerciseCard
   },
   props: {
     workout: {
@@ -188,14 +161,4 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
-.draggable-btn {
-  &-container {
-    position: absolute;
-    left: 10px;
-    height: 100%;
-    display: flex;
-    align-items: center;
-  }
-}
-</style>
+<style scoped lang="scss"></style>
