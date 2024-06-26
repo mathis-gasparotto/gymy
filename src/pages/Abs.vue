@@ -91,10 +91,10 @@ export default {
     GymyHeader
   },
   setup() {
-    const { play: playEnd, stop: stopEnd } = useSound(endSound, {volume: 2, autoplay: false, interrupt: true})
+    const { play: playEnd, stop: stopEnd } = useSound(endSound, {volume: 1, autoplay: false, interrupt: true})
     const { play: playCountdown, stop: stopCountdown } = useSound(countdownSound, {volume: 1.5, autoplay: false, interrupt: true})
-    const { play: playDing, stop: stopDing } = useSound(ding, {volume: 2, autoplay: false, interrupt: true})
-    const {play: playInProgress, stop: stopInProgress} = useSound(timerInProgrss, {volume: 1.2, autoplay: false, interrupt: true, loop: true})
+    const { play: playDing, stop: stopDing } = useSound(ding, {volume: 1.75, autoplay: false, interrupt: true})
+    const {play: playInProgress, stop: stopInProgress} = useSound(timerInProgrss, {volume: 1, autoplay: false, interrupt: true, loop: true})
     return {
       formatting,
       playEnd,
