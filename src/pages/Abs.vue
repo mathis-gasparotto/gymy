@@ -231,14 +231,14 @@ export default {
           this.currentSeries = 1
           this.preWorkoutTimer = null
           clearInterval(this.intervals.pop())
-          this.startSeries()
+          this.startSeries(true)
           return
         }
       }, 1000))
     },
-    startSeries() {
+    startSeries(isFirst = false) {
       this.step = 1
-      this.startTimer(this.currentExercise.duration || 0)
+      this.startTimer(isFirst ? ((this.currentExercise.duration - 1) || 0) : (this.currentExercise.duration || 0))
     },
     startTimer(timer) {
       this.playSoundInProgress(timer)
