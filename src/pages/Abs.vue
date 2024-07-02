@@ -81,9 +81,10 @@ import { getExercises } from 'src/services/exerciseService'
 import formatting from 'src/helpers/formatting'
 import { useSound } from '@vueuse/sound'
 import endSound from 'src/assets/sounds/yaaas.mp3'
-import countdownSound from 'src/assets/sounds/countdown.mp3'
+import countdownSound from 'src/assets/sounds/mariostart.mp3'
 import ding from 'src/assets/sounds/ding.mp3'
 import timerInProgrss from 'src/assets/sounds/timer-in-progress.mp3'
+import last3Sec from 'src/assets/sounds/clock-ticking.mp3'
 
 export default {
   name: 'Abs',
@@ -92,9 +93,10 @@ export default {
   },
   setup() {
     const { play: playEnd, stop: stopEnd } = useSound(endSound, {volume: 1, autoplay: false, interrupt: true})
-    const { play: playCountdown, stop: stopCountdown } = useSound(countdownSound, {volume: 1.5, autoplay: false, interrupt: true})
-    const { play: playDing, stop: stopDing } = useSound(ding, {volume: 1.75, autoplay: false, interrupt: true})
+    const { play: playCountdown, stop: stopCountdown } = useSound(countdownSound, {volume: 1.2, autoplay: false, interrupt: true})
+    const { play: playDing, stop: stopDing } = useSound(ding, {volume: 1, autoplay: false, interrupt: true})
     const {play: playInProgress, stop: stopInProgress} = useSound(timerInProgrss, {volume: 1, autoplay: false, interrupt: true, loop: true})
+    const {play: playLast3Sec, stop: stopLast3Sec} = useSound(last3Sec, {volume: 0.8, autoplay: false, interrupt: true, loop: true})
     return {
       formatting,
       playEnd,
@@ -104,7 +106,9 @@ export default {
       stopInProgress,
       stopEnd,
       stopCountdown,
-      stopDing
+      stopDing,
+      playLast3Sec,
+      stopLast3Sec
     }
   },
   data() {
@@ -177,12 +181,9 @@ export default {
     selectWorkout(workout) {
       this.workouts.forEach((w) => w.selected = w.id == workout.id)
     },
-    playSoundInProgress(duration) {
-      this.playInProgress()
-      this.timeouts.push(setTimeout(() => {
-        this.stopInProgress()
-        this.timeouts.pop()
-      }, duration * 1000))
+    playSoundLast3Sec() {
+      this.stopInProgress()
+      this.playLast3Sec()
     },
     pauseAbs() {
       this.paused = true
@@ -205,6 +206,7 @@ export default {
       this.stopEnd()
       this.stopCountdown()
       this.stopDing()
+      this.stopLast3Sec()
     },
     stopAllIntervals() {
       this.intervals.forEach((i) => clearInterval(i))
@@ -241,24 +243,40 @@ export default {
       this.startTimer(isFirst ? ((this.currentExercise.duration - 1) || 0) : (this.currentExercise.duration || 0))
     },
     startTimer(timer) {
-      this.playSoundInProgress(timer)
       this.timer = timer
+      if (this.timer > 3) {
+        this.playInProgress()
+      } else {
+        this.playSoundLast3Sec()
+      }
       this.intervals.push(setInterval(() => {
-        this.timer -= 1
+        this.timer--
+        if (this.timer === 3) {
+          this.playSoundLast3Sec()
+        }
         if (this.timer <= 0) {
           clearInterval(this.intervals.pop())
+          this.stopLast3Sec()
           this.nextStep()
           return
         }
       }, 1000))
     },
     startRestTime(timer) {
+      this.stopInProgress()
       this.rest = true
       this.timer = timer
+      if (this.timer <= 3) {
+        this.playSoundLast3Sec()
+      }
       this.intervals.push(setInterval(() => {
-        this.timer -= 1
+        this.timer--
+        if (this.timer === 3) {
+          this.playSoundLast3Sec()
+        }
         if (this.timer <= 0) {
           clearInterval(this.intervals.pop())
+          this.stopLast3Sec()
           this.nextStep()
           return
         }
@@ -271,8 +289,8 @@ export default {
           this.playEnd()
           this.timeouts.push(setTimeout(() => {
             this.timeouts.pop()
-            this.reloadData()
-          }, 3000))
+            this.stopAbs()
+          }, 5000))
         } else {
           this.playDing()
           if (!this.rest) {
