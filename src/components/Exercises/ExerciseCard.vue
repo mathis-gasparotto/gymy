@@ -1,28 +1,42 @@
 <template>
   <q-card class="q-mb-md flex-center column q-px-md" :class="{ 'cursor-pointer': !forAbs }">
-    <q-card-section class="gt-xs">
-      <div class="text-h6 text-center">
-        {{ exercise.label }}
-      </div>
-      <div v-if="exercise.config" class="text-center">
-        ({{ exercise.config }})
-      </div>
-      <div v-if="exercise.duration && forAbs" class="text-h6 text-center">
-        {{ exercise.duration }}s
-      </div>
-    </q-card-section>
-    <q-card-section class="q-pb-none lt-sm">
-      <div class="text-h6 text-center">
-        {{ exercise.label }}
-      </div>
-      <div v-if="exercise.config" class="text-center">
-        ({{ exercise.config }})
-      </div>
-      <div v-if="exercise.forLastSeries && forAbs" class="text-center">
-        Finisher !
-      </div>
-    </q-card-section>
-    <q-card-section v-if="exercise.duration && forAbs" class="lt-sm duration-section">
+    <template v-if="exercise.abs && !forAbs">
+      <q-card-section class="gt-xs">
+        <div class="text-h6 text-center">
+          Abs
+        </div>
+      </q-card-section>
+      <q-card-section class="q-pb-none lt-sm">
+        <div class="text-h6 text-center">
+          Abs
+        </div>
+      </q-card-section>
+    </template>
+    <template v-else>
+      <q-card-section class="gt-xs">
+        <div class="text-h6 text-center">
+          {{ exercise.label }}
+        </div>
+        <div v-if="exercise.config" class="text-center">
+          ({{ exercise.config }})
+        </div>
+        <div v-if="exercise.duration && forAbs" class="text-h6 text-center">
+          {{ exercise.duration }}s
+        </div>
+      </q-card-section>
+      <q-card-section class="q-pb-none lt-sm">
+        <div class="text-h6 text-center">
+          {{ exercise.label }}
+        </div>
+        <div v-if="exercise.config" class="text-center" :class="{'q-mr-lg': exercise.duration && forAbs}">
+          ({{ exercise.config }})
+        </div>
+        <div v-if="exercise.forLastSeries && forAbs" class="text-center">
+          Finisher !
+        </div>
+      </q-card-section>
+    </template>
+    <q-card-section v-if="exercise.duration && forAbs" class="lt-sm duration-section q-pa-xs">
       <div class="text-h6 text-center">
         {{ exercise.duration }}s
       </div>

@@ -4,7 +4,7 @@
     <div v-if="exercises && exercises.length > 0">
       <draggable :list="exercises" class="list-group" ghost-class="ghost" itemKey="id" handle=".draggable-btn" @end="onDragEnd" @start="drag=true">
         <template #item="{ element }">
-          <ExerciseCard :forAbs="workout.isAbs" :exercise="element" draggable :drag="drag" @edit="edit(element)" @showDeleteModal="showDeleteModal(element)" @click="() => { if (!workout.isAbs) $emit('selectExercise', element) }" />
+          <ExerciseCard :forAbs="workout.isAbs" :exercise="element" draggable :drag="drag" @edit="edit(element)" @showDeleteModal="showDeleteModal(element)" @click="onClickExercise(element)" />
         </template>
       </draggable>
     </div>
@@ -81,6 +81,13 @@ export default {
     this.loadExercises()
   },
   methods: {
+    onClickExercise(exercise) {
+      if (!this.workout.isAbs && !exercise.abs) {
+        this.$emit('selectExercise', exercise)
+      } else if (!this.workout.isAbs && exercise.abs) {
+        this.$router.push({ name: 'abs' })
+      }
+    },
     onDragEnd(e) {
       this.drag = false
       const newPosition = e.newIndex + 1

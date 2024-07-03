@@ -69,7 +69,7 @@ export default {
   },
   created() {
     if (this.initData) {
-      this.planForm = {...this.initData}
+      this.planForm = {...this.planForm, ...this.initData}
     }
   },
   computed: {

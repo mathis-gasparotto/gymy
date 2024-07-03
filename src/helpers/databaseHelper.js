@@ -201,6 +201,11 @@ const exerciseProps = [
     default: false
   },
   {
+    name: 'abs',
+    type: 'boolean',
+    default: false
+  },
+  {
     name: 'label',
     type: 'string'
   },

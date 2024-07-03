@@ -105,7 +105,7 @@ export default {
   },
   created() {
     if (this.initData) {
-      this.workoutForm = {isAbs: false, restTime: '', ...this.initData}
+      this.workoutForm = {...this.workoutForm, ...this.initData}
     }
   },
   computed: {

@@ -17,11 +17,11 @@
       <div class="text-h6 text-center">
         {{ workout.label }}
       </div>
-      <div v-if="workout.comment" class="text-center">
+      <div v-if="workout.comment" class="text-center" :class="{'q-mr-lg': workout.isAbs}">
         {{ workout.comment }}
       </div>
     </q-card-section>
-    <q-card-section v-if="workout.isAbs" class="lt-sm abs-indicator-section">
+    <q-card-section v-if="workout.isAbs" class="lt-sm abs-indicator-section q-pa-none">
       <img src="~assets/picto-abs.png" width="50px" />
     </q-card-section>
     <q-card-actions horizontal class="absolute-right gt-xs no-wrap">
