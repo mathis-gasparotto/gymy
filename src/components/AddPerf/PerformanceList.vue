@@ -8,7 +8,7 @@
       </q-card-section>
       <q-card-section class="column flex-center">
         {{ performance.series.map(serie => serie.value + (serie.type === PERFORMANCE_TYPE_DEFAULT ? '' : ' (' + getPerfromanceType(serie.type) + ')')).join(' - ') }}
-        <div v-if="performance.comment">
+        <div v-if="performance.comment" class="text-center">
           {{ performance.comment }}
         </div>
       </q-card-section>
