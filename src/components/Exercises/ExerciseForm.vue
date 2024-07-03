@@ -1,66 +1,67 @@
 <template>
   <q-form @submit.prevent="onsubmit()" class="flex-center column">
-    <q-input
-      name="label"
-      rounded
-      outlined
-      label="Nom de l'exercice"
-      class="q-mb-md"
-      type="text"
-      v-model="exerciseForm.label"
-      lazy-rules
-      :rules="[
-        (val) => val.trim().length > 2 || 'Veuillez renseigner minimum 3 caractères'
-      ]"
-      hide-bottom-space
-    ></q-input>
-    <q-input
-      name="config"
-      rounded
-      outlined
-      :label="forAbsWorkout ? 'Commentaire' : 'Config de l\'exercice'"
-      class="q-mb-md"
-      type="text"
-      v-model="exerciseForm.config"
-      hide-bottom-space
-    ></q-input>
-    <q-input
-      v-if="forAbsWorkout"
-      name="duration"
-      rounded
-      outlined
-      label="Durée de l'exercice"
-      class="q-mb-md"
-      type="number"
-      inputmode="numeric"
-      :rules="[
-        (val) => val !== '' || 'Veuillez renseigner une durée'
-      ]"
-      v-model="exerciseForm.duration"
-      hide-bottom-space
-      suffix="s"
-    ></q-input>
     <q-checkbox
-      v-if="forAbsWorkout"
-      v-model="exerciseForm.forLastSeries"
-      label="Juste pour la dernière série"
+      v-if="!forAbsWorkout"
+      v-model="exerciseForm.abs"
+      label="Abs"
       checked-icon="task_alt"
       unchecked-icon="highlight_off"
       class="q-mb-md"
     />
+    <template v-if="!exerciseForm.abs || forAbsWorkout">
+      <q-input
+        name="label"
+        rounded
+        outlined
+        label="Nom de l'exercice"
+        class="q-mb-md"
+        type="text"
+        v-model="exerciseForm.label"
+        lazy-rules
+        :rules="[
+          (val) => val.trim().length > 2 || 'Veuillez renseigner minimum 3 caractères'
+        ]"
+        hide-bottom-space
+      ></q-input>
+      <q-input
+        name="config"
+        rounded
+        outlined
+        :label="forAbsWorkout ? 'Commentaire' : 'Config de l\'exercice'"
+        class="q-mb-md"
+        type="text"
+        v-model="exerciseForm.config"
+        hide-bottom-space
+      ></q-input>
+      <q-input
+        v-if="forAbsWorkout"
+        name="duration"
+        rounded
+        outlined
+        label="Durée de l'exercice"
+        class="q-mb-md"
+        type="number"
+        inputmode="numeric"
+        :rules="[
+          (val) => val !== '' || 'Veuillez renseigner une durée'
+        ]"
+        v-model="exerciseForm.duration"
+        hide-bottom-space
+        suffix="s"
+      ></q-input>
+      <q-checkbox
+        v-if="forAbsWorkout"
+        v-model="exerciseForm.forLastSeries"
+        label="Juste pour la dernière série"
+        checked-icon="task_alt"
+        unchecked-icon="highlight_off"
+        class="q-mb-md"
+      />
+    </template>
     <q-btn
-      v-if="buttonIcon"
       color="primary"
       :label="buttonLabel"
       :icon="buttonIcon"
-      type="submit"
-      :disable="!formValid"
-      :loading="loading"
-    />
-    <q-btn
-      v-else
-      color="primary"
-      :label="buttonLabel"
       type="submit"
       :disable="!formValid"
       :loading="loading"
@@ -85,7 +86,7 @@ export default {
     buttonIcon: {
       type: String,
       required: false,
-      default: null
+      default: undefined
     },
     loading: {
       type: Boolean,
@@ -105,18 +106,19 @@ export default {
         label: '',
         config: '',
         duration: '',
-        forLastSeries: false
+        forLastSeries: false,
+        abs: false
       }
     }
   },
   created() {
     if (this.initData) {
-      this.exerciseForm = {duration: '', forLastSeries: false, ...this.exerciseForm, ...this.initData}
+      this.exerciseForm = {...this.exerciseForm, ...this.initData}
     }
   },
   computed: {
     formValid() {
-      return this.exerciseForm.label.trim().length > 2 && (!this.forAbsWorkout || this.exerciseForm.duration)
+      return this.exerciseForm.abs || (this.exerciseForm.label.trim().length > 2 && (!this.forAbsWorkout || this.exerciseForm.duration))
     }
   },
   methods: {
