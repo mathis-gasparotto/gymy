@@ -93,10 +93,10 @@ export default {
   },
   setup() {
     const { play: playEnd, stop: stopEnd } = useSound(endSound, {volume: 1, autoplay: false, interrupt: true})
-    const { play: playCountdown, stop: stopCountdown } = useSound(countdownSound, {volume: 1.2, autoplay: false, interrupt: true})
+    const { play: playCountdown, stop: stopCountdown } = useSound(countdownSound, {volume: 0.5, autoplay: false, interrupt: true})
     const { play: playDing, stop: stopDing } = useSound(ding, {volume: 1, autoplay: false, interrupt: true})
-    const {play: playInProgress, stop: stopInProgress} = useSound(timerInProgrss, {volume: 1, autoplay: false, interrupt: true, loop: true})
-    const {play: playLast3Sec, stop: stopLast3Sec} = useSound(last3Sec, {volume: 1, autoplay: false, interrupt: true, loop: true})
+    const { play: playInProgress, stop: stopInProgress } = useSound(timerInProgrss, {volume: 1, autoplay: false, interrupt: true, loop: true})
+    const { play: playLast3Sec, stop: stopLast3Sec } = useSound(last3Sec, {volume: 1, autoplay: false, interrupt: true, loop: true})
     return {
       formatting,
       playEnd,
