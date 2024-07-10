@@ -6,8 +6,23 @@
         <div class="plan-template absolute">
           <div class="q-mb-lg" v-for="(workout, index) in planWorkouts" :key="workout.id">
             <h2 class="q-mb-sm text-center text-h5">{{ getDayByIndex(index) }}</h2>
-            <q-card flat class="flex-center column q-px-md plan-template__card">
-              <q-card-section>
+            <q-card flat class="flex-center column q-px-md plan-template__card relative">
+              <div v-if="!workout.restDay" class="invisible">
+                <q-card-section class="gt-xs">
+                  <div class="text-h6 text-center">
+                    {{ workout.label }}
+                  </div>
+                </q-card-section>
+                <q-card-section class="q-pb-none lt-sm">
+                  <div class="text-h6 text-center">
+                    {{ workout.label }}
+                  </div>
+                </q-card-section>
+                <q-card-actions horizontal class="lt-sm no-wrap q-pa-none">
+                  <q-btn flat round color="negative" icon="fa-solid fa-circle-minus"/>
+                </q-card-actions>
+              </div>
+              <q-card-section class="absolute">
                 <div class="text-h6 text-center color-primary flex flex-center">
                   Repos
                   <q-btn flat round color="primary" inversed icon="add_circle" @click="remove(index)" />
@@ -381,7 +396,7 @@ export default {
   &__card {
     outline: 3px dashed $primary;
     outline-offset: -3px;
-    height: 90px;
+    min-height: 90px;
 
     @media (min-width: 600px) {
       height: 64px;
