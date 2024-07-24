@@ -3,6 +3,7 @@ import { getAnalytics } from 'firebase/analytics'
 import { getAuth } from 'firebase/auth'
 import { getDatabase } from 'firebase/database'
 import { initUser } from 'src/services/userService'
+import { initShareBD } from 'src/services/firebaseService'
 
 const firebaseConfig = {
   apiKey: process.env.FIREBASE_API_KEY,
@@ -21,3 +22,4 @@ export const auth = getAuth(app)
 export const db = getDatabase(app)
 
 initUser()
+initShareBD()

@@ -5,8 +5,13 @@
       ".read": true,
       "$uid": {
         ".write": "$uid === auth.uid",
-        ".read": "$uid === auth.uid"
+        // ".read": "$uid === auth.uid"
+        ".read": true
       }
+    },
+    "shared": {
+      ".write": true,
+      ".read": true
     }
   }
 }

@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "@capacitor/keyboard": "^5.0.0",
+    "@capacitor/share": "^5.0.8",
     "@ionic/pwa-elements": "^3.2.2",
     "@quasar/extras": "^1.0.0",
     "@vueuse/sound": "^2.0.1",
@@ -51,7 +52,7 @@
     "workbox-strategies": "^7.0.0"
   },
   "engines": {
-    "node": "^18 || ^16 || ^14.19",
+    "node": "^20 || ^18 || ^16 || ^14.19",
     "npm": ">= 6.13.4",
     "yarn": ">= 1.21.1"
   }

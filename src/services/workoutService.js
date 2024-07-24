@@ -4,14 +4,15 @@ import { createData, removeData, updateData } from './firebaseService'
 import { LOCALSTORAGE_DB_USER } from 'src/helpers/databaseHelper'
 import { getUser } from './userService'
 import { USER_GUEST_UID } from 'src/helpers/userHelper'
+import { SHARED_DATA_TYPE_WORKOUT } from 'src/helpers/shareHelper'
 
 export function getWorkouts() {
   const workoutsObject = LocalStorage.getItem(LOCALSTORAGE_DB_USER).workouts
   if (!workoutsObject) return []
   return Object.keys(workoutsObject).map(key => {
     return {
-      id: key,
-      ...workoutsObject[key]
+      ...workoutsObject[key],
+      id: key
     }
   }).sort((a, b) => a.position - b.position)
 }
@@ -21,8 +22,8 @@ export function getNoAbsWorkouts() {
   if (!workoutsObject) return []
   return Object.keys(workoutsObject).map(key => {
     return {
-      id: key,
-      ...workoutsObject[key]
+      ...workoutsObject[key],
+      id: key
     }
   }).filter(e => !e.isAbs).sort((a, b) => a.position - b.position)
 }
@@ -32,8 +33,8 @@ export function getAbsWorkouts() {
   if (!workoutsObject) return []
   return Object.keys(workoutsObject).map(key => {
     return {
-      id: key,
-      ...workoutsObject[key]
+      ...workoutsObject[key],
+      id: key
     }
   }).filter(e => e.isAbs).sort((a, b) => a.position - b.position)
 }
@@ -42,8 +43,8 @@ export function getWorkout(id) {
   const data = LocalStorage.getItem(LOCALSTORAGE_DB_USER).workouts[id]
   if (!data) return null
   return {
-    id: id,
-    ...data
+    ...data,
+    id: id
   }
 }
 
@@ -66,18 +67,19 @@ export async function addWorkout(payload) {
         ...user.workouts,
         [id]: {
           ...payload,
+          id: null,
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString()
         }
       }
     })
   } else {
-    await createData('users/' + auth.currentUser.uid + '/workouts/' + id, payload)
+    await createData('users/' + auth.currentUser.uid + '/workouts/' + id, { ...payload, id: null })
   }
 
   return {
-    id: id,
-    ...payload
+    ...payload,
+    id: id
   }
 }
 
@@ -91,12 +93,13 @@ export async function updateWorkout(id, payload) {
         [id]: {
           ...user.workouts[id],
           ...payload,
+          id: null,
           updatedAt: new Date().toISOString()
         }
       }
     })
   } else {
-    await updateData('users/' + auth.currentUser.uid + '/workouts/' + id, payload)
+    await updateData('users/' + auth.currentUser.uid + '/workouts/' + id, { ...payload, id: null })
   }
 
   return payload
@@ -170,4 +173,36 @@ export async function deleteWorkout(id) {
   } else {
     await removeData('users/' + auth.currentUser.uid + '/workouts/' + id)
   }
+}
+
+export async function enableShareForWorkout(id) {
+  const user = getUser()
+  if (!user || user.uid === USER_GUEST_UID) return
+  const shareId = uid().replaceAll('-', '')
+  const payload = {
+    shareId: shareId
+  }
+  await updateData('users/' + auth.currentUser.uid + '/workouts/' + id, payload)
+  await createData('shared/' + shareId, {
+    workoutId: id,
+    userId: auth.currentUser.uid,
+    type: SHARED_DATA_TYPE_WORKOUT
+  })
+
+  return payload
+}
+
+export async function cancelShareForWorkout(id) {
+  const user = getUser()
+  if (!user || user.uid === USER_GUEST_UID) return
+  const workout = getWorkout(id)
+
+  await removeData('shared/' + workout.shareId)
+  workout.shareId = null
+
+  await updateData('users/' + auth.currentUser.uid + '/workouts/' + id, {
+    shareId: null
+  })
+
+  return workout
 }

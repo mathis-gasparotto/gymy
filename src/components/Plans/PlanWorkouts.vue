@@ -1,6 +1,6 @@
 <template>
   <div class="flex column">
-    <GymyHeader :text="'Entrainements<br/>' + plan.label" />
+    <GymyHeader :text="'Entraînements<br/>' + plan.label" />
     <div v-if="planWorkouts && planWorkouts.length > 0">
       <div class="relative">
         <div class="plan-template absolute">
@@ -68,11 +68,11 @@
         </draggable>
       </div>
     </div>
-    <span v-else class="text-center">Aucun entrainement de disponible</span>
+    <span v-else class="text-center">Aucun entraînement de disponible</span>
     <q-dialog v-model="showAddPlan" @hide="resetForm">
       <q-card class="q-px-xs q-py-xs">
         <q-card-section class="text-h5 text-center">
-          Choisissez un entrainement
+          Choisissez un entraînement
         </q-card-section>
         <q-card-section>
           <q-card class="cursor-pointer q-mb-md" v-for="workout in workouts" :key="workout.id"
@@ -84,7 +84,7 @@
         </q-card-section>
         <q-expansion-item
           icon="sym_o_add_box"
-          label="Définir un entrainement personnalisé"
+          label="Définir un entraînement personnalisé"
           class="q-mb-lg bordered-y"
         >
           <q-card-section>
@@ -198,7 +198,7 @@ export default {
         sundayWorkoutLabel: this.planWorkouts[6].restDay ? null : this.planWorkouts[6].id ? null : this.planWorkouts[6].label
       })
         .catch((err) => {
-          errorNotify('Une erreur est survenue lors du déplacement de votre entrainement')
+          errorNotify('Une erreur est survenue lors du déplacement de votre entraînement')
           this.loadPlanWorkouts()
         })
     },
@@ -268,7 +268,7 @@ export default {
       updatePlan(this.plan.id, payload).then(() => {
         this.loadPlanWorkouts()
       }).catch((err) => {
-        errorNotify('Une erreur est survenue lors de le retrait de votre entrainement au programme')
+        errorNotify('Une erreur est survenue lors de le retrait de votre entraînement au programme')
         this.loadPlanWorkouts()
       })
     },
@@ -356,7 +356,7 @@ export default {
         this.showAddPlan = false
         this.indexToAddWorkout = null
       }).catch((err) => {
-        errorNotify('Une erreur est survenue lors de l\'ajout de votre entrainement au programme')
+        errorNotify('Une erreur est survenue lors de l\'ajout de votre entraînement au programme')
         this.loadPlanWorkouts()
       })
     },

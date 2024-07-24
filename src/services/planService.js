@@ -11,8 +11,8 @@ export function getPlans() {
   if (!plansObject) return []
   return Object.keys(plansObject).map(key => {
     return {
+      ...plansObject[key],
       id: key,
-      ...plansObject[key]
     }
   }).sort((a, b) => a.position - b.position)
 }
@@ -21,8 +21,8 @@ export function getPlan(id) {
   const data = LocalStorage.getItem(LOCALSTORAGE_DB_USER).plans[id]
   if (!data) return null
   return {
-    id: id,
-    ...data
+    ...data,
+    id: id
   }
 }
 
@@ -73,18 +73,19 @@ export async function addPlan(payload) {
         ...user.plans,
         [id]: {
           ...payload,
+          id: null,
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString()
         }
       }
     })
   } else {
-    await createData('users/' + auth.currentUser.uid + '/plans/' + id, payload)
+    await createData('users/' + auth.currentUser.uid + '/plans/' + id, { ...payload, id: null })
   }
 
   return {
-    id: id,
-    ...payload
+    ...payload,
+    id: id
   }
 }
 
@@ -98,12 +99,13 @@ export async function updatePlan(id, payload) {
         [id]: {
           ...user.plans[id],
           ...payload,
+          id: null,
           updatedAt: new Date().toISOString()
         }
       }
     })
   } else {
-    await updateData('users/' + auth.currentUser.uid + '/plans/' + id, payload)
+    await updateData('users/' + auth.currentUser.uid + '/plans/' + id, { ...payload, id: null })
   }
 
   return payload

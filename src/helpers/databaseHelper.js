@@ -2,6 +2,7 @@ import { DEFAULT_NUMBER_OF_SERIES, DEFAULT_REST_TIME } from "./userHelper"
 import { PERFORMANCE_TYPE_DEFAULT, PERFORMANCE_TYPES } from "./performanceHelper"
 
 export const LOCALSTORAGE_DB_USER = 'user'
+export const LOCALSTORAGE_DB_SHARED = 'shared_db'
 
 export const LOCALSTORAGE_DATABASES = [
   LOCALSTORAGE_DB_USER,
@@ -172,6 +173,11 @@ const workoutProps = [
     name: 'restTime',
     type: 'number',
     default: null
+  },
+  {
+    name: 'shareId',
+    type: 'string',
+    default: null
   }
 ]
 
@@ -306,7 +312,7 @@ function formatWorkouts(workouts) {
           return workoutAcc[workoutId][prop.name] = index + 1
         }
         if (prop.name === 'label') {
-          return workoutAcc[workoutId][prop.name] = 'Entrainement ' + (index + 1)
+          return workoutAcc[workoutId][prop.name] = 'Entraînement ' + (index + 1)
         }
         return workoutAcc[workoutId][prop.name] = prop.default
       }

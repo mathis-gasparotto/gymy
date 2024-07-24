@@ -8,7 +8,7 @@
         </template>
       </draggable>
     </div>
-    <span v-else class="text-center">Aucun exercice de disponible dans cet entrainement</span>
+    <span v-else class="text-center">Aucun exercice de disponible dans cet entraînement</span>
     <q-dialog v-model="editForm">
       <q-card class="q-px-xs q-py-xs">
         <q-card-section>

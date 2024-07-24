@@ -10,8 +10,8 @@ export function getExercises(workoutId) {
   if (!exercisesObject) return []
   return Object.keys(exercisesObject).map(key => {
     return {
-      id: key,
-      ...exercisesObject[key]
+      ...exercisesObject[key],
+      id: key
     }
   }).sort((a, b) => a.position - b.position)
 }
@@ -20,8 +20,8 @@ export function getExercise(workoutId, id) {
   const data = LocalStorage.getItem(LOCALSTORAGE_DB_USER).workouts[workoutId].exercises[id]
   if (!data) return null
   return {
-    id: id,
-    ...data
+    ...data,
+    id: id
   }
 }
 
@@ -49,6 +49,7 @@ export async function addExercise(workoutId, payload) {
             ...user.workouts[workoutId].exercises,
             [id]: {
               ...payload,
+              id: null,
               createdAt: new Date().toISOString(),
               updatedAt: new Date().toISOString()
             },
@@ -57,13 +58,13 @@ export async function addExercise(workoutId, payload) {
       }
     })
   } else {
-    await createData('users/' + auth.currentUser.uid + '/workouts/' + workoutId + '/exercises/' + id, payload)
+    await createData('users/' + auth.currentUser.uid + '/workouts/' + workoutId + '/exercises/' + id, { ...payload, id: null })
   }
 
 
   return {
-    id: id,
-    ...payload
+    ...payload,
+    id: id
   }
 }
 
@@ -81,6 +82,7 @@ export async function updateExercise(workoutId, id, payload) {
             [id]: {
               ...user.workouts[workoutId].exercises[id],
               ...payload,
+              id: null,
               updatedAt: new Date().toISOString()
             }
           }
@@ -88,7 +90,7 @@ export async function updateExercise(workoutId, id, payload) {
       }
     })
   } else {
-    await updateData('users/' + auth.currentUser.uid + '/workouts/' + workoutId + '/exercises/' + id, payload)
+    await updateData('users/' + auth.currentUser.uid + '/workouts/' + workoutId + '/exercises/' + id, { ...payload, id: null })
   }
 
   return payload

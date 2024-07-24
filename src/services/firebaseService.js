@@ -4,10 +4,11 @@ import { getUser, initUser } from './userService'
 import { LocalStorage } from 'quasar'
 import { auth, db} from 'src/boot/firebase'
 import { USER_GUEST_UID } from 'src/helpers/userHelper'
+import { LOCALSTORAGE_DB_SHARED } from 'src/helpers/databaseHelper'
 
-export async function retrieveData(refStr) {
+export  function retrieveData(refStr) {
   const dataRef = ref(db, refStr)
-  return await get(dataRef)
+  return get(dataRef)
     .then((snapshot) => {
       if (snapshot.exists()) {
         return snapshot.val()
@@ -26,19 +27,19 @@ export function createData(refStr, data) {
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
   }
-  set(ref(db, refStr), data)
+  return set(ref(db, refStr), data)
 }
 
-export async function updateData(refStr, data) {
+export function updateData(refStr, data) {
   data = {
     ...data,
     updatedAt: new Date().toISOString()
   }
-  return await update(ref(db, refStr), data)
+  return update(ref(db, refStr), data)
 }
 
-export async function removeData(refStr) {
-  return await remove(ref(db, refStr))
+export function removeData(refStr) {
+  return remove(ref(db, refStr))
 }
 
 export function initData(refStr, localStorageKey, initValue = null) {
@@ -77,4 +78,8 @@ export function loginUser(email, password) {
   .catch((error) => {
     throw new Error(error)
   })
+}
+
+export function initShareBD() {
+  initData('shared', LOCALSTORAGE_DB_SHARED, {})
 }
