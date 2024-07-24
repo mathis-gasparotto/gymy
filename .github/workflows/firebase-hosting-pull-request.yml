@@ -26,7 +26,7 @@ jobs:
           echo FIREBASE_APP_ID=${{ secrets.FIREBASE_APP_ID }} >> .env
           echo FIREBASE_MEASUREMENT_ID=${{ secrets.FIREBASE_MEASUREMENT_ID }} >> .env
           echo SITE_URL=${{ vars.SITE_URL }} >> .env
-          echo APP_URL=${{ vars.APP_URL }} >> .env
+          echo APP_MAIN_URL=${{ vars.APP_MAIN_URL }} >> .env
           npm ci && npm run build:web
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
