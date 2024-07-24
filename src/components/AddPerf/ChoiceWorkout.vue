@@ -14,7 +14,7 @@
         <q-card-section>
           <div class="text-h6 text-center">Partager l'entraînement {{ workoutToShare.label }}</div>
         </q-card-section>
-        <q-card-section class="text-center">
+        <q-card-section class="column flex-center">
           <q-btn v-if="!workoutToShare.shareId" label="Générer un lien de partage" color="primary" @click="generateShareId(workoutToShare)" :loading="generatingShareLoading" />
           <template v-else>
             <q-btn label="Partager" color="primary" class="q-mb-lg" @click="shareBtn(workoutToShare)" />
@@ -141,8 +141,8 @@ export default {
     shareBtn(workout) {
       Share.share({
         title: 'Partage d\'un entraînement sur Gymy',
-        text: 'Essaie mon entraînement sur Gymy : ' + workout.label,
-        url: 'http://localhost:9000/share/' + workout.shareId,
+        text: 'Essaie mon entraînement "' + workout.label + '" sur Gymy !',
+        url: process.env.APP_MAIN_URL + '/share/' + workout.shareId,
         dialogTitle: 'Partage de l\'entraînement'
       })
     },
@@ -166,7 +166,7 @@ export default {
         .then(({shareId}) => {
           workout.shareId = shareId
           this.loadWorkouts()
-          copyToClipboard('http://localhost:9000/share/' + shareId).then(() => {
+          copyToClipboard(process.env.APP_MAIN_URL + '/share/' + shareId).then(() => {
             successNotify('Le lien de partage a été copié')
             this.generatingShareLoading = false
           })

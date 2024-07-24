@@ -149,6 +149,7 @@ export async function deleteWorkout(id) {
   const workouts = getWorkouts()
   const workoutToDelete = workouts.find(e => e.id === id)
   if (!workoutToDelete) throw new Error('Workout not found')
+  if (workoutToDelete.shareId) await removeData('shared/' + workoutToDelete.shareId)
   if (workouts.length > 1) {
     // update positions
     const workoutsToUpdate = workouts.filter(e => e.position > workoutToDelete.position)
