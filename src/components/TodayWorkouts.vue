@@ -1,6 +1,6 @@
 <template>
   <div class="column flex-center">
-    <h2 class="text-h5 q-mb-0">Entrainements d'aujourd'hui</h2>
+    <h2 class="text-h5 q-mb-0">Entraînements d'aujourd'hui</h2>
     <div v-if="todayWorkouts.length === 0" class="q-mt-md">Aucun programme...</div>
     <div v-for="plan in todayWorkouts" :key="plan.id">
       <h3 class="text-h6 text-center">{{ plan.label }}</h3>

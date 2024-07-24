@@ -11,8 +11,8 @@ export function getPerformances(workoutId, exerciseId) {
   if (!performancesObject) return []
   return Object.keys(performancesObject).map(key => {
     return {
-      id: key,
-      ...performancesObject[key]
+      ...performancesObject[key],
+      id: key
     }
   }).sort((a, b) => new Date(b.date) - new Date(a.date))
 }
@@ -21,8 +21,8 @@ export function getPerformance(workoutId, exerciseId, id) {
   const data = LocalStorage.getItem(LOCALSTORAGE_DB_USER).workouts[workoutId].exercises[exerciseId].performances[id]
   if (!data) return null
   return {
-    id: id,
-    ...data
+    ...data,
+    id: id
   }
 }
 
@@ -67,6 +67,7 @@ export async function addPerformance(workoutId, exerciseId, payload) {
                 ...user.workouts[workoutId].exercises[exerciseId].performances,
                 [id]: {
                   ...payload,
+                  id: null,
                   createdAt: new Date().toISOString(),
                   updatedAt: new Date().toISOString()
                 }
@@ -77,12 +78,12 @@ export async function addPerformance(workoutId, exerciseId, payload) {
       }
     })
   } else {
-    await createData('users/' + auth.currentUser.uid + '/workouts/' + workoutId + '/exercises/' + exerciseId + '/performances/' + id, payload)
+    await createData('users/' + auth.currentUser.uid + '/workouts/' + workoutId + '/exercises/' + exerciseId + '/performances/' + id, { ...payload, id: null })
   }
 
   return {
-    id: id,
-    ...payload
+    ...payload,
+    id: id
   }
 }
 
@@ -107,6 +108,7 @@ export async function updatePerformance(workoutId, exerciseId, id, payload) {
                 [id]: {
                   ...user.workouts[workoutId].exercises[exerciseId].performances[id],
                   ...payload,
+                  id: null,
                   updatedAt: new Date().toISOString()
                 }
               }
@@ -116,7 +118,7 @@ export async function updatePerformance(workoutId, exerciseId, id, payload) {
       }
     })
   } else {
-    await updateData('users/' + auth.currentUser.uid + '/workouts/' + workoutId + '/exercises/' + exerciseId + '/performances/' + id, payload)
+    await updateData('users/' + auth.currentUser.uid + '/workouts/' + workoutId + '/exercises/' + exerciseId + '/performances/' + id, { ...payload, id: null })
   }
 
   return payload

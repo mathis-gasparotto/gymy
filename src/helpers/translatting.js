@@ -97,6 +97,14 @@ export default () => ({
     switch (error.message) {
       case 'All series must be of the same type':
         return 'Toutes les séries saisies doivent toutes être soit en type défaut, soit d\'un type autre que défaut'
+      case 'Shared data not found':
+        return 'Données partagées introuvables'
+      case 'Author not found':
+        return 'Auteur introuvable'
+      case 'You cannot add your own shared content':
+        return 'Vous ne pouvez pas ajouter votre propre contenu partagé'
+      case 'Shared data corrupted':
+        return 'Données partagées corrompues'
       default:
         return defaultMessage || 'Une erreur est survenue'
     }

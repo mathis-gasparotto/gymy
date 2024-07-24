@@ -30,6 +30,12 @@ const routes = [
         component: () => import('pages/Abs.vue')
       },
       {
+        path: '/share/:shareId',
+        name: 'share',
+        // call the addSharedContentToOwnDB function from shareService.js
+        component: () => import('pages/SharePage.vue')
+      },
+      {
         path: '/workouts',
         component: () => import('layouts/WorkoutsLayout.vue'),
         children: [

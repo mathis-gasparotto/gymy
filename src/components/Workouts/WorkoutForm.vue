@@ -4,7 +4,7 @@
       name="label"
       rounded
       outlined
-      label="Nom de l'entrainement"
+      label="Nom de l'entraînement"
       class="q-mb-md"
       type="text"
       v-model="workoutForm.label"
@@ -26,7 +26,7 @@
     ></q-input>
     <q-checkbox
       v-model="workoutForm.isAbs"
-      label="Entrainement Abs"
+      label="Entraînement Abs"
       checked-icon="task_alt"
       unchecked-icon="highlight_off"
       class="q-mb-md"

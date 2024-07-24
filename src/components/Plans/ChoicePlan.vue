@@ -141,7 +141,7 @@ export default {
     showDeleteModal(plan) {
       let deleteLoading = false
       Dialog.create({
-        title: 'Suppression d\'entrainement',
+        title: 'Suppression d\'entraînement',
         message: 'Êtes-vous sûr de vouloir supprimer votre planification ' + plan.label + ' ?',
         // persistent: true,
         ok: {

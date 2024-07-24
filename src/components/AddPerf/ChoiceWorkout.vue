@@ -1,18 +1,35 @@
 <template>
   <div class="flex column">
-    <GymyHeader text="Entrainements" />
+    <GymyHeader text="Entraînements" />
     <div v-if="workouts && workouts.length > 0">
       <draggable :list="workouts" class="list-group" ghost-class="ghost" itemKey="id" handle=".draggable-btn" @end="onDragEnd" @start="drag=true">
         <template #item="{ element }">
-          <WorkoutCard :workout="element" draggable :drag="drag" @edit="edit(element)" @showDeleteModal="showDeleteModal(element)" @click="$emit('selectWorkout', element)" />
+          <WorkoutCard :workout="element" draggable :drag="drag" @share="share(element)" @edit="edit(element)" @showDeleteModal="showDeleteModal(element)" @click="$emit('selectWorkout', element)" />
         </template>
       </draggable>
     </div>
-    <span v-else class="text-center">Aucun entrainement de disponible</span>
-    <q-dialog v-model="editForm">
+    <span v-else class="text-center">Aucun entraînement de disponible</span>
+    <q-dialog v-model="shareForm" @hide="workoutToShare = {}">
       <q-card class="q-px-xs q-py-xs">
         <q-card-section>
-          <div class="text-h6 text-center">Modifier l'entrainement {{ workoutToEdit.label }}</div>
+          <div class="text-h6 text-center">Partager l'entraînement {{ workoutToShare.label }}</div>
+        </q-card-section>
+        <q-card-section class="text-center">
+          <q-btn v-if="!workoutToShare.shareId" label="Générer un lien de partage" color="primary" @click="generateShareId(workoutToShare)" :loading="generatingShareLoading" />
+          <template v-else>
+            <q-btn label="Partager" color="primary" class="q-mb-lg" @click="shareBtn(workoutToShare)" />
+            <q-btn label="Désactiver le paratage" color="negative" @click="cancelShare(workoutToShare)" :loading="cancelShareLoading" />
+          </template>
+        </q-card-section>
+        <q-card-actions align="center">
+          <q-btn label="Fermer" color="negative" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+    <q-dialog v-model="editForm" @hide="workoutToEdit = {}">
+      <q-card class="q-px-xs q-py-xs">
+        <q-card-section>
+          <div class="text-h6 text-center">Modifier l'entraînement {{ workoutToEdit.label }}</div>
         </q-card-section>
         <q-card-section>
           <WorkoutForm :initData="workoutToEdit" buttonLabel="Confirmer" :loading="editLoading" @submit="onEditSubmit" />
@@ -25,7 +42,7 @@
     <q-dialog v-model="addForm">
       <q-card class="q-px-xs q-py-xs">
         <q-card-section>
-          <div class="text-h6 text-center">Ajouter un entrainement</div>
+          <div class="text-h6 text-center">Ajouter un entraînement</div>
         </q-card-section>
         <q-card-section>
           <WorkoutForm buttonLabel="Ajouter" buttonIcon="add" :loading="addLoading" @submit="onAddSubmit" />
@@ -42,13 +59,15 @@
 </template>
 
 <script>
-import { addWorkout, deleteWorkout, getWorkouts, updateWorkout, moveWorkout } from 'src/services/workoutService'
+import { addWorkout, deleteWorkout, getWorkouts, updateWorkout, moveWorkout, enableShareForWorkout, cancelShareForWorkout } from 'src/services/workoutService'
 import GymyHeader from 'src/components/GymyHeader.vue'
 import { Dialog } from 'quasar'
 import { errorNotify, successNotify } from 'src/helpers/notifyHelper'
 import WorkoutForm from 'src/components/Workouts/WorkoutForm.vue'
 import draggable from 'vuedraggable'
 import WorkoutCard from 'src/components/Workouts/WorkoutCard.vue'
+import { copyToClipboard } from 'quasar'
+import { Share } from '@capacitor/share'
 
 export default {
   name: 'ChoiceWorkout',
@@ -67,7 +86,11 @@ export default {
       addLoading: false,
       editForm: false,
       editLoading: false,
-      workoutToEdit: {}
+      workoutToEdit: {},
+      workoutToShare: {},
+      shareForm: false,
+      generatingShareLoading: false,
+      cancelShareLoading: false
     }
   },
   created() {
@@ -79,7 +102,7 @@ export default {
       const newPosition = e.newIndex + 1
       moveWorkout(e.item['_underlying_vm_'].id, newPosition)
       .catch((err) => {
-        errorNotify('Une erreur est survenue lors du déplacement de votre entrainement')
+        errorNotify('Une erreur est survenue lors du déplacement de votre entraînement')
         this.loadWorkouts()
       })
     },
@@ -91,13 +114,13 @@ export default {
       addWorkout(payload)
         .then(() => {
           this.loadWorkouts()
-          successNotify('Votre entrainement a bien été ajouté')
+          successNotify('Votre entraînement a bien été ajouté')
           this.addForm = false
           this.addLoading = false
         })
         .catch((err) => {
           this.addLoading = false
-          errorNotify('Une erreur est survenue lors de l\'ajout de votre entrainement')
+          errorNotify('Une erreur est survenue lors de l\'ajout de votre entraînement')
         })
     },
     onEditSubmit(payload) {
@@ -105,24 +128,67 @@ export default {
       updateWorkout(payload.id, payload)
         .then(() => {
           this.loadWorkouts()
-          successNotify('Votre entrainement a bien été modifié')
+          successNotify('Votre entraînement a bien été modifié')
           this.editForm = false
           this.editLoading = false
+          this.workoutToEdit = {}
         })
         .catch((err) => {
           this.editLoading = false
-          errorNotify('Une erreur est survenue lors de l\'édition de votre entrainement')
+          errorNotify('Une erreur est survenue lors de l\'édition de votre entraînement')
+        })
+    },
+    shareBtn(workout) {
+      Share.share({
+        title: 'Partage d\'un entraînement sur Gymy',
+        text: 'Essaie mon entraînement sur Gymy : ' + workout.label,
+        url: 'http://localhost:9000/share/' + workout.shareId,
+        dialogTitle: 'Partage de l\'entraînement'
+      })
+    },
+    cancelShare(workout) {
+      this.cancelShareLoading = true
+      cancelShareForWorkout(workout.id)
+        .then(() => {
+          workout.shareId = null
+          this.loadWorkouts()
+          successNotify('Le partage de votre entraînement a bien été désactivé')
+          this.cancelShareLoading = false
+        })
+        .catch((err) => {
+          this.cancelShareLoading = false
+          errorNotify('Une erreur est survenue lors de la désactivation du partage de votre entraînement')
+        })
+    },
+    generateShareId(workout) {
+      this.generatingShareLoading = true
+      enableShareForWorkout(workout.id)
+        .then(({shareId}) => {
+          workout.shareId = shareId
+          this.loadWorkouts()
+          copyToClipboard('http://localhost:9000/share/' + shareId).then(() => {
+            successNotify('Le lien de partage a été copié')
+            this.generatingShareLoading = false
+          })
+        })
+        .catch((err) => {
+          this.generatingShareLoading = false
+          errorNotify('Une erreur est survenue lors de la génération du code de partage')
         })
     },
     edit(workout) {
-      this.workoutToEdit = workout
+      this.workoutToEdit = {...workout}
       this.editForm = true
+    },
+    share(workout) {
+      this.workoutToShare = {...workout}
+      this.shareForm = true
     },
     showDeleteModal(workout) {
       let deleteLoading = false
       Dialog.create({
-        title: 'Suppression d\'entrainement',
-        message: 'Êtes-vous sûr de vouloir supprimer votre entrainement ' + workout.label + ' ?',
+        title: 'Suppression d\'entraînement',
+        message: 'Êtes-vous sûr de vouloir supprimer votre entraînement ' + workout.label + ' ?',
         // persistent: true,
         ok: {
           label: 'Supprimer',
@@ -139,11 +205,11 @@ export default {
           deleteWorkout(workout.id)
             .then(() => {
               this.loadWorkouts()
-              successNotify('Votre entrainement a bien été supprimé')
+              successNotify('Votre entraînement a bien été supprimé')
             })
             .catch((err) => {
               deleteLoading = false
-              errorNotify('Une erreur est survenue lors de la suppression de votre entrainement')
+              errorNotify('Une erreur est survenue lors de la suppression de votre entraînement')
             })
         })
         .onCancel(() => {

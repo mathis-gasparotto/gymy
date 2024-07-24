@@ -1,6 +1,6 @@
 <template>
   <q-card class="cursor-pointer q-mb-md flex-center column q-px-md" >
-    <q-card-section class="gt-xs flex flex-center">
+    <q-card-section class="gt-sm flex flex-center">
       <div class="q-mr-lg flex flex-cente">
         <img v-if="workout.isAbs" src="/src/assets/picto-abs.png" width="40px" />
       </div>
@@ -13,7 +13,7 @@
         </div>
       </div>
     </q-card-section>
-    <q-card-section class="q-pb-none lt-sm">
+    <q-card-section class="q-pb-none lt-md">
       <div class="text-h6 text-center">
         {{ workout.label }}
       </div>
@@ -21,14 +21,16 @@
         {{ workout.comment }}
       </div>
     </q-card-section>
-    <q-card-section v-if="workout.isAbs" class="lt-sm abs-indicator-section q-pa-none">
+    <q-card-section v-if="workout.isAbs" class="lt-md abs-indicator-section q-pa-none">
       <img src="~assets/picto-abs.png" width="50px" />
     </q-card-section>
-    <q-card-actions horizontal class="absolute-right gt-xs no-wrap">
+    <q-card-actions horizontal class="absolute-right gt-sm no-wrap">
+      <q-btn v-if="!isGuestUser" flat round color="secondary" icon="share" @click.stop="$emit('share')" />
       <q-btn flat round color="primary" icon="edit" @click.stop="$emit('edit')" />
       <q-btn flat round color="negative" icon="delete" @click.stop="$emit('showDeleteModal')" />
     </q-card-actions>
-    <q-card-actions horizontal class="lt-sm no-wrap q-pa-none">
+    <q-card-actions horizontal class="lt-md no-wrap q-pa-none">
+      <q-btn v-if="!isGuestUser" flat round color="secondary" icon="share" @click.stop="$emit('share')" />
       <q-btn flat round color="primary" icon="edit" @click.stop="$emit('edit')" />
       <q-btn flat round color="negative" icon="delete" @click.stop="$emit('showDeleteModal')" />
     </q-card-actions>
@@ -39,9 +41,12 @@
 </template>
 
 <script>
+import { getUser } from 'src/services/userService'
+import { USER_GUEST_UID } from 'src/helpers/userHelper'
+
 export default {
   name: 'WorkoutCard',
-  emits: ['edit', 'showDeleteModal'],
+  emits: ['share', 'edit', 'showDeleteModal'],
   props: {
     workout: {
       type: Object,
@@ -54,6 +59,11 @@ export default {
     drag: {
       type: Boolean,
       default: false
+    }
+  },
+  computed: {
+    isGuestUser() {
+      return getUser().uid === USER_GUEST_UID
     }
   }
 }
