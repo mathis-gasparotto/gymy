@@ -7,6 +7,10 @@
       <GymyHeader text="Commencer des séries d'Abs 💪" />
       <div class="text-h6 text-center q-mb-lg">Liste des séries</div>
       <q-list class="q-mb-lg w-100">
+        <div v-if="workouts.length <= 0" class="text-center">
+          <p>Aucune série d'abs disponible</p>
+          <p>Rendez-vous dans la page des <RouterLink :to="{name: 'workouts'}">entraînements</RouterLink> pour ajouter un entraînement d'abs</p>
+        </div>
         <q-card v-for="workout in workouts" :key="workout.id" class="q-mb-md" :class="{'bg-primary': workout.selected, 'text-white': workout.selected}" @click="selectWorkout(workout)">
           <q-card-section>
             <q-item-label class="text-center text-weight-bold">{{ workout.label }}</q-item-label>
