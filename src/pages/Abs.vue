@@ -135,6 +135,11 @@ export default {
   created() {
     this.reloadData()
   },
+  beforeUnmount() {
+    this.stopAllIntervals()
+    this.stopAllTimeouts()
+    this.stopAllSounds()
+  },
   computed: {
     isValid() {
       return this.seriesNb > 0 && this.workouts.some((workout) => workout.selected)
