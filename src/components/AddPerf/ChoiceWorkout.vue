@@ -141,7 +141,7 @@ export default {
     shareBtn(workout) {
       Share.share({
         title: 'Partage d\'un entraînement sur Gymy',
-        text: 'Essaie mon entraînement "' + workout.label + '" sur Gymy !',
+        text: 'Essaie mon entraînement "' + workout.label.trim() + '" sur Gymy !',
         url: process.env.APP_MAIN_URL + '/share/' + workout.shareId,
         dialogTitle: 'Partage de l\'entraînement'
       })
