@@ -64,6 +64,7 @@
           @click="stopAbs"
         />
       </div>
+      <div class="text-center q-mb-lg">Temps restant {{ formatting().durationFromSeconds(totalRemainingTime) }}</div>
       <div class="text-h5 text-center q-mb-lg">Série {{ currentSeries }}/{{ seriesNb }}</div>
       <div class="text-h4 text-center q-mb-xl">Exercice {{ step }}/{{ nbExercises }}</div>
       <div class="text-h4 text-center q-mt-lg q-mb-lg">{{ rest ? 'Repos 😴' : currentExercise.label }}</div>
@@ -129,6 +130,8 @@ export default {
       rest: false,
       intervals: [],
       timeouts: [],
+      totalRemainingTime: null,
+      totalRemainingTimeInterval: null,
       paused: false
     }
   },
@@ -151,8 +154,7 @@ export default {
       return workout
     },
     totalDuration() {
-      let base = this.selectedWorkout.durationWithoutFinishers * this.seriesNb + this.selectedWorkout.restTime * (this.seriesNb - 1) + (this.selectedWorkout.duration - this.selectedWorkout.durationWithoutFinishers)
-      return base
+      return this.selectedWorkout.durationWithoutFinishers * this.seriesNb + this.selectedWorkout.restTime * (this.seriesNb - 1) + (this.selectedWorkout.duration - this.selectedWorkout.durationWithoutFinishers)
     },
     nbExercises() {
       if (this.currentSeries === this.seriesNb) {
@@ -180,6 +182,9 @@ export default {
       this.finished = false
       this.rest = false
       this.intervals = []
+      this.timeouts = []
+      this.totalRemainingTime = null
+      this.totalRemainingTimeInterval = null
       this.workouts = getAbsWorkouts().map((workout) => ({
         ...workout,
         selected: false,
@@ -203,6 +208,7 @@ export default {
     resumeAbs() {
       this.paused = false
       this.startTimer(this.timer)
+      this.setRemainingTimeInterval()
     },
     stopAbs() {
       this.stopAllIntervals()
@@ -219,9 +225,13 @@ export default {
     },
     stopAllIntervals() {
       this.intervals.forEach((i) => clearInterval(i))
+      clearInterval(this.totalRemainingTimeInterval)
+      this.intervals = []
+      this.totalRemainingTimeInterval = null
     },
     stopAllTimeouts() {
       this.timeouts.forEach((t) => clearTimeout(t))
+      this.timeouts = []
     },
     start() {
       if (!this.selectedWorkout) {
@@ -246,6 +256,21 @@ export default {
           return
         }
       }, 1000))
+
+      this.totalRemainingTime = this.totalDuration
+      setTimeout(() => {
+        this.setRemainingTimeInterval()
+      }, 3000)
+    },
+    setRemainingTimeInterval() {
+      this.totalRemainingTimeInterval = setInterval(() => {
+        this.totalRemainingTime -= 1
+        if (this.totalRemainingTime <= 0) {
+          clearInterval(this.totalRemainingTimeInterval)
+          this.totalRemainingTimeInterval = null
+          return
+        }
+      }, 1000)
     },
     startSeries(isFirst = false) {
       this.step = 1
@@ -296,10 +321,10 @@ export default {
         if (this.currentSeries >= this.seriesNb) {
           this.finished = true
           this.playEnd()
-          this.timeouts.push(setTimeout(() => {
+          setTimeout(() => {
             this.timeouts.pop()
             this.stopAbs()
-          }, 5000))
+          }, 5000)
         } else {
           this.playDing()
           if (!this.rest) {
