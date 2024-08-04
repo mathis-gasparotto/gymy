@@ -8,7 +8,7 @@
       text-anchor="middle"
       font-size="12"
       fill="#8884d8">
-      {{ p.props.data[dataKeys[1]] }}
+      {{ p.props.data[dataKeys[1]] * (reversed ? -1 : 1) }}
     </text>
   </g>
 </template>
@@ -22,6 +22,10 @@ export default {
     dataKeys: {
       type: Object,
       required: true
+    },
+    reversed: {
+      type: Boolean,
+      default: false
     }
   },
   setup(props) {

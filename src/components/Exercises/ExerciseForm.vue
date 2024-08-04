@@ -57,6 +57,20 @@
         unchecked-icon="highlight_off"
         class="q-mb-md"
       />
+      <div class="q-mb-xl text-center">
+        <div class="q-mb-sm">Valeur de progression :</div>
+        <q-btn-toggle
+          v-if="!forAbsWorkout"
+          v-model="exerciseForm.isReverse"
+          toggle-color="primary"
+          name="isReverse"
+          no-caps
+          :options="[
+            {label: 'Croissante', value: false},
+            {label: 'Décroissante', value: true}
+          ]"
+        />
+      </div>
     </template>
     <q-btn
       color="primary"
@@ -107,7 +121,8 @@ export default {
         config: '',
         duration: '',
         forLastSeries: false,
-        abs: false
+        abs: false,
+        isReverse: false
       }
     }
   },

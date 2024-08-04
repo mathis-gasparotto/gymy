@@ -219,6 +219,11 @@ const exerciseProps = [
     name: 'config',
     type: 'string',
     default: null
+  },
+  {
+    name: 'isReverse',
+    type: 'boolean',
+    default: false
   }
 ]
 
