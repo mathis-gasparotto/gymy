@@ -1,7 +1,7 @@
 <template>
   <AddPerfExercise class="q-mb-lg" :workout="workout" :exercise="exercise" @reloadPerformances="reloadPerformances" />
   <PerformanceList :workout="workout" :exercise="exercise" @reloadPerformances="reloadPerformances" ref="performanceList" />
-  <PerformancesGraph :workoutId="workout.id" :exerciseId="exercise.id" ref="performanceGraph" />
+  <PerformancesGraph :workoutId="workout.id" :exerciseId="exercise.id" ref="performanceGraph" :reversed="exercise.isReverse" />
 </template>
 
 <script>

@@ -1,12 +1,12 @@
 <template>
-  <Responsive>
+  <Responsive v-if="showChart" >
     <template #main="{ width }">
       <div class="chart-container">
-        <Chart :data="data" direction="horizontal" v-if="showChart"  :size="{ width, height: 420 }" :axis="axis" class="flex" :margin="margin">
+        <Chart :data="data" direction="horizontal" :size="{ width, height: 420 }" :axis="axis" class="flex" :margin="margin">
           <template #layers>
             <Grid strokeDasharray="2,2" />
             <LineComp :dataKeys="['date', 'value']" type="step" />
-            <LabelsLayer :dataKeys="['date', 'value']" />
+            <LabelsLayer :dataKeys="['date', 'value']" :reversed="reversed" />
           </template>
           <template #widgets>
             <Tooltip
@@ -15,6 +15,9 @@
                 date: { label: 'date' },
                 comment: { label: 'commentaire' },
               }"
+              :canvas="{
+                width: 100
+              }"
             />
           </template>
         </Chart>
@@ -22,7 +25,6 @@
     </template>
   </Responsive>
 </template>
-
 <script>
 import { Responsive, Chart, Grid, Line as LineComp, Tooltip } from 'vue3-charts'
 import { getPerformanceAverage, getPerformances } from 'src/services/performanceService'
@@ -47,16 +49,19 @@ export default {
     exerciseId: {
       type: String,
       required: true
+    },
+    reversed: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
     return {
-      performances: null,
       data: [],
       axis: {
         secondary: {
-          domain: ['dataMin', 'dataMax + 5'],
-          type: 'linear',
+          domain: ['dataMin', 'dataMax + 2'],
+          type: 'linear'
         }
       },
       margin: {
@@ -70,22 +75,26 @@ export default {
   },
   created() {
     this.loadPerformances()
+    if (this.reversed) {
+      this.axis.secondary.domain = ['dataMin -2', '0']
+      this.axis.secondary.format = (d) => d * -1
+    }
   },
   methods: {
     loadPerformances() {
       this.showChart = false
-      this.performances = getPerformances(this.workoutId, this.exerciseId)
-      this.performances = this.performances.sort((a, b) => new Date(a.date) - new Date(b.date))
+      let performances = getPerformances(this.workoutId, this.exerciseId)
+      performances = performances.sort((a, b) => new Date(a.date) - new Date(b.date))
       this.data = []
-      this.performances.forEach((perf) => {
+      performances.forEach((perf) => {
         const value = getPerformanceAverage(this.workoutId, this.exerciseId, perf.id)
         this.data.push({
           date: formatting().dateToDisplay(perf.date),
-          value: value,
+          value: value * (this.reversed ? -1 : 1),
           comment: perf.comment
         })
       })
-      this.showChart = true
+      this.showChart = this.data.length > 0
     }
   }
 }
