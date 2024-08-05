@@ -32,6 +32,8 @@ jobs:
         with:
           name: app
           path: .
+          retention-days: 1
+          compression-level: 6
 
   deploy:
     runs-on: ubuntu-latest
