@@ -66,8 +66,8 @@
       </div>
       <div class="text-center q-mb-lg">Temps restant {{ formatting().durationFromSeconds(totalRemainingTime) }}</div>
       <div class="text-h5 text-center q-mb-lg">Série {{ currentSeries }}/{{ seriesNb }}</div>
-      <div class="text-h4 text-center q-mb-xl">Exercice {{ step }}/{{ nbExercises }}</div>
-      <div class="text-h4 text-center q-mt-lg q-mb-lg">{{ rest ? 'Repos 😴' : currentExercise.label }}</div>
+      <div class="text-h4 text-center q-mb-xl">{{ rest ? 'Inter-séries' : ('Étape ' + step  + '/' + nbExercises) }}</div>
+      <div class="text-h4 text-center q-mt-lg q-mb-lg">{{ rest || currentExercise.restAbs ? 'Repos 😴' : currentExercise.label }}</div>
       <div class="text-h1">{{ timer }}</div>
       <div v-if="finished" class="fixed-center z-max fit flex flex-center text-h3 finished-display">
         <q-card>
@@ -261,10 +261,13 @@ export default {
     },
     startTimer(timer) {
       this.timer = timer
-      if (this.timer > 3) {
-        this.playInProgress()
-      } else {
+      if (this.currentExercise.restAbs) {
+        this.stopInProgress()
+      }
+      if (this.timer <= 3) {
         this.playSoundLast3Sec()
+      } else if (!this.currentExercise.restAbs) {
+        this.playInProgress()
       }
       this.intervals.push(setInterval(() => {
         this.timer--
