@@ -131,7 +131,6 @@ export default {
       intervals: [],
       timeouts: [],
       totalRemainingTime: null,
-      totalRemainingTimeInterval: null,
       paused: false
     }
   },
@@ -184,7 +183,6 @@ export default {
       this.intervals = []
       this.timeouts = []
       this.totalRemainingTime = null
-      this.totalRemainingTimeInterval = null
       this.workouts = getAbsWorkouts().map((workout) => ({
         ...workout,
         selected: false,
@@ -208,7 +206,7 @@ export default {
     resumeAbs() {
       this.paused = false
       this.startTimer(this.timer)
-      this.setRemainingTimeInterval()
+      // this.setRemainingTimeInterval()
     },
     stopAbs() {
       this.stopAllIntervals()
@@ -225,9 +223,7 @@ export default {
     },
     stopAllIntervals() {
       this.intervals.forEach((i) => clearInterval(i))
-      clearInterval(this.totalRemainingTimeInterval)
       this.intervals = []
-      this.totalRemainingTimeInterval = null
     },
     stopAllTimeouts() {
       this.timeouts.forEach((t) => clearTimeout(t))
@@ -257,20 +253,7 @@ export default {
         }
       }, 1000))
 
-      this.totalRemainingTime = this.totalDuration
-      setTimeout(() => {
-        this.setRemainingTimeInterval()
-      }, 3000)
-    },
-    setRemainingTimeInterval() {
-      this.totalRemainingTimeInterval = setInterval(() => {
-        this.totalRemainingTime -= 1
-        if (this.totalRemainingTime <= 0) {
-          clearInterval(this.totalRemainingTimeInterval)
-          this.totalRemainingTimeInterval = null
-          return
-        }
-      }, 1000)
+      this.totalRemainingTime = this.totalDuration - 1
     },
     startSeries(isFirst = false) {
       this.step = 1
@@ -285,6 +268,7 @@ export default {
       }
       this.intervals.push(setInterval(() => {
         this.timer--
+        this.totalRemainingTime--
         if (this.timer === 3) {
           this.playSoundLast3Sec()
         }
@@ -305,6 +289,7 @@ export default {
       }
       this.intervals.push(setInterval(() => {
         this.timer--
+        this.totalRemainingTime--
         if (this.timer === 3) {
           this.playSoundLast3Sec()
         }
