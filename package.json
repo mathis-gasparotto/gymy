@@ -22,6 +22,7 @@
     "cap:open:android": "cd src-capacitor && npx cap open android"
   },
   "dependencies": {
+    "@capacitor/core": "^5.0.0",
     "@capacitor/keyboard": "^5.0.0",
     "@capacitor/share": "^5.0.8",
     "@ionic/pwa-elements": "^3.2.2",
