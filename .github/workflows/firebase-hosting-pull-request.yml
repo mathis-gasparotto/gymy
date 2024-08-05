@@ -27,7 +27,7 @@ jobs:
           echo FIREBASE_MEASUREMENT_ID=${{ secrets.FIREBASE_MEASUREMENT_ID }} >> .env
           echo SITE_URL=${{ vars.SITE_URL }} >> .env
           echo APP_MAIN_URL=${{ vars.APP_MAIN_URL }} >> .env
-          npm ci && npm run build:web
+          yarn install --frozen-lockfile && yarn build:web
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
