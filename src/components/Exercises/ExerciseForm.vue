@@ -9,7 +9,16 @@
       class="q-mb-md"
     />
     <template v-if="!exerciseForm.abs || forAbsWorkout">
+      <q-checkbox
+        v-if="forAbsWorkout"
+        v-model="exerciseForm.restAbs"
+        label="Repos"
+        checked-icon="task_alt"
+        unchecked-icon="highlight_off"
+        class="q-mb-md"
+      />
       <q-input
+        v-if="!forAbsWorkout || !exerciseForm.restAbs"
         name="label"
         rounded
         outlined
@@ -24,6 +33,7 @@
         hide-bottom-space
       ></q-input>
       <q-input
+        v-if="!forAbsWorkout || !exerciseForm.restAbs"
         name="config"
         rounded
         outlined
@@ -38,7 +48,7 @@
         name="duration"
         rounded
         outlined
-        label="Durée de l'exercice"
+        :label="!forAbsWorkout || !exerciseForm.restAbs ? 'Durée de l\'exercice' : 'Temps de repos'"
         class="q-mb-md"
         type="number"
         inputmode="numeric"
@@ -50,17 +60,16 @@
         suffix="s"
       ></q-input>
       <q-checkbox
-        v-if="forAbsWorkout"
+        v-if="forAbsWorkout && !exerciseForm.restAbs"
         v-model="exerciseForm.forLastSeries"
         label="Juste pour la dernière série"
         checked-icon="task_alt"
         unchecked-icon="highlight_off"
         class="q-mb-md"
       />
-      <div class="q-mb-xl text-center">
+      <div class="q-mb-xl text-center" v-if="!forAbsWorkout">
         <div class="q-mb-sm">Valeur de progression :</div>
         <q-btn-toggle
-          v-if="!forAbsWorkout"
           v-model="exerciseForm.isReverse"
           toggle-color="primary"
           name="isReverse"
@@ -122,6 +131,7 @@ export default {
         duration: '',
         forLastSeries: false,
         abs: false,
+        restAbs: false,
         isReverse: false
       }
     }
@@ -133,7 +143,15 @@ export default {
   },
   computed: {
     formValid() {
-      return this.exerciseForm.abs || (this.exerciseForm.label.trim().length > 2 && (!this.forAbsWorkout || this.exerciseForm.duration))
+      if (this.exerciseForm.abs) return true
+      if (this.forAbsWorkout) {
+        if (this.exerciseForm.restAbs) {
+          return this.exerciseForm.duration !== ''
+        }
+        return this.exerciseForm.label.trim().length > 2 && this.exerciseForm.duration
+      } else {
+        return this.exerciseForm.label.trim().length > 2
+      }
     }
   },
   methods: {

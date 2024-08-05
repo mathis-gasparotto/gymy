@@ -15,9 +15,9 @@
     <template v-else>
       <q-card-section class="gt-xs">
         <div class="text-h6 text-center">
-          {{ exercise.label }}
+          {{ forAbs && exercise.restAbs ? 'Repos 😴' : exercise.label }}
         </div>
-        <div v-if="exercise.config" class="text-center">
+        <div v-if="exercise.config && (!forAbs || !exercise.restAbs)" class="text-center">
           ({{ exercise.config }})
         </div>
         <div v-if="exercise.duration && forAbs" class="text-h6 text-center">
@@ -26,9 +26,9 @@
       </q-card-section>
       <q-card-section class="q-pb-none lt-sm">
         <div class="text-h6 text-center">
-          {{ exercise.label }}
+          {{ forAbs && exercise.restAbs ? 'Repos 😴' : exercise.label }}
         </div>
-        <div v-if="exercise.config" class="text-center" :class="{'q-mr-lg': exercise.duration && forAbs}">
+        <div v-if="exercise.config && (!forAbs || !exercise.restAbs)" class="text-center" :class="{'q-mr-lg': exercise.duration && forAbs}">
           ({{ exercise.config }})
         </div>
         <div v-if="exercise.forLastSeries && forAbs" class="text-center">
