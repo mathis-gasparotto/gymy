@@ -141,6 +141,7 @@ export default {
     this.stopAllIntervals()
     this.stopAllTimeouts()
     this.stopAllSounds()
+    this.$emit('showNavbar')
   },
   computed: {
     isValid() {
@@ -206,13 +207,13 @@ export default {
     resumeAbs() {
       this.paused = false
       this.startTimer(this.timer)
-      // this.setRemainingTimeInterval()
     },
     stopAbs() {
       this.stopAllIntervals()
       this.stopAllTimeouts()
       this.stopAllSounds()
       this.reloadData()
+      this.$emit('showNavbar')
     },
     stopAllSounds() {
       this.stopInProgress()
@@ -245,6 +246,7 @@ export default {
         this.preWorkoutTimer -= 1
         if (this.preWorkoutTimer < 0) {
           this.started = true
+          this.$emit('hideNavbar')
           this.currentSeries = 1
           this.preWorkoutTimer = null
           clearInterval(this.intervals.pop())

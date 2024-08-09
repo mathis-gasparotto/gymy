@@ -9,7 +9,7 @@
     </q-header> -->
 
     <q-page-container>
-      <router-view />
+      <router-view @hideNavbar="showFooter = false" @showNavbar="showFooter = true" />
     </q-page-container>
 
     <q-footer class="main-nav-bar-container" v-model="showFooter">
