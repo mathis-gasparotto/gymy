@@ -136,6 +136,15 @@ export default {
   },
   created() {
     this.reloadData()
+
+    // prevent back navigation
+    this.$router.beforeEach((to, from, next) => {
+      if (this.started) {
+        next(false)
+      } else {
+        next()
+      }
+    })
   },
   beforeUnmount() {
     this.stopAllIntervals()
