@@ -2,7 +2,7 @@
   <q-card class="cursor-pointer q-mb-md flex-center column q-px-md" >
     <q-card-section class="gt-sm flex flex-center">
       <div class="q-mr-lg flex flex-cente">
-        <img v-if="workout.isAbs" src="/src/assets/picto-abs.png" width="40px" />
+        <img v-if="workout.isAbs" src="~/assets/picto-abs.png" width="40px" />
       </div>
       <div :class="{'title-container': workout.isAbs}">
         <div class="text-h6 text-center flex flex-center">
