@@ -141,6 +141,14 @@ export default {
       this.exerciseForm = {...this.exerciseForm, ...this.initData}
     }
   },
+  watch: {
+    exerciseForm: {
+      handler(val) {
+        this.exerciseForm.duration = Math.floor(val.duration)
+      },
+      deep: true
+    }
+  },
   computed: {
     formValid() {
       if (this.exerciseForm.abs) return true

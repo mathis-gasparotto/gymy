@@ -65,6 +65,11 @@ export default {
   created() {
     this.newDefaultNumberOfSeries = this.initData
   },
+  watch: {
+    newDefaultNumberOfSeries(val) {
+      this.newDefaultNumberOfSeries = Math.floor(val)
+    }
+  },
   computed: {
     isValid() {
       return this.newDefaultNumberOfSeries !== null && this.newDefaultNumberOfSeries !== '' && this.newDefaultNumberOfSeries >= 1

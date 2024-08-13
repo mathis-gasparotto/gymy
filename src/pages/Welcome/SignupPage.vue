@@ -195,6 +195,14 @@ export default {
       siteUrl: process.env.SITE_URL
     }
   },
+  watch: {
+    form: {
+      handler(val) {
+        this.form.defaultNumberOfSeries = Math.floor(val.defaultNumberOfSeries)
+      },
+      deep: true
+    }
+  },
   methods: {
     async onsubmit() {
       this.loading = true

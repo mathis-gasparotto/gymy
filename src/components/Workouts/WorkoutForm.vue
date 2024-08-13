@@ -108,6 +108,14 @@ export default {
       this.workoutForm = {...this.workoutForm, ...this.initData}
     }
   },
+  watch: {
+    workoutForm: {
+      handler(val) {
+        this.workoutForm.restTime = Math.floor(val.restTime)
+      },
+      deep: true
+    }
+  },
   computed: {
     formValid() {
       return this.workoutForm.label.trim().length > 2 && (!this.workoutForm.isAbs || this.workoutForm.restTime)
