@@ -185,6 +185,14 @@ export default {
       isValid: true
     }
   },
+  watch: {
+    form: {
+      handler(val) {
+        this.form.defaultNumberOfSeries = Math.floor(val.defaultNumberOfSeries)
+      },
+      deep: true
+    }
+  },
   methods: {
     submit() {
       this.$refs.signupAsGuestForm.validate().then((res) => {

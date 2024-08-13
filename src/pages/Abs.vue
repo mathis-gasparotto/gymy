@@ -152,6 +152,11 @@ export default {
     this.stopAllSounds()
     this.$emit('showNavbar')
   },
+  watch: {
+    seriesNb(val) {
+      this.seriesNb = Math.floor(val)
+    }
+  },
   computed: {
     isValid() {
       return this.seriesNb > 0 && this.workouts.some((workout) => workout.selected)
