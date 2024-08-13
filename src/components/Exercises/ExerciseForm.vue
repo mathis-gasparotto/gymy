@@ -146,7 +146,8 @@ export default {
       handler(val) {
         this.exerciseForm.duration = parseInt(val.duration)
       },
-      deep: true
+      deep: true,
+      immediate: true
     }
   },
   computed: {

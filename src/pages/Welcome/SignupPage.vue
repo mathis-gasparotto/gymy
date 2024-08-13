@@ -200,7 +200,8 @@ export default {
       handler(val) {
         this.form.defaultNumberOfSeries = parseInt(val.defaultNumberOfSeries)
       },
-      deep: true
+      deep: true,
+      immediate: true
     }
   },
   methods: {
