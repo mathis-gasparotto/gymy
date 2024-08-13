@@ -29,7 +29,7 @@
             outlined
             class="exercise-input w-40"
             type="number"
-            inputmode="numeric"
+            inputmode="decimal"
             v-model="serie.value"
             min="0"
             :rules="[
