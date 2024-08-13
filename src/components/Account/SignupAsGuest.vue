@@ -188,7 +188,7 @@ export default {
   watch: {
     form: {
       handler(val) {
-        this.form.defaultNumberOfSeries = Math.floor(val.defaultNumberOfSeries)
+        this.form.defaultNumberOfSeries = parseInt(val.defaultNumberOfSeries)
       },
       deep: true
     }

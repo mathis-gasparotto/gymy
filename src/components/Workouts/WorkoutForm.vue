@@ -111,7 +111,7 @@ export default {
   watch: {
     workoutForm: {
       handler(val) {
-        this.workoutForm.restTime = Math.floor(val.restTime)
+        this.workoutForm.restTime = parseInt(val.restTime)
       },
       deep: true
     }
