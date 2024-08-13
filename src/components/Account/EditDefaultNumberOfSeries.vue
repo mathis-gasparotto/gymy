@@ -67,7 +67,7 @@ export default {
   },
   watch: {
     newDefaultNumberOfSeries(val) {
-      this.newDefaultNumberOfSeries = Math.floor(val)
+      this.newDefaultNumberOfSeries = parseInt(val)
     }
   },
   computed: {

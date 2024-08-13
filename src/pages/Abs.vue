@@ -154,7 +154,7 @@ export default {
   },
   watch: {
     seriesNb(val) {
-      this.seriesNb = Math.floor(val)
+      this.seriesNb = parseInt(val)
     }
   },
   computed: {

@@ -144,7 +144,7 @@ export default {
   watch: {
     exerciseForm: {
       handler(val) {
-        this.exerciseForm.duration = Math.floor(val.duration)
+        this.exerciseForm.duration = parseInt(val.duration)
       },
       deep: true
     }
