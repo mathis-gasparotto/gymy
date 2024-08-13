@@ -66,8 +66,11 @@ export default {
     this.newDefaultNumberOfSeries = this.initData
   },
   watch: {
-    newDefaultNumberOfSeries(val) {
-      this.newDefaultNumberOfSeries = parseInt(val)
+    newDefaultNumberOfSeries: {
+      handler(val) {
+        this.newDefaultNumberOfSeries = parseInt(val)
+      },
+      immediate: true
     }
   },
   computed: {

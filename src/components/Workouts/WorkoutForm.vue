@@ -113,7 +113,8 @@ export default {
       handler(val) {
         this.workoutForm.restTime = parseInt(val.restTime)
       },
-      deep: true
+      deep: true,
+      immediate: true
     }
   },
   computed: {
