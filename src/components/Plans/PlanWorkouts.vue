@@ -399,7 +399,7 @@ export default {
     min-height: 90px;
 
     @media (min-width: 600px) {
-      height: 64px;
+      min-height: 64px;
     }
 
     &-button {
