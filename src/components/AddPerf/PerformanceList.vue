@@ -1,22 +1,32 @@
 <template>
-  <div class="flex flex-center performance-list">
-    <q-card v-for="performance in performances" :key="performance.id" @click="$emit('selectWorkout', performance)" class="flex-center column q-px-md">
-      <q-card-section>
-        <div class="text-h6">
-          {{ formatting().dateToDisplay(performance.date) }}
-        </div>
-      </q-card-section>
-      <q-card-section class="column flex-center">
-        {{ performance.series.map(serie => serie.value + (serie.type === PERFORMANCE_TYPE_DEFAULT ? '' : ' (' + getPerfromanceType(serie.type) + ')')).join(' - ') }}
-        <div v-if="performance.comment" class="text-center">
-          {{ performance.comment }}
-        </div>
-      </q-card-section>
-      <q-card-actions horizontal class="no-wrap q-pa-none">
-        <q-btn flat round color="primary" icon="edit" @click.stop="edit(performance)" />
-        <q-btn flat round color="negative" icon="delete" @click.stop="showDeleteModal(performance)" />
-      </q-card-actions>
-    </q-card>
+  <div class="column flex-center">
+    <div class="flex flex-center performance-list">
+      <q-card v-for="performance in performancesToShow" :key="performance.id" @click="$emit('selectWorkout', performance)" class="flex-center column q-px-md">
+        <q-card-section>
+          <div class="text-h6">
+            {{ formatting().dateToDisplay(performance.date) }}
+          </div>
+        </q-card-section>
+        <q-card-section class="column flex-center">
+          {{ performance.series.map(serie => serie.value + (serie.type === PERFORMANCE_TYPE_DEFAULT ? '' : ' (' + getPerfromanceType(serie.type) + ')')).join(' - ') }}
+          <div v-if="performance.comment" class="text-center">
+            {{ performance.comment }}
+          </div>
+        </q-card-section>
+        <q-card-actions horizontal class="no-wrap q-pa-none">
+          <q-btn flat round color="primary" icon="edit" @click.stop="edit(performance)" />
+          <q-btn flat round color="negative" icon="delete" @click.stop="showDeleteModal(performance)" />
+        </q-card-actions>
+      </q-card>
+    </div>
+
+    <q-btn
+      v-if="performances.length > 3"
+      color="primary"
+      :label="showMore ? 'Voir moins' : 'Voir plus'"
+      @click="showMore = !showMore"
+      class="q-mt-xl"
+    />
 
     <q-dialog v-model="editForm">
       <q-card class="q-pa-md">
@@ -156,7 +166,8 @@ export default {
       ],
       editForm: false,
       editLoading: false,
-      performanceToEdit: {}
+      performanceToEdit: {},
+      showMore: false
     }
   },
   created () {
@@ -167,6 +178,9 @@ export default {
       const allDefault = this.performanceToEdit.series.filter(serie => serie.value !== null && serie.value!== '').every(serie => serie.type.value === PERFORMANCE_TYPE_DEFAULT)
       const allNoDefault = this.performanceToEdit.series.filter(serie => serie.value !== null && serie.value!== '').every(serie => serie.type.value !== PERFORMANCE_TYPE_DEFAULT)
       return this.performanceToEdit.series && this.performanceToEdit.series.filter(serie => serie.value !== null && serie.value !== '' && serie.value >= 0).length >= 1 && this.performanceToEdit.date && ((allDefault && !allNoDefault) || (allNoDefault && !allDefault))
+    },
+    performancesToShow () {
+      return this.performances.slice(0, this.showMore ? this.performances.length : 3)
     }
   },
   methods: {
