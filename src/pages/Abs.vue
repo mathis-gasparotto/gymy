@@ -146,11 +146,15 @@ export default {
       }
     })
   },
+  beforeMount() {
+    window.addEventListener('beforeunload', this.preventReload)
+  },
   beforeUnmount() {
     this.stopAllIntervals()
     this.stopAllTimeouts()
     this.stopAllSounds()
     this.$emit('showNavbar')
+    window.removeEventListener('beforeunload', this.preventReload)
   },
   watch: {
     seriesNb(val) {
@@ -204,6 +208,12 @@ export default {
         duration: Object.values(workout.exercises).reduce((acc, exercise) => acc + exercise.duration, 0) || 0,
         durationWithoutFinishers: Object.values(workout.exercises).reduce((acc, exercise) => acc + (exercise.forLastSeries ? 0 : exercise.duration), 0) || 0
       }))
+    },
+    preventReload(event) {
+      if (!this.started) return
+      event.preventDefault()
+      // Chrome requires returnValue to be set.
+      event.returnValue = ""
     },
     selectWorkout(workout) {
       this.workouts.forEach((w) => w.selected = w.id == workout.id)
