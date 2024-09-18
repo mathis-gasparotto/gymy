@@ -37,7 +37,7 @@
         suffix="série(s)"
         @update:model-value="onAbsWorkoutSelectectUpdate"
       />
-      <div v-if="isValid" class="q-mb-lg">Durée totale : {{ formatting().durationFromSeconds(totalDuration) }}</div>
+      <div v-if="isValid" class="q-mb-sm">Durée totale : {{ formatting().durationFromSeconds(totalDuration) }}</div>
       <div v-if="isValid" class="q-mb-lg">Heure de fin : {{ formatting().timeToDisplay(finishTime.value) }}</div>
       <q-btn label="Commencer" color="primary" @click="start" :disable="!isValid" />
     </div>
@@ -66,7 +66,8 @@
           @click="stopAbs"
         />
       </div>
-      <div class="text-center q-mb-lg">Temps restant {{ formatting().durationFromSeconds(totalRemainingTime) }}</div>
+      <div class="text-center q-mb-sm">Temps restant : {{ formatting().durationFromSeconds(totalRemainingTime) }}</div>
+      <div v-if="finishTime.value" class="q-mb-lg">Heure de fin : {{ formatting().timeToDisplay(finishTime.value) }}</div>
       <div class="text-h5 text-center q-mb-lg">Série {{ currentSeries }}/{{ seriesNb }}</div>
       <div class="text-h4 text-center q-mb-xl">{{ rest ? 'Inter-séries' : ('Étape ' + step  + '/' + nbExercises) }}</div>
       <div class="text-h4 text-center q-mt-lg q-mb-lg">{{ rest || currentExercise.restAbs ? 'Repos 😴' : currentExercise.label }}</div>
@@ -208,6 +209,10 @@ export default {
       this.intervals = []
       this.timeouts = []
       this.totalRemainingTime = null
+      this.paused = false
+      if(this.finishTime.interval) clearInterval(this.finishTime.interval)
+      this.finishTime.interval = null
+      this.finishTime.value = null
       this.workouts = getAbsWorkouts().map((workout) => ({
         ...workout,
         selected: false,
@@ -222,8 +227,6 @@ export default {
           this.finishTime.value = new Date().getTime() + this.totalDuration * 1000
           if (!this.isValid || this.started) {
             clearInterval(this.finishTime.interval)
-            this.finishTime.value = null
-            this.finishTime.interval = null
           }
         }, 1000)
       }
@@ -247,10 +250,17 @@ export default {
       this.stopAllIntervals()
       this.stopAllTimeouts()
       this.stopAllSounds()
+
+      this.finishTime.interval = setInterval(() => {
+        this.finishTime.value = new Date().getTime() + this.totalRemainingTime * 1000
+      }, 1000)
     },
     resumeAbs() {
       this.paused = false
       this.startTimer(this.timer)
+
+      clearInterval(this.finishTime.interval)
+      this.finishTime.interval = null
     },
     stopAbs() {
       this.stopAllIntervals()
@@ -300,6 +310,8 @@ export default {
       }, 1000))
 
       this.totalRemainingTime = this.totalDuration - 1
+
+      this.finishTime.value = new Date().getTime() + this.totalRemainingTime * 1000
     },
     startSeries(isFirst = false) {
       this.step = 1
