@@ -48,5 +48,9 @@ export default () => ({
     const minutes = Math.floor(duration / 60)
     const seconds = duration % 60
     return `${minutes > 9 ? minutes : '0' + minutes}:${seconds > 9 ? seconds : '0' + seconds}`
-  }
+  },
+  timeToDisplay(date) {
+    let d = new Date(date)
+    return `${d.getHours() >= 10 ? d.getHours() : '0' + d.getHours()}h${d.getMinutes() >= 10 ? d.getMinutes() : '0' + d.getMinutes()}`
+  },
 })
