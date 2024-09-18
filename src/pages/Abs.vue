@@ -35,8 +35,10 @@
         v-model="seriesNb"
         hide-bottom-space
         suffix="série(s)"
+        @update:model-value="onAbsWorkoutSelectectUpdate"
       />
       <div v-if="isValid" class="q-mb-lg">Durée totale : {{ formatting().durationFromSeconds(totalDuration) }}</div>
+      <div v-if="isValid" class="q-mb-lg">Heure de fin : {{ formatting().timeToDisplay(finishTime.value) }}</div>
       <q-btn label="Commencer" color="primary" @click="start" :disable="!isValid" />
     </div>
     <div v-else class="page-content column items-center">
@@ -131,7 +133,11 @@ export default {
       intervals: [],
       timeouts: [],
       totalRemainingTime: null,
-      paused: false
+      paused: false,
+      finishTime: {
+        interval: null,
+        value: null
+      }
     }
   },
   created() {
@@ -209,6 +215,19 @@ export default {
         durationWithoutFinishers: Object.values(workout.exercises).reduce((acc, exercise) => acc + (exercise.forLastSeries ? 0 : exercise.duration), 0) || 0
       }))
     },
+    onAbsWorkoutSelectectUpdate() {
+      if (this.isValid) {
+        this.finishTime.value = new Date().getTime() + this.totalDuration * 1000
+        this.finishTime.interval = setInterval(() => {
+          this.finishTime.value = new Date().getTime() + this.totalDuration * 1000
+          if (!this.isValid || this.started) {
+            clearInterval(this.finishTime.interval)
+            this.finishTime.value = null
+            this.finishTime.interval = null
+          }
+        }, 1000)
+      }
+    },
     preventReload(event) {
       if (!this.started) return
       event.preventDefault()
@@ -217,6 +236,7 @@ export default {
     },
     selectWorkout(workout) {
       this.workouts.forEach((w) => w.selected = w.id == workout.id)
+      this.onAbsWorkoutSelectectUpdate()
     },
     playSoundLast3Sec() {
       this.stopInProgress()
