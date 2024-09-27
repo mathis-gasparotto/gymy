@@ -13,7 +13,7 @@ const { configure } = require('quasar/wrappers');
 
 
 module.exports = configure(function (/* ctx */) {
-  const env = require('dotenv').config().parsed
+  const env = require('dotenv-flow').config().parsed
   let config = {}
   if (env && env.WINDOWS_ANDROID_STUDIO) {
     config = {
@@ -71,7 +71,7 @@ module.exports = configure(function (/* ctx */) {
         node: 'node16'
       },
 
-      env: require('dotenv').config().parsed,
+      env: require('dotenv-flow').config().parsed,
 
       vueRouterMode: 'history', // available values: 'hash', 'history'
       // vueRouterBase,
