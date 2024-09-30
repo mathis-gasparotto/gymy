@@ -69,8 +69,10 @@
       <div class="text-center q-mb-sm">Temps restant : {{ formatting().durationFromSeconds(totalRemainingTime) }}</div>
       <div v-if="finishTime.value" class="q-mb-lg">Heure de fin : {{ formatting().timeToDisplay(finishTime.value) }}</div>
       <div class="text-h5 text-center q-mb-lg">Série {{ currentSeries }}/{{ seriesNb }}</div>
-      <div class="text-h4 text-center q-mb-xl">{{ rest ? 'Inter-séries' : ('Étape ' + step  + '/' + nbExercises) }}</div>
-      <div class="text-h4 text-center q-mt-lg q-mb-lg">{{ rest || currentExercise.restAbs ? 'Repos 😴' : currentExercise.label }}</div>
+      <div class="text-h4 text-center q-mb-lg">{{ rest ? 'Inter-séries' : ('Étape ' + step  + '/' + nbExercises) }}</div>
+      <div class="text-h5 text-center" v-if="futurExercise && timer <= displayNextExercise">Prochain : {{ futurExercise.restAbs ? 'Repos 😴' : futurExercise.label }}</div>
+      <div class="next-exercise-space" v-else></div>
+      <div class="text-h4 text-center q-mt-sm q-mb-lg">{{ rest || currentExercise.restAbs ? 'Repos 😴' : currentExercise.label }}</div>
       <div class="text-h1">{{ timer }}</div>
       <div v-if="finished" class="fixed-center z-max fit flex flex-center text-h3 finished-display">
         <q-card>
@@ -138,7 +140,8 @@ export default {
       finishTime: {
         interval: null,
         value: null
-      }
+      },
+      displayNextExercise: 3 // time in secondes before next exercise to display it
     }
   },
   created() {
@@ -182,18 +185,38 @@ export default {
       return this.selectedWorkout.durationWithoutFinishers * this.seriesNb + this.selectedWorkout.restTime * (this.seriesNb - 1) + (this.selectedWorkout.duration - this.selectedWorkout.durationWithoutFinishers)
     },
     nbExercises() {
-      if (this.currentSeries === this.seriesNb) {
+      if (this.lastSeries) {
         return this.selectedWorkout.exercises.length
       } else {
         return this.selectedWorkout.exercises.filter((exercise) => !exercise.forLastSeries).length
       }
     },
     currentExercise() {
-      if (this.currentSeries === this.seriesNb) {
+      if (this.lastSeries) {
         return this.selectedWorkout.exercises[this.step - 1]
       } else {
         return this.selectedWorkout.exercises.filter((ex) => !ex.forLastSeries)[this.step - 1]
       }
+    },
+    futurExercise() {
+      const series = this.lastSeries ? this.selectedWorkout.exercises : this.selectedWorkout.exercises.filter((ex) => !ex.forLastSeries)
+      const futurSeries = this.seriesNb === this.currentSeries + 1 ? this.selectedWorkout.exercises : this.selectedWorkout.exercises.filter((ex) => !ex.forLastSeries)
+      switch (true) {
+        case this.lastExercise && this.lastSeries:
+          return null
+        case this.lastExercise && this.rest:
+          return futurSeries[0]
+        case this.lastExercise:
+          return {label: 'Repos', restAbs: true}
+        default:
+          return series[this.step]
+      }
+    },
+    lastExercise() {
+      return this.step === this.nbExercises
+    },
+    lastSeries() {
+      return this.currentSeries === this.seriesNb
     }
   },
   methods: {
@@ -398,5 +421,8 @@ export default {
 }
 .finished-display {
   background-color: #000000c5;
+}
+.next-exercise-space {
+  height: 2rem;
 }
 </style>
