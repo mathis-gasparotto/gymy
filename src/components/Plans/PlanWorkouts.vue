@@ -268,7 +268,7 @@ export default {
       updatePlan(this.plan.id, payload).then(() => {
         this.loadPlanWorkouts()
       }).catch((err) => {
-        errorNotify('Une erreur est survenue lors de le retrait de votre entraînement au programme')
+        errorNotify('Une erreur est survenue lors du retrait de votre entraînement au programme')
         this.loadPlanWorkouts()
       })
     },
