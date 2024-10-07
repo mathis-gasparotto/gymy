@@ -8,79 +8,77 @@
       unchecked-icon="highlight_off"
       class="q-mb-md"
     />
-    <template v-if="!exerciseForm.abs || forAbsWorkout">
-      <q-checkbox
-        v-if="forAbsWorkout"
-        v-model="exerciseForm.restAbs"
-        label="Repos"
-        checked-icon="task_alt"
-        unchecked-icon="highlight_off"
-        class="q-mb-md"
-      />
-      <q-input
-        v-if="!forAbsWorkout || !exerciseForm.restAbs"
-        name="label"
-        rounded
-        outlined
-        label="Nom de l'exercice"
-        class="q-mb-md"
-        type="text"
-        v-model="exerciseForm.label"
-        lazy-rules
-        :rules="[
-          (val) => val.trim().length > 2 || 'Veuillez renseigner minimum 3 caractères'
+    <q-checkbox
+      v-if="forAbsWorkout"
+      v-model="exerciseForm.restAbs"
+      label="Repos"
+      checked-icon="task_alt"
+      unchecked-icon="highlight_off"
+      class="q-mb-md"
+    />
+    <q-input
+      v-if="(!forAbsWorkout || !exerciseForm.restAbs) && !exerciseForm.abs"
+      name="label"
+      rounded
+      outlined
+      label="Nom de l'exercice"
+      class="q-mb-md"
+      type="text"
+      v-model="exerciseForm.label"
+      lazy-rules
+      :rules="[
+        (val) => val.trim().length > 2 || 'Veuillez renseigner minimum 3 caractères'
+      ]"
+      hide-bottom-space
+    ></q-input>
+    <q-input
+      v-if="!exerciseForm.restAbs"
+      name="config"
+      rounded
+      outlined
+      :label="forAbsWorkout || exerciseForm.abs ? 'Commentaire' : 'Config de l\'exercice'"
+      class="q-mb-md"
+      type="text"
+      v-model="exerciseForm.config"
+      hide-bottom-space
+    ></q-input>
+    <q-input
+      v-if="forAbsWorkout"
+      name="duration"
+      rounded
+      outlined
+      :label="!forAbsWorkout || !exerciseForm.restAbs ? 'Durée de l\'exercice' : 'Temps de repos'"
+      class="q-mb-md"
+      type="number"
+      inputmode="numeric"
+      :rules="[
+        (val) => val !== '' || 'Veuillez renseigner une durée'
+      ]"
+      v-model="exerciseForm.duration"
+      hide-bottom-space
+      suffix="s"
+    ></q-input>
+    <q-checkbox
+      v-if="forAbsWorkout"
+      v-model="exerciseForm.forLastSeries"
+      label="Juste pour la dernière série"
+      checked-icon="task_alt"
+      unchecked-icon="highlight_off"
+      class="q-mb-md"
+    />
+    <div class="q-mb-xl text-center" v-if="!forAbsWorkout && !exerciseForm.abs">
+      <div class="q-mb-sm">Valeur de progression :</div>
+      <q-btn-toggle
+        v-model="exerciseForm.isReverse"
+        toggle-color="primary"
+        name="isReverse"
+        no-caps
+        :options="[
+          {label: 'Croissante', value: false},
+          {label: 'Décroissante', value: true}
         ]"
-        hide-bottom-space
-      ></q-input>
-      <q-input
-        v-if="!forAbsWorkout || !exerciseForm.restAbs"
-        name="config"
-        rounded
-        outlined
-        :label="forAbsWorkout ? 'Commentaire' : 'Config de l\'exercice'"
-        class="q-mb-md"
-        type="text"
-        v-model="exerciseForm.config"
-        hide-bottom-space
-      ></q-input>
-      <q-input
-        v-if="forAbsWorkout"
-        name="duration"
-        rounded
-        outlined
-        :label="!forAbsWorkout || !exerciseForm.restAbs ? 'Durée de l\'exercice' : 'Temps de repos'"
-        class="q-mb-md"
-        type="number"
-        inputmode="numeric"
-        :rules="[
-          (val) => val !== '' || 'Veuillez renseigner une durée'
-        ]"
-        v-model="exerciseForm.duration"
-        hide-bottom-space
-        suffix="s"
-      ></q-input>
-      <q-checkbox
-        v-if="forAbsWorkout && !exerciseForm.restAbs"
-        v-model="exerciseForm.forLastSeries"
-        label="Juste pour la dernière série"
-        checked-icon="task_alt"
-        unchecked-icon="highlight_off"
-        class="q-mb-md"
       />
-      <div class="q-mb-xl text-center" v-if="!forAbsWorkout">
-        <div class="q-mb-sm">Valeur de progression :</div>
-        <q-btn-toggle
-          v-model="exerciseForm.isReverse"
-          toggle-color="primary"
-          name="isReverse"
-          no-caps
-          :options="[
-            {label: 'Croissante', value: false},
-            {label: 'Décroissante', value: true}
-          ]"
-        />
-      </div>
-    </template>
+    </div>
     <q-btn
       color="primary"
       :label="buttonLabel"
