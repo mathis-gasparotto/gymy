@@ -90,7 +90,7 @@ import { errorNotify } from 'src/helpers/notifyHelper'
 import { getExercises } from 'src/services/exerciseService'
 import formatting from 'src/helpers/formatting'
 import { useSound } from '@vueuse/sound'
-import endSound from 'src/assets/sounds/yaaas.mp3'
+import endSound from 'src/assets/sounds/Finish First Mario Kart Wii.mp3'
 import countdownSound from 'src/assets/sounds/mariostart.mp3'
 import ding from 'src/assets/sounds/ding.mp3'
 import timerInProgrss from 'src/assets/sounds/timer-in-progress.mp3'
@@ -102,7 +102,7 @@ export default {
     GymyHeader
   },
   setup() {
-    const { play: playEnd, stop: stopEnd } = useSound(endSound, {volume: 0.75, autoplay: false, interrupt: true})
+    const { play: playEnd, stop: stopEnd } = useSound(endSound, {volume: 0.5, autoplay: false, interrupt: true})
     const { play: playCountdown, stop: stopCountdown } = useSound(countdownSound, {volume: 0.5, autoplay: false, interrupt: true})
     const { play: playDing, stop: stopDing } = useSound(ding, {volume: 1, autoplay: false, interrupt: true})
     const { play: playInProgress, stop: stopInProgress } = useSound(timerInProgrss, {volume: 1, autoplay: false, interrupt: true, loop: true})
