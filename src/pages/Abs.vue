@@ -245,14 +245,19 @@ export default {
     },
     onAbsWorkoutSelectectUpdate() {
       if (this.isValid) {
-        this.finishTime.value = new Date().getTime() + this.totalDuration * 1000
+        this.finishTime.value = this.getEndTime(this.totalDuration + 3)
         this.finishTime.interval = setInterval(() => {
-          this.finishTime.value = new Date().getTime() + this.totalDuration * 1000
-          if (!this.isValid || this.started) {
+          this.finishTime.value = this.getEndTime(this.totalDuration + 3)
+          if (!this.isValid || this.started || this.preWorkoutTimer !== null) {
             clearInterval(this.finishTime.interval)
           }
         }, 1000)
       }
+    },
+    getEndTime(duration) {
+      const secondWhenAroundToNextMinute = 45
+      const endTime = new Date().getTime() + duration * 1000
+      return endTime % 60000 > (secondWhenAroundToNextMinute * 1000) ? endTime + 60000 - (endTime % 60000) : endTime
     },
     preventReload(event) {
       if (!this.started) return
@@ -275,7 +280,7 @@ export default {
       this.stopAllSounds()
 
       this.finishTime.interval = setInterval(() => {
-        this.finishTime.value = new Date().getTime() + this.totalRemainingTime * 1000
+        this.finishTime.value = this.getEndTime(this.totalRemainingTime)
       }, 1000)
     },
     resumeAbs() {
@@ -334,7 +339,7 @@ export default {
 
       this.totalRemainingTime = this.totalDuration - 1
 
-      this.finishTime.value = new Date().getTime() + this.totalRemainingTime * 1000
+      this.finishTime.value = this.getEndTime(this.totalRemainingTime)
     },
     startSeries(isFirst = false) {
       this.step = 1
