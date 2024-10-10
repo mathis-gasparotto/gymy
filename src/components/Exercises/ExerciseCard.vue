@@ -5,10 +5,16 @@
         <div class="text-h6 text-center">
           Abs
         </div>
+        <div v-if="exercise.config" class="text-center">
+          ({{ exercise.config }})
+        </div>
       </q-card-section>
       <q-card-section class="q-pb-none lt-sm">
         <div class="text-h6 text-center">
           Abs
+        </div>
+        <div v-if="exercise.config" class="text-center">
+          ({{ exercise.config }})
         </div>
       </q-card-section>
     </template>
