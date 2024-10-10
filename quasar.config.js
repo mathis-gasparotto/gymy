@@ -22,6 +22,13 @@ module.exports = configure(function (/* ctx */) {
       }
     }
   }
+  if (env && env.LINUX_ANDROID_STUDIO) {
+    config = {
+      bin: {
+        linuxAndroidStudio: env.LINUX_ANDROID_STUDIO,
+      }
+    }
+  }
   return {
     ...config,
     eslint: {
