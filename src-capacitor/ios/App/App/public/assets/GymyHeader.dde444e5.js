@@ -1,0 +1,1 @@
+import{a as t,o as r,K as n}from"./index.1d7fae07.js";const a={name:"GymyHeader",props:{text:{type:String,required:!0}}},o=["innerHTML"];function _(s,c,e,d,p,i){return r(),n("p",{class:"title text-h6 q-py-md bg-primary text-center text-bold color-white rounded q-mb-lg",innerHTML:e.text},null,8,o)}var m=t(a,[["render",_],["__scopeId","data-v-7346eb64"]]);export{m as G};
