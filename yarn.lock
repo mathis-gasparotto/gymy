@@ -948,22 +948,22 @@
     "@babel/helper-validator-identifier" "^7.24.7"
     to-fast-properties "^2.0.0"
 
-"@capacitor/core@^5.0.0":
-  version "5.7.7"
-  resolved "https://registry.yarnpkg.com/@capacitor/core/-/core-5.7.7.tgz#5ce10590073d95459ecff3064a601f872b55bb6a"
-  integrity sha512-LeV1ljAihl/1lFGHZERNY2DtD1fbPBF3rNOSHFPMXIluK4Cq4nK4a4z/dLPX+Cv4F0TyCIzX3+/t79PMbhDwrg==
+"@capacitor/core@^6.0.0":
+  version "6.1.2"
+  resolved "https://registry.yarnpkg.com/@capacitor/core/-/core-6.1.2.tgz#a072e78b46693a6a47047cfc90d5f7cc48299fe9"
+  integrity sha512-xFy1/4qLFLp5WCIzIhtwUuVNNoz36+V7/BzHmLqgVJcvotc4MMjswW/TshnPQaLLujEOaLkA4h8ZJ0uoK3ImGg==
   dependencies:
     tslib "^2.1.0"
 
-"@capacitor/keyboard@^5.0.0":
-  version "5.0.9"
-  resolved "https://registry.yarnpkg.com/@capacitor/keyboard/-/keyboard-5.0.9.tgz#15b729ef97512031959bd4e0c0ccb6b806be364d"
-  integrity sha512-JFiIHR251LrC6NGdstO3T5H5XfOcVEDEm0zWbHfROO1xyJwXjH3QHu6F22VXu5cGEmIOFII32Tt+cXGsGzJpcQ==
+"@capacitor/keyboard@^6.0.0":
+  version "6.0.2"
+  resolved "https://registry.yarnpkg.com/@capacitor/keyboard/-/keyboard-6.0.2.tgz#5c8e2a499284dfbfd90142d08c91cb5a13e3c801"
+  integrity sha512-fOfO3rQ0ZXuTHpK03INVTwmBnpqMiH8EHPpNaHjwjKwdrVRWBvtgIFhuyHNXh53rdcXw+uHB+1RIiNabnCrITw==
 
-"@capacitor/share@^5.0.8":
-  version "5.0.8"
-  resolved "https://registry.yarnpkg.com/@capacitor/share/-/share-5.0.8.tgz#64d234827159f8ea279b71a222bc717a145ab727"
-  integrity sha512-Gj7z5Umf9blsROY+XzOdxepPQnbyn9AHEB9W1tVfl3QsYt6qEwoi+cgfE7ZOSAjcF/iERSnPlDNvK1tt6L5gcQ==
+"@capacitor/share@^6.0.0":
+  version "6.0.2"
+  resolved "https://registry.yarnpkg.com/@capacitor/share/-/share-6.0.2.tgz#ba14f207fd0b51d4829e090884cbb44266a1ea1f"
+  integrity sha512-qQIeyjzFB1VgP4ojyNg2O98TCigDWLKZ5melVMSVeDO0YQov5OeammsVgaCGSzvYBPSgyOwX41QvcDWG4yHN1A==
 
 "@esbuild/linux-loong64@0.14.54":
   version "0.14.54"

@@ -1,0 +1,14 @@
+{
+	"appId": "app.gymy",
+	"appName": "Gymy",
+	"webDir": "www",
+	"server": {
+		"androidScheme": "https",
+		"hostname": "gymy-f709a.web.app"
+	},
+	"packageClassList": [
+		"AppPlugin",
+		"KeyboardPlugin",
+		"SharePlugin"
+	]
+}
