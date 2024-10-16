@@ -8,12 +8,30 @@ import { USER_GUEST_UID } from 'src/helpers/userHelper'
 export function getExercises(workoutId) {
   const exercisesObject = LocalStorage.getItem(LOCALSTORAGE_DB_USER).workouts[workoutId].exercises
   if (!exercisesObject) return []
-  return Object.keys(exercisesObject).map(key => {
-    return {
-      ...exercisesObject[key],
-      id: key
-    }
-  }).sort((a, b) => a.position - b.position)
+  return Object.keys(exercisesObject)
+    .map((key) => {
+      return {
+        ...exercisesObject[key],
+        id: key
+      }
+    })
+    .sort((a, b) => a.position - b.position)
+}
+
+export function getNextExercise(workoutId, id) {
+  const exercises = getExercises(workoutId)
+  const index = exercises.findIndex((e) => e.id === id)
+  if (index === -1) return null
+  if (index === exercises.length - 1) return null
+  return exercises[index + 1]
+}
+
+export function getPreviousExercise(workoutId, id) {
+  const exercises = getExercises(workoutId)
+  const index = exercises.findIndex((e) => e.id === id)
+  if (index === -1) return null
+  if (index === 0) return null
+  return exercises[index - 1]
 }
 
 export function getExercise(workoutId, id) {
@@ -52,7 +70,7 @@ export async function addExercise(workoutId, payload) {
               id: null,
               createdAt: new Date().toISOString(),
               updatedAt: new Date().toISOString()
-            },
+            }
           }
         }
       }
@@ -60,7 +78,6 @@ export async function addExercise(workoutId, payload) {
   } else {
     await createData('users/' + auth.currentUser.uid + '/workouts/' + workoutId + '/exercises/' + id, { ...payload, id: null })
   }
-
 
   return {
     ...payload,
@@ -103,23 +120,23 @@ export async function moveExercise(workoutId, id, newPosition) {
 
   if (newPosition > exercises.length) newPosition = exercises.length
 
-  const exerciseToMove = exercises.find(e => e.id === id)
+  const exerciseToMove = exercises.find((e) => e.id === id)
 
   if (!exerciseToMove) throw new Error('Exercise not found')
 
   if (exercises.length > 1) {
     // update positions
     if (newPosition > exerciseToMove.position) {
-      const exercisesToUpdate = exercises.filter(e => e.position > exerciseToMove.position && e.position <= newPosition)
-      exercisesToUpdate.forEach(e => {
+      const exercisesToUpdate = exercises.filter((e) => e.position > exerciseToMove.position && e.position <= newPosition)
+      exercisesToUpdate.forEach((e) => {
         updateExercise(workoutId, e.id, {
           position: e.position - 1
         })
       })
     }
     if (newPosition < exerciseToMove.position) {
-      const exercisesToUpdate = exercises.filter(e => e.position < exerciseToMove.position && e.position >= newPosition)
-      exercisesToUpdate.forEach(e => {
+      const exercisesToUpdate = exercises.filter((e) => e.position < exerciseToMove.position && e.position >= newPosition)
+      exercisesToUpdate.forEach((e) => {
         updateExercise(workoutId, e.id, {
           position: e.position + 1
         })
@@ -138,12 +155,12 @@ export async function moveExercise(workoutId, id, newPosition) {
 
 export async function deleteExercise(workoutId, id) {
   const exercises = getExercises(workoutId)
-  const exerciseToDelete = exercises.find(e => e.id === id)
+  const exerciseToDelete = exercises.find((e) => e.id === id)
   if (!exerciseToDelete) throw new Error('Exercise not found')
   if (exercises.length > 1) {
     // update positions
-    const exercisesToUpdate = exercises.filter(e => e.position > exerciseToDelete.position)
-    exercisesToUpdate.forEach(e => {
+    const exercisesToUpdate = exercises.filter((e) => e.position > exerciseToDelete.position)
+    exercisesToUpdate.forEach((e) => {
       updateExercise(workoutId, e.id, {
         position: e.position - 1
       })

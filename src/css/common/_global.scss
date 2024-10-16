@@ -1,3 +1,7 @@
+* {
+  box-sizing: border-box;
+}
+
 .container {
   width: 100%;
 }
@@ -102,33 +106,6 @@
   }
 }
 
-.w {
-  &-40 {
-    width: 40%;
-  }
-  &-50 {
-    width: 50%;
-  }
-  &-60 {
-    width: 60%;
-  }
-  &-70 {
-    width: 70%;
-  }
-  &-80 {
-    width: 80%;
-  }
-  &-90 {
-    width: 90%;
-  }
-  &-100 {
-    width: 100%;
-  }
-  &-content {
-    width: fit-content;
-  }
-}
-
 .rounded {
   border-radius: 10px;
 }
@@ -155,7 +132,7 @@
   position: relative;
 }
 
-.no-hover{
+.no-hover {
   pointer-events: none;
 }
 
@@ -199,6 +176,166 @@
     &-none {
       border-top: none;
       border-bottom: none;
+    }
+  }
+}
+
+.no-link-style {
+  text-decoration: none;
+  color: initial;
+}
+
+@each $key, $value in $sizes {
+  .w {
+    @include bp-all {
+      &-#{$key} {
+        width: $value;
+      }
+    }
+    &-#{$key} {
+      width: $value;
+    }
+  }
+  .h {
+    @include bp-all {
+      &-#{$key} {
+        height: $value;
+      }
+    }
+    &-#{$key} {
+      height: $value;
+    }
+  }
+  .mh {
+    @include bp-all {
+      &-#{$key} {
+        max-height: $value;
+      }
+    }
+    &-#{$key} {
+      max-height: $value;
+    }
+  }
+}
+
+.w-fit-content {
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+}
+.w-fill-available {
+  width: -webkit-fill-available;
+  width: -moz-available;
+}
+
+.h-fit-content {
+  height: -webkit-fit-content;
+  height: -moz-fit-content;
+}
+.h-fill-available {
+  height: -webkit-fill-available;
+  height: -moz-available;
+}
+
+@each $key, $value in $gaps {
+  .gap-#{$key} {
+    gap: $value;
+  }
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: map-get($map: $text-weights, $key: medium) !important;
+}
+
+.text-underline {
+  text-decoration: underline;
+}
+
+.q-no-hoverable {
+  &:hover {
+    & > .q-focus-helper {
+      opacity: 0 !important;
+    }
+  }
+}
+
+.cursor {
+  &-loading {
+    cursor: wait;
+  }
+}
+
+.no-link-style {
+  text-decoration: none;
+  color: inherit;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  @include bp-all {
+    display: flex !important;
+    flex-direction: row !important;
+  }
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  @include bp-all {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+}
+
+.justify {
+  @include bp-all {
+    &-start {
+      justify-content: flex-start !important;
+    }
+    &-end {
+      justify-content: flex-end !important;
+    }
+    &-center {
+      justify-content: center !important;
+    }
+    &-between {
+      justify-content: space-between !important;
+    }
+    &-around {
+      justify-content: space-around !important;
+    }
+    &-evenly {
+      justify-content: space-evenly !important;
+    }
+  }
+}
+
+.q {
+  // all responsive spacing
+  @each $classCode, $spaceingType in $space-types {
+    &-#{$classCode} {
+      @each $suffix, $datas in $spaces-repo {
+        &#{$suffix} {
+          @each $bpKey, $bpValue in $bps {
+            &-#{$bpKey} {
+              @include bp($bpKey) {
+                @each $spaceKey, $spaceValue in $spaces {
+                  &-#{$spaceKey} {
+                    @each $label, $axe in $datas {
+                      #{$spaceingType}-#{$label}: map-get($spaceValue, $axe) !important;
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 }
