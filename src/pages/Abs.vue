@@ -1,17 +1,33 @@
 <template>
   <q-page class="page flex flex-center">
-    <div v-if="!started" class="page-content column items-center" :class="{'overflow-hidden': preWorkoutTimer}">
-      <div v-if="preWorkoutTimer !== null" class="fixed-center z-max fit flex flex-center text-h1 pre-workout-timer">
+    <div
+      v-if="!started"
+      class="page-content column items-center"
+      :class="{ 'overflow-hidden': preWorkoutTimer }"
+    >
+      <div
+        v-if="preWorkoutTimer !== null"
+        class="fixed-center z-max fit flex flex-center text-h1 pre-workout-timer"
+      >
         {{ preWorkoutTimer > 0 ? preWorkoutTimer : 'Go !' }}
       </div>
       <GymyHeader text="Commencer des séries d'Abs 💪" />
       <div class="text-h6 text-center q-mb-lg">Liste des séries</div>
       <q-list class="q-mb-lg w-100">
-        <div v-if="workouts.length <= 0" class="text-center">
+        <div
+          v-if="workouts.length <= 0"
+          class="text-center"
+        >
           <p>Aucune série d'abs disponible</p>
-          <p>Rendez-vous dans la page des <RouterLink :to="{name: 'workouts'}">entraînements</RouterLink> pour ajouter un entraînement d'abs</p>
+          <p>Rendez-vous dans la page des <RouterLink :to="{ name: 'workouts' }">entraînements</RouterLink> pour ajouter un entraînement d'abs</p>
         </div>
-        <q-card v-for="workout in workouts" :key="workout.id" class="q-mb-md" :class="{'bg-primary': workout.selected, 'text-white': workout.selected}" @click="selectWorkout(workout)">
+        <q-card
+          v-for="workout in workouts"
+          :key="workout.id"
+          class="q-mb-md"
+          :class="{ 'bg-primary': workout.selected, 'text-white': workout.selected }"
+          @click="selectWorkout(workout)"
+        >
           <q-card-section>
             <q-item-label class="text-center text-weight-bold">{{ workout.label }}</q-item-label>
             <q-item-label class="text-center text-weight-bold">
@@ -29,19 +45,35 @@
         type="number"
         inputmode="numeric"
         min="1"
-        :rules="[
-          (val) => val > 0 || 'Veuillez renseigner un nombre de série supérieur à 0'
-        ]"
+        :rules="[(val) => val > 0 || 'Veuillez renseigner un nombre de série supérieur à 0']"
         v-model="seriesNb"
         hide-bottom-space
         suffix="série(s)"
         @update:model-value="onAbsWorkoutSelectectUpdate"
       />
-      <div v-if="isValid" class="q-mb-sm">Durée totale : {{ formatting().durationFromSeconds(totalDuration) }}</div>
-      <div v-if="isValid" class="q-mb-lg">Heure de fin : {{ formatting().timeToDisplay(finishTime.value) }}</div>
-      <q-btn label="Commencer" color="primary" @click="start" :disable="!isValid" />
+      <div
+        v-if="isValid"
+        class="q-mb-sm"
+      >
+        Durée totale : {{ formatting().durationFromSeconds(totalDuration) }}
+      </div>
+      <div
+        v-if="isValid"
+        class="q-mb-lg"
+      >
+        Heure de fin : {{ formatting().timeToDisplay(finishTime.value) }}
+      </div>
+      <q-btn
+        label="Commencer"
+        color="primary"
+        @click="start"
+        :disable="!isValid"
+      />
     </div>
-    <div v-else class="page-content column items-center">
+    <div
+      v-else
+      class="page-content column items-center"
+    >
       <GymyHeader :text="'Abs - ' + selectedWorkout.label" />
       <div class="flex q-mb-lg">
         <q-btn
@@ -67,14 +99,30 @@
         />
       </div>
       <div class="text-center q-mb-sm">Temps restant : {{ formatting().durationFromSeconds(totalRemainingTime) }}</div>
-      <div v-if="finishTime.value" class="q-mb-lg">Heure de fin : {{ formatting().timeToDisplay(finishTime.value) }}</div>
+      <div
+        v-if="finishTime.value"
+        class="q-mb-lg"
+      >
+        Heure de fin : {{ formatting().timeToDisplay(finishTime.value) }}
+      </div>
       <div class="text-h5 text-center q-mb-lg">Série {{ currentSeries }}/{{ seriesNb }}</div>
-      <div class="text-h4 text-center q-mb-lg">{{ rest ? 'Inter-séries' : ('Étape ' + step  + '/' + nbExercises) }}</div>
-      <div class="text-h5 text-center" v-if="futurExercise && timer <= displayNextExercise">Prochain : {{ futurExercise.restAbs ? 'Repos 😴' : futurExercise.label }}</div>
-      <div class="next-exercise-space" v-else></div>
+      <div class="text-h4 text-center q-mb-lg">{{ rest ? 'Inter-séries' : 'Étape ' + step + '/' + nbExercises }}</div>
+      <div
+        class="text-h5 text-center"
+        v-if="futurExercise && timer <= displayNextExercise"
+      >
+        Prochain : {{ futurExercise.restAbs ? 'Repos 😴' : futurExercise.label }}
+      </div>
+      <div
+        class="next-exercise-space"
+        v-else
+      ></div>
       <div class="text-h4 text-center q-mt-sm q-mb-lg">{{ rest || currentExercise.restAbs ? 'Repos 😴' : currentExercise.label }}</div>
       <div class="text-h1">{{ timer }}</div>
-      <div v-if="finished" class="fixed-center z-max fit flex flex-center text-h3 finished-display">
+      <div
+        v-if="finished"
+        class="fixed-center z-max fit flex flex-center text-h3 finished-display"
+      >
         <q-card>
           <q-card-section class="q-pa-lg">Terminé ! 🎉</q-card-section>
         </q-card>
@@ -102,11 +150,11 @@ export default {
     GymyHeader
   },
   setup() {
-    const { play: playEnd, stop: stopEnd } = useSound(endSound, {volume: 0.5, autoplay: false, interrupt: true})
-    const { play: playCountdown, stop: stopCountdown } = useSound(countdownSound, {volume: 0.5, autoplay: false, interrupt: true})
-    const { play: playDing, stop: stopDing } = useSound(ding, {volume: 1, autoplay: false, interrupt: true})
-    const { play: playInProgress, stop: stopInProgress } = useSound(timerInProgrss, {volume: 1, autoplay: false, interrupt: true, loop: true})
-    const { play: playLast3Sec, stop: stopLast3Sec } = useSound(last3Sec, {volume: 1, autoplay: false, interrupt: true, loop: true})
+    const { play: playEnd, stop: stopEnd } = useSound(endSound, { volume: 0.5, autoplay: false, interrupt: true })
+    const { play: playCountdown, stop: stopCountdown } = useSound(countdownSound, { volume: 0.5, autoplay: false, interrupt: true })
+    const { play: playDing, stop: stopDing } = useSound(ding, { volume: 1, autoplay: false, interrupt: true })
+    const { play: playInProgress, stop: stopInProgress } = useSound(timerInProgrss, { volume: 1, autoplay: false, interrupt: true, loop: true })
+    const { play: playLast3Sec, stop: stopLast3Sec } = useSound(last3Sec, { volume: 1, autoplay: false, interrupt: true, loop: true })
     return {
       formatting,
       playEnd,
@@ -155,6 +203,13 @@ export default {
         next()
       }
     })
+    this.finishTime.interval = setInterval(() => {
+      if (this.started || this.isValid) {
+        this.finishTime.value = this.getEndTime()
+      } else {
+        this.finishTime.value = null
+      }
+    }, 1000)
   },
   beforeMount() {
     window.addEventListener('beforeunload', this.preventReload)
@@ -164,8 +219,10 @@ export default {
     this.stopAllTimeouts()
     this.stopAllSounds()
     this.$emit('showNavbar')
+    if (this.finishTime.interval) clearInterval(this.finishTime.interval)
     window.removeEventListener('beforeunload', this.preventReload)
   },
+  mounted() {},
   watch: {
     seriesNb(val) {
       this.seriesNb = parseInt(val)
@@ -207,7 +264,7 @@ export default {
         case this.lastExercise && this.rest:
           return futurSeries[0]
         case this.lastExercise:
-          return {label: 'Repos', restAbs: true}
+          return { label: 'Repos', restAbs: true }
         default:
           return series[this.step]
       }
@@ -233,8 +290,8 @@ export default {
       this.timeouts = []
       this.totalRemainingTime = null
       this.paused = false
-      if(this.finishTime.interval) clearInterval(this.finishTime.interval)
-      this.finishTime.interval = null
+      // if (this.finishTime.interval) clearInterval(this.finishTime.interval)
+      // this.finishTime.interval = null
       this.finishTime.value = null
       this.workouts = getAbsWorkouts().map((workout) => ({
         ...workout,
@@ -245,28 +302,29 @@ export default {
     },
     onAbsWorkoutSelectectUpdate() {
       if (this.isValid) {
-        this.finishTime.value = this.getEndTime(this.totalDuration + 3)
-        this.finishTime.interval = setInterval(() => {
-          this.finishTime.value = this.getEndTime(this.totalDuration + 3)
-          if (!this.isValid || this.started || this.preWorkoutTimer !== null) {
-            clearInterval(this.finishTime.interval)
-          }
-        }, 1000)
+        this.finishTime.value = this.getEndTime()
+        // this.finishTime.interval = setInterval(() => {
+        //   this.finishTime.value = this.getEndTime()
+        //   if (!this.isValid || this.started || this.preWorkoutTimer !== null) {
+        //     clearInterval(this.finishTime.interval)
+        //   }
+        // }, 1000)
       }
     },
-    getEndTime(duration) {
+    getEndTime() {
+      const duration = this.started ? this.totalRemainingTime : this.totalDuration + 3
       const secondWhenAroundToNextMinute = 45
       const endTime = new Date().getTime() + duration * 1000
-      return endTime % 60000 > (secondWhenAroundToNextMinute * 1000) ? endTime + 60000 - (endTime % 60000) : endTime
+      return endTime % 60000 > secondWhenAroundToNextMinute * 1000 ? endTime + 60000 - (endTime % 60000) : endTime
     },
     preventReload(event) {
       if (!this.started) return
       event.preventDefault()
       // Chrome requires returnValue to be set.
-      event.returnValue = ""
+      event.returnValue = ''
     },
     selectWorkout(workout) {
-      this.workouts.forEach((w) => w.selected = w.id == workout.id)
+      this.workouts.forEach((w) => (w.selected = w.id == workout.id))
       this.onAbsWorkoutSelectectUpdate()
     },
     playSoundLast3Sec() {
@@ -279,16 +337,16 @@ export default {
       this.stopAllTimeouts()
       this.stopAllSounds()
 
-      this.finishTime.interval = setInterval(() => {
-        this.finishTime.value = this.getEndTime(this.totalRemainingTime)
-      }, 1000)
+      // this.finishTime.interval = setInterval(() => {
+      //   this.finishTime.value = this.getEndTime()
+      // }, 1000)
     },
     resumeAbs() {
       this.paused = false
       this.startTimer(this.timer)
 
-      clearInterval(this.finishTime.interval)
-      this.finishTime.interval = null
+      // clearInterval(this.finishTime.interval)
+      // this.finishTime.interval = null
     },
     stopAbs() {
       this.stopAllIntervals()
@@ -307,6 +365,7 @@ export default {
     stopAllIntervals() {
       this.intervals.forEach((i) => clearInterval(i))
       this.intervals = []
+      // if (this.finishTime.interval) clearInterval(this.finishTime.interval)
     },
     stopAllTimeouts() {
       this.timeouts.forEach((t) => clearTimeout(t))
@@ -324,18 +383,20 @@ export default {
       this.seriesNb = parseInt(this.seriesNb)
       this.preWorkoutTimer = 3
       this.playCountdown()
-      this.intervals.push(setInterval(() => {
-        this.preWorkoutTimer -= 1
-        if (this.preWorkoutTimer < 0) {
-          this.started = true
-          this.$emit('hideNavbar')
-          this.currentSeries = 1
-          this.preWorkoutTimer = null
-          clearInterval(this.intervals.pop())
-          this.startSeries(true)
-          return
-        }
-      }, 1000))
+      this.intervals.push(
+        setInterval(() => {
+          this.preWorkoutTimer -= 1
+          if (this.preWorkoutTimer < 0) {
+            this.started = true
+            this.$emit('hideNavbar')
+            this.currentSeries = 1
+            this.preWorkoutTimer = null
+            clearInterval(this.intervals.pop())
+            this.startSeries(true)
+            return
+          }
+        }, 1000)
+      )
 
       this.totalRemainingTime = this.totalDuration - 1
 
@@ -343,7 +404,7 @@ export default {
     },
     startSeries(isFirst = false) {
       this.step = 1
-      this.startTimer(isFirst ? ((this.currentExercise.duration - 1) || 0) : (this.currentExercise.duration || 0))
+      this.startTimer(isFirst ? this.currentExercise.duration - 1 || 0 : this.currentExercise.duration || 0)
     },
     startTimer(timer) {
       this.timer = timer
@@ -355,19 +416,21 @@ export default {
       } else if (!this.currentExercise.restAbs) {
         this.playInProgress()
       }
-      this.intervals.push(setInterval(() => {
-        this.timer--
-        this.totalRemainingTime--
-        if (this.timer === 3) {
-          this.playSoundLast3Sec()
-        }
-        if (this.timer <= 0) {
-          clearInterval(this.intervals.pop())
-          this.stopLast3Sec()
-          this.nextStep()
-          return
-        }
-      }, 1000))
+      this.intervals.push(
+        setInterval(() => {
+          this.timer--
+          this.totalRemainingTime--
+          if (this.timer === 3) {
+            this.playSoundLast3Sec()
+          }
+          if (this.timer <= 0) {
+            clearInterval(this.intervals.pop())
+            this.stopLast3Sec()
+            this.nextStep()
+            return
+          }
+        }, 1000)
+      )
     },
     startRestTime(timer) {
       this.stopInProgress()
@@ -376,19 +439,21 @@ export default {
       if (this.timer <= 3) {
         this.playSoundLast3Sec()
       }
-      this.intervals.push(setInterval(() => {
-        this.timer--
-        this.totalRemainingTime--
-        if (this.timer === 3) {
-          this.playSoundLast3Sec()
-        }
-        if (this.timer <= 0) {
-          clearInterval(this.intervals.pop())
-          this.stopLast3Sec()
-          this.nextStep()
-          return
-        }
-      }, 1000))
+      this.intervals.push(
+        setInterval(() => {
+          this.timer--
+          this.totalRemainingTime--
+          if (this.timer === 3) {
+            this.playSoundLast3Sec()
+          }
+          if (this.timer <= 0) {
+            clearInterval(this.intervals.pop())
+            this.stopLast3Sec()
+            this.nextStep()
+            return
+          }
+        }, 1000)
+      )
     },
     nextStep() {
       if (this.step >= this.nbExercises) {
