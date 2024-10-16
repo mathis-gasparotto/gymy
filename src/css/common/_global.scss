@@ -189,7 +189,7 @@
   .w {
     @include bp-all {
       &-#{$key} {
-        width: $value;
+        width: $value !important;
       }
     }
     &-#{$key} {
@@ -199,7 +199,7 @@
   .h {
     @include bp-all {
       &-#{$key} {
-        height: $value;
+        height: $value !important;
       }
     }
     &-#{$key} {
@@ -209,7 +209,7 @@
   .mh {
     @include bp-all {
       &-#{$key} {
-        max-height: $value;
+        max-height: $value !important;
       }
     }
     &-#{$key} {
