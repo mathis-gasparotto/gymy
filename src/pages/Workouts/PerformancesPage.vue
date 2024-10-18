@@ -14,10 +14,10 @@
       <q-btn
         v-if="nextExercise"
         color="secondary"
-        label="Prochain"
+        :label="nextExercise.abs ? 'Abs' : 'Prochain'"
         class="q-mb-lg w-content"
         icon-right="arrow_forward"
-        :to="{ name: 'performances', params: { workoutId: $route.params.workoutId, exerciseId: nextExercise.id } }"
+        :to="nextExercise.abs ? { name: 'abs' } : { name: 'performances', params: { workoutId: $route.params.workoutId, exerciseId: nextExercise.id } }"
       />
     </div>
   </div>
