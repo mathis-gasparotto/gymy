@@ -29,6 +29,7 @@
     "@quasar/extras": "^1.0.0",
     "@vueuse/sound": "^2.0.1",
     "firebase": "^10.9.0",
+    "keen-slider": "^6.8.6",
     "quasar": "^2.6.0",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0",

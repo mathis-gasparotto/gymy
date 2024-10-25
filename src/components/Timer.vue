@@ -4,7 +4,7 @@
       <div class="number-container">
         <span class="number-title">MINUTES</span>
         <div class="digital-container">
-          <span class="single-digit">{{ minutes > 9 ? Math.floor(minutes/10) : 0 }}</span>
+          <span class="single-digit">{{ minutes > 9 ? Math.floor(minutes / 10) : 0 }}</span>
           <span class="single-digit">{{ minutes % 10 }}</span>
         </div>
       </div>
@@ -15,15 +15,49 @@
       <div class="number-container">
         <span class="number-title">SECONDES</span>
         <div class="digital-container">
-          <span class="single-digit">{{ seconds > 9 ? Math.floor(seconds/10) : 0 }}</span>
+          <span class="single-digit">{{ seconds > 9 ? Math.floor(seconds / 10) : 0 }}</span>
           <span class="single-digit">{{ seconds % 10 }}</span>
         </div>
       </div>
     </div>
+
+    <DurationPicker
+      v-if="showEdit && !timerInterval"
+      class="q-mb-lg"
+      v-model="durationPickerVal"
+    />
     <div class="flex flex-center action-btns">
-      <q-btn color="primary" icon="play_arrow" round size="lg" @click="startTimer" v-if="!timerInterval" />
-      <q-btn color="negative" icon="stop" round size="lg" @click="stopTimer" v-else />
-      <q-btn color="secondary" icon="restart_alt" round size="lg" @click="setTimer" />
+      <q-btn
+        color="primary"
+        icon="play_arrow"
+        round
+        size="lg"
+        @click="startTimer"
+        v-if="!timerInterval"
+      />
+      <q-btn
+        color="negative"
+        icon="stop"
+        round
+        size="lg"
+        @click="stopTimer"
+        v-else
+      />
+      <q-btn
+        color="secondary"
+        icon="restart_alt"
+        round
+        size="lg"
+        @click="setTimer"
+      />
+      <q-btn
+        v-if="!timerInterval"
+        color="orange"
+        :icon="showEdit ? 'check' : 'edit'"
+        round
+        size="lg"
+        @click="showEdit = !showEdit"
+      />
     </div>
   </div>
 </template>
@@ -32,6 +66,7 @@
 import { getUser } from 'src/services/userService'
 import { useSound } from '@vueuse/sound'
 import buttonSfx from 'src/assets/sounds/rest-timer-end.mp3'
+import DurationPicker from 'src/components/KeenSlider/DurationPicker.vue'
 
 export default {
   name: 'Timer',
@@ -42,8 +77,11 @@ export default {
       required: false
     }
   },
+  components: {
+    DurationPicker
+  },
   setup() {
-    const { play: playSound } = useSound(buttonSfx, {volume: 2.5, autoplay: false})
+    const { play: playSound } = useSound(buttonSfx, { volume: 2.5, autoplay: false })
     return {
       playSound
     }
@@ -54,7 +92,22 @@ export default {
       initialSeconds: 0,
       minutes: 0,
       seconds: 0,
-      timerInterval: null
+      timerInterval: null,
+      showEdit: false
+    }
+  },
+  computed: {
+    durationPickerVal: {
+      get() {
+        return `${this.minutes}:${this.seconds}`
+      },
+      set(val) {
+        this.initialMinutes = Number(val.split(':')[0])
+        this.initialSeconds = Number(val.split(':')[1])
+        this.initTimerVal = val
+        this.minutes = this.initialMinutes
+        this.seconds = this.initialSeconds
+      }
     }
   },
   created() {
@@ -164,11 +217,11 @@ export default {
     right: 0px;
     top: 50%;
     bottom: 50%;
-    content: "";
-    width: "100%";
+    content: '';
+    width: '100%';
     height: 2px;
     background-color: #232323;
-    opacity: .4;
+    opacity: 0.4;
   }
 }
 </style>
