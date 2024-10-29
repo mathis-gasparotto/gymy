@@ -7,8 +7,9 @@
       :y="p.y - 10"
       text-anchor="middle"
       font-size="12"
-      fill="#8884d8">
-      {{ p.props.data[dataKeys[1]] * (reversed ? -1 : 1) }}
+      fill="#8884d8"
+    >
+      {{ p.props.data[dataKeys[2]] ? p.props.data[dataKeys[1]] * (reversed ? -1 : 1) : '' }}
     </text>
   </g>
 </template>

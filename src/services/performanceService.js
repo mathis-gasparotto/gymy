@@ -9,12 +9,14 @@ import { USER_GUEST_UID } from 'src/helpers/userHelper'
 export function getPerformances(workoutId, exerciseId) {
   const performancesObject = LocalStorage.getItem(LOCALSTORAGE_DB_USER).workouts[workoutId].exercises[exerciseId].performances
   if (!performancesObject) return []
-  return Object.keys(performancesObject).map(key => {
-    return {
-      ...performancesObject[key],
-      id: key
-    }
-  }).sort((a, b) => new Date(b.date) - new Date(a.date))
+  return Object.keys(performancesObject)
+    .map((key) => {
+      return {
+        ...performancesObject[key],
+        id: key
+      }
+    })
+    .sort((a, b) => (b.date === a.date ? new Date(b.createdAt) - new Date(a.createdAt) : new Date(b.date) - new Date(a.date)))
 }
 
 export function getPerformance(workoutId, exerciseId, id) {
@@ -32,8 +34,8 @@ export function getPerformanceAverage(workoutId, exerciseId, id) {
   if (!performance) return null
   if (performance.series.length === 0) return null
 
-  const allDefault = performance.series.every(serie => serie.type === PERFORMANCE_TYPE_DEFAULT)
-  const allNoDefault = performance.series.every(serie => serie.type !== PERFORMANCE_TYPE_DEFAULT)
+  const allDefault = performance.series.every((serie) => serie.type === PERFORMANCE_TYPE_DEFAULT)
+  const allNoDefault = performance.series.every((serie) => serie.type !== PERFORMANCE_TYPE_DEFAULT)
 
   if (!allNoDefault && !allDefault) return null
 
@@ -88,7 +90,6 @@ export async function addPerformance(workoutId, exerciseId, payload) {
 }
 
 export async function updatePerformance(workoutId, exerciseId, id, payload) {
-
   payload = checkPerformance(payload)
 
   const user = getUser()
@@ -159,15 +160,15 @@ function checkPerformance(payload) {
     comment: payload.comment && payload.comment.trim().length > 0 ? payload.comment.trim() : null
   }
   if (payload.series.length > 0) {
-    payload.series = payload.series.filter(serie => serie.value !== null && serie.value!== '' && serie.value >= 0)
-    payload.series = payload.series.map(serie => {
+    payload.series = payload.series.filter((serie) => serie.value !== null && serie.value !== '' && serie.value >= 0)
+    payload.series = payload.series.map((serie) => {
       return {
         ...serie,
         value: Number(serie.value)
       }
     })
-    const allDefault = payload.series.every(serie => serie.type === PERFORMANCE_TYPE_DEFAULT)
-    const allNoDefault = payload.series.every(serie => serie.type !== PERFORMANCE_TYPE_DEFAULT)
+    const allDefault = payload.series.every((serie) => serie.type === PERFORMANCE_TYPE_DEFAULT)
+    const allNoDefault = payload.series.every((serie) => serie.type !== PERFORMANCE_TYPE_DEFAULT)
 
     if (!allNoDefault && !allDefault) {
       throw new Error('All series must be of the same type')

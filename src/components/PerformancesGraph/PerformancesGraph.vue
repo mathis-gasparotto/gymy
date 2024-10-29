@@ -1,12 +1,25 @@
 <template>
-  <Responsive v-if="showChart" >
+  <Responsive v-if="showChart">
     <template #main="{ width }">
       <div class="chart-container">
-        <Chart :data="data" direction="horizontal" :size="{ width, height: 420 }" :axis="axis" class="flex" :margin="margin">
+        <Chart
+          :data="data"
+          direction="horizontal"
+          :size="{ width, height: 420 }"
+          :axis="axis"
+          class="flex"
+          :margin="margin"
+        >
           <template #layers>
             <Grid strokeDasharray="2,2" />
-            <LineComp :dataKeys="['date', 'value']" type="step" />
-            <LabelsLayer :dataKeys="['date', 'value']" :reversed="reversed" />
+            <LineComp
+              :dataKeys="['date', 'value']"
+              type="step"
+            />
+            <LabelsLayer
+              :dataKeys="['date', 'value', 'showValue']"
+              :reversed="reversed"
+            />
           </template>
           <template #widgets>
             <Tooltip
@@ -14,6 +27,7 @@
                 value: { hide: true, label: 'poids/temps' },
                 date: { label: 'date' },
                 comment: { label: 'commentaire' },
+                showValue: { hide: true }
               }"
               :canvas="{
                 width: 100
@@ -62,6 +76,9 @@ export default {
         secondary: {
           domain: ['dataMin', 'dataMax + 2'],
           type: 'linear'
+        },
+        primary: {
+          format: (d) => (typeof d === 'string' && d.includes('/') ? d : '')
         }
       },
       margin: {
@@ -70,10 +87,20 @@ export default {
         bottom: 50,
         left: 20
       },
-      showChart: false
+      showChart: false,
+      maxDate: 7
     }
   },
   created() {
+    if (screen.width >= 600 && screen.width < 1024) {
+      this.maxDate = 10
+    } else if (screen.width >= 1024 && screen.width < 1440) {
+      this.maxDate = 20
+    } else if (screen.width >= 1440 && screen.width < 1920) {
+      this.maxDate = 30
+    } else if (screen.width >= 1920) {
+      this.maxDate = 60
+    }
     this.loadPerformances()
     if (this.reversed) {
       this.axis.secondary.domain = ['dataMin -2', '0']
@@ -86,11 +113,15 @@ export default {
       let performances = getPerformances(this.workoutId, this.exerciseId)
       performances = performances.sort((a, b) => new Date(a.date) - new Date(b.date))
       this.data = []
-      performances.forEach((perf) => {
+      const noYear = performances.length >= 5
+      const indexValueInterval = performances.length >= this.maxDate ? Math.round(performances.length / (this.maxDate - 1)) : 1
+      performances.forEach((perf, i) => {
+        const showValue = i === performances.length - 1 || (i % indexValueInterval === 0 && performances.length - i > indexValueInterval)
         const value = getPerformanceAverage(this.workoutId, this.exerciseId, perf.id)
         this.data.push({
-          date: formatting().dateToDisplay(perf.date),
+          date: showValue ? (noYear ? formatting().dateToDisplayCompact(perf.date) : formatting().dateToDisplay(perf.date)) : perf.date,
           value: value * (this.reversed ? -1 : 1),
+          showValue,
           comment: perf.comment
         })
       })
