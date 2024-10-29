@@ -141,7 +141,7 @@ import { useSound } from '@vueuse/sound'
 import endSound from 'src/assets/sounds/Finish First Mario Kart Wii.mp3'
 import countdownSound from 'src/assets/sounds/mariostart.mp3'
 import ding from 'src/assets/sounds/ding.mp3'
-import timerInProgrss from 'src/assets/sounds/timer-in-progress.mp3'
+import timerInProgress from 'src/assets/sounds/timer-in-progress.mp3'
 import last3Sec from 'src/assets/sounds/clock-ticking.mp3'
 
 export default {
@@ -153,7 +153,7 @@ export default {
     const { play: playEnd, stop: stopEnd } = useSound(endSound, { volume: 0.5, autoplay: false, interrupt: true })
     const { play: playCountdown, stop: stopCountdown } = useSound(countdownSound, { volume: 0.5, autoplay: false, interrupt: true })
     const { play: playDing, stop: stopDing } = useSound(ding, { volume: 1, autoplay: false, interrupt: true })
-    const { play: playInProgress, stop: stopInProgress } = useSound(timerInProgrss, { volume: 1, autoplay: false, interrupt: true, loop: true })
+    const { play: playInProgress, stop: stopInProgress } = useSound(timerInProgress, { volume: 1, autoplay: false, interrupt: true, loop: true })
     const { play: playLast3Sec, stop: stopLast3Sec } = useSound(last3Sec, { volume: 1, autoplay: false, interrupt: true, loop: true })
     return {
       formatting,
