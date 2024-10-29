@@ -65,7 +65,8 @@
 <script>
 import { getUser } from 'src/services/userService'
 import { useSound } from '@vueuse/sound'
-import buttonSfx from 'src/assets/sounds/rest-timer-end.mp3'
+import endTimerSfx from 'src/assets/sounds/rest-timer-end.mp3'
+import timerInProgressSfx from 'src/assets/sounds/timer-in-progress.mp3'
 import DurationPicker from 'src/components/KeenSlider/DurationPicker.vue'
 
 export default {
@@ -81,9 +82,12 @@ export default {
     DurationPicker
   },
   setup() {
-    const { play: playSound } = useSound(buttonSfx, { volume: 2.5, autoplay: false })
+    const { play: playEndSound } = useSound(endTimerSfx, { volume: 2.5, autoplay: false, interrupt: true })
+    const { play: playInProgressSound, stop: stopInProgressSound } = useSound(timerInProgressSfx, { volume: 1, autoplay: false, interrupt: true, loop: true })
     return {
-      playSound
+      playEndSound,
+      playInProgressSound,
+      stopInProgressSound
     }
   },
   data() {
@@ -128,6 +132,7 @@ export default {
       this.stopTimer()
     },
     startTimer() {
+      this.playInProgressSound()
       this.timerInterval = setInterval(() => {
         if (this.seconds === 0) {
           if (this.minutes > 0) {
@@ -145,12 +150,14 @@ export default {
       }, 1000)
     },
     stopTimer() {
+      this.stopInProgressSound()
       clearInterval(this.timerInterval)
       this.timerInterval = null
     },
     timerEnd() {
       this.$emit('timerEnd')
-      this.playSound()
+      this.stopInProgressSound()
+      this.playEndSound()
     }
   }
 }
