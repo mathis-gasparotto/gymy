@@ -24,7 +24,7 @@
           <template #widgets>
             <Tooltip
               :config="{
-                value: { hide: true, label: 'poids/temps' },
+                value: { label: 'charge/temps', format: (d) => (reversed ? d * -1 : d) },
                 date: { label: 'date' },
                 comment: { label: 'commentaire' },
                 showValue: { hide: true }
