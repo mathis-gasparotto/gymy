@@ -49,6 +49,9 @@
 import { ref } from 'vue'
 import { useKeenSlider } from 'keen-slider/vue.es'
 import 'keen-slider/keen-slider.min.css'
+// import tickAudio from 'https://drive.google.com/uc?export=download&id=10e1YkbNsRh-vGx1jmS1Nntz8xzkBp4_I'
+import tickAudio from 'src/assets/sounds/wheel_tick.mp3'
+import { useSound } from '@vueuse/sound'
 
 export default {
   emits: ['update:modelValue'],
@@ -63,6 +66,8 @@ export default {
     side: { type: String, default: 'center' }
   },
   setup(props, { emit }) {
+    const { play: playTickSound } = useSound(tickAudio, { volume: 2, autoplay: false, interrupt: true })
+
     const wheelSize = 20
     const slideDegree = 360 / 20
     const slidesPerView = props.loop ? 9 : 1
@@ -112,6 +117,7 @@ export default {
       },
       slideChanged: (s) => {
         emit('update:modelValue', s.track.details.abs)
+        playTickSound()
       },
       rubberband: !props.loop,
       mode: 'free-snap'
