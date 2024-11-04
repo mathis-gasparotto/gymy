@@ -109,7 +109,7 @@
       <div class="text-h4 text-center q-mb-lg">{{ rest ? 'Inter-séries' : 'Étape ' + step + '/' + nbExercises }}</div>
       <div
         class="text-h5 text-center"
-        v-if="futurExercise && timer <= displayNextExercise"
+        v-if="futurExercise && (timer <= displayNextExercise || rest || currentExercise.restAbs)"
       >
         Prochain : {{ futurExercise.restAbs ? 'Repos 😴' : futurExercise.label }}
       </div>
