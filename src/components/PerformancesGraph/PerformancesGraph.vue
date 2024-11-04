@@ -25,7 +25,8 @@
             <Tooltip
               :config="{
                 value: { label: 'charge/temps', format: (d) => (reversed ? d * -1 : d) },
-                date: { label: 'date' },
+                date: { hide: true },
+                dateToShow: { label: 'date' },
                 comment: { label: 'commentaire' },
                 showValue: { hide: true }
               }"
@@ -120,6 +121,7 @@ export default {
         const value = getPerformanceAverage(this.workoutId, this.exerciseId, perf.id)
         this.data.push({
           date: showValue ? (noYear ? formatting().dateToDisplayCompact(perf.date) : formatting().dateToDisplay(perf.date)) : perf.date,
+          dateToShow: formatting().dateToDisplay(perf.date),
           value: value * (this.reversed ? -1 : 1),
           showValue,
           comment: perf.comment
