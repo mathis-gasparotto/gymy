@@ -293,12 +293,14 @@ export default {
       // if (this.finishTime.interval) clearInterval(this.finishTime.interval)
       // this.finishTime.interval = null
       this.finishTime.value = null
-      this.workouts = getAbsWorkouts().map((workout) => ({
-        ...workout,
-        selected: false,
-        duration: Object.values(workout.exercises).reduce((acc, exercise) => acc + exercise.duration, 0) || 0,
-        durationWithoutFinishers: Object.values(workout.exercises).reduce((acc, exercise) => acc + (exercise.forLastSeries ? 0 : exercise.duration), 0) || 0
-      }))
+      this.workouts = getAbsWorkouts()
+        .filter((workout) => workout.exercises)
+        .map((workout) => ({
+          ...workout,
+          selected: false,
+          duration: Object.values(workout.exercises).reduce((acc, exercise) => acc + exercise.duration, 0) || 0,
+          durationWithoutFinishers: Object.values(workout.exercises).reduce((acc, exercise) => acc + (exercise.forLastSeries ? 0 : exercise.duration), 0) || 0
+        }))
     },
     onAbsWorkoutSelectectUpdate() {
       if (this.isValid) {
