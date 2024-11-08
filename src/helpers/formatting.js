@@ -65,5 +65,16 @@ export default () => ({
   timeToDisplay(date) {
     let d = new Date(date)
     return `${d.getHours() >= 10 ? d.getHours() : '0' + d.getHours()}h${d.getMinutes() >= 10 ? d.getMinutes() : '0' + d.getMinutes()}`
+  },
+  array_move(array, old_index, new_index) {
+    const arr = [...array]
+    if (new_index >= arr.length) {
+      var k = new_index - arr.length + 1
+      while (k--) {
+        arr.push(undefined)
+      }
+    }
+    arr.splice(new_index, 0, arr.splice(old_index, 1)[0])
+    return arr.filter((el) => !!el)
   }
 })

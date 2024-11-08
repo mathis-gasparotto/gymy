@@ -4,10 +4,20 @@
     <div v-if="planWorkouts && planWorkouts.length > 0">
       <div class="relative">
         <div class="plan-template absolute">
-          <div class="q-mb-lg" v-for="(workout, index) in planWorkouts" :key="workout.id">
+          <div
+            class="q-mb-lg"
+            v-for="(workout, index) in cachedList"
+            :key="workout.id"
+          >
             <h2 class="q-mb-sm text-center text-h5">{{ getDayByIndex(index) }}</h2>
-            <q-card flat class="flex-center column q-px-md plan-template__card relative">
-              <div v-if="!workout.restDay" class="invisible">
+            <q-card
+              flat
+              class="flex-center column q-px-md plan-template__card relative"
+            >
+              <div
+                v-if="!workout.restDay"
+                class="invisible"
+              >
                 <q-card-section class="gt-xs">
                   <div class="text-h6 text-center">
                     {{ workout.label }}
@@ -18,25 +28,51 @@
                     {{ workout.label }}
                   </div>
                 </q-card-section>
-                <q-card-actions horizontal class="lt-sm no-wrap q-pa-none">
-                  <q-btn flat round color="negative" icon="fa-solid fa-circle-minus"/>
+                <q-card-actions
+                  horizontal
+                  class="lt-sm no-wrap q-pa-none"
+                >
+                  <q-btn
+                    flat
+                    round
+                    color="negative"
+                    icon="fa-solid fa-circle-minus"
+                  />
                 </q-card-actions>
               </div>
               <q-card-section class="absolute">
                 <div class="text-h6 text-center color-primary flex flex-center">
                   Repos
-                  <q-btn flat round color="primary" inversed icon="add_circle" @click="remove(index)" />
+                  <q-btn
+                    flat
+                    round
+                    color="primary"
+                    inversed
+                    icon="add_circle"
+                    @click="remove(index)"
+                  />
                 </div>
               </q-card-section>
             </q-card>
           </div>
         </div>
-        <draggable :list="planWorkouts" class="list-group" ghost-class="ghost" itemKey="idForList"
-          handle=".draggable-btn" @end="onDragEnd" @start="drag = true">
+        <draggable
+          :list="planWorkouts"
+          class="list-group"
+          ghost-class="ghost"
+          itemKey="index"
+          handle=".draggable-btn"
+          @end="onDragEnd"
+          @start="drag = true"
+          :move="onMove"
+        >
           <template #item="{ element, index }">
             <div class="q-mb-lg">
               <h2 class="q-mb-sm text-center text-h5 workout-day no-hover">{{ getDayByIndex(index) }}</h2>
-              <q-card class="flex-center column q-px-md" v-if="!element.restDay">
+              <q-card
+                class="flex-center column q-px-md"
+                v-if="!element.restDay"
+              >
                 <q-card-section class="gt-xs">
                   <div class="text-h6 text-center">
                     {{ element.label }}
@@ -47,36 +83,68 @@
                     {{ element.label }}
                   </div>
                 </q-card-section>
-                <q-card-actions horizontal class="absolute-right gt-xs no-wrap">
-                  <q-btn flat round color="negative" icon="fa-solid fa-circle-minus" @click="remove(index)" />
+                <q-card-actions
+                  horizontal
+                  class="absolute-right gt-xs no-wrap"
+                >
+                  <q-btn
+                    flat
+                    round
+                    color="negative"
+                    icon="fa-solid fa-circle-minus"
+                    @click="remove(index)"
+                  />
                 </q-card-actions>
-                <q-card-actions horizontal class="lt-sm no-wrap q-pa-none">
-                  <q-btn flat round color="negative" icon="fa-solid fa-circle-minus" @click="remove(index)" />
+                <q-card-actions
+                  horizontal
+                  class="lt-sm no-wrap q-pa-none"
+                >
+                  <q-btn
+                    flat
+                    round
+                    color="negative"
+                    icon="fa-solid fa-circle-minus"
+                    @click="remove(index)"
+                  />
                 </q-card-actions>
                 <div class="draggable-btn-container">
-                  <q-icon :class="'draggable-btn ' + (drag ? 'cursor-grabbing' : 'cursor-grab')" size="sm"
-                    name="menu"></q-icon>
+                  <q-icon
+                    :class="'draggable-btn ' + (drag ? 'cursor-grabbing' : 'cursor-grab')"
+                    size="sm"
+                    name="menu"
+                  ></q-icon>
                 </div>
               </q-card>
-              <q-card class="flex-center column q-px-md plan-template__card restDay cursor-pointer" v-else
-                @click="showAddPlanFunction(index)">
-                <q-card-section>
-                </q-card-section>
+              <q-card
+                class="flex-center column q-px-md plan-template__card restDay cursor-pointer"
+                v-else
+                @click="showAddPlanFunction(index)"
+              >
+                <q-card-section> </q-card-section>
               </q-card>
             </div>
           </template>
         </draggable>
       </div>
     </div>
-    <span v-else class="text-center">Aucun entraînement de disponible</span>
-    <q-dialog v-model="showAddPlan" @hide="resetForm">
+    <span
+      v-else
+      class="text-center"
+      >Aucun entraînement de disponible</span
+    >
+    <q-dialog
+      v-model="showAddPlan"
+      @hide="resetForm"
+    >
       <q-card class="q-px-xs q-py-xs">
-        <q-card-section class="text-h5 text-center">
-          Choisissez un entraînement
-        </q-card-section>
+        <q-card-section class="text-h5 text-center"> Choisissez un entraînement </q-card-section>
         <q-card-section>
-          <q-card class="cursor-pointer q-mb-md" v-for="workout in workouts" :key="workout.id"
-            @click="selectWorkout(workout)">
+          <q-card
+            class="cursor-pointer q-mb-md"
+            v-for="workout in workouts"
+            :key="workout.id"
+            @click="selectWorkout(workout)"
+          >
             <q-card-section class="text-h6 text-center">
               {{ workout.label }}
             </q-card-section>
@@ -88,17 +156,37 @@
           class="q-mb-lg bordered-y"
         >
           <q-card-section>
-            <q-form @submit.prevent="submitCustomWorkout" class="flex-center column">
-              <q-input name="label" rounded outlined label="Libellé" class="q-mb-md" type="text"
-                v-model="customWorkout.label" lazy-rules :rules="[
-          (val) => val.trim().length > 2 || 'Veuillez renseigner minimum 3 caractères'
-        ]" />
-              <q-btn color="primary" label="Enregistrer" type="submit" :disable="!customWorkoutFormValid" :loading="customWorkoutFormLoading" />
+            <q-form
+              @submit.prevent="submitCustomWorkout"
+              class="flex-center column"
+            >
+              <q-input
+                name="label"
+                rounded
+                outlined
+                label="Libellé"
+                class="q-mb-md"
+                type="text"
+                v-model="customWorkout.label"
+                lazy-rules
+                :rules="[(val) => val.trim().length > 2 || 'Veuillez renseigner minimum 3 caractères']"
+              />
+              <q-btn
+                color="primary"
+                label="Enregistrer"
+                type="submit"
+                :disable="!customWorkoutFormValid"
+                :loading="customWorkoutFormLoading"
+              />
             </q-form>
           </q-card-section>
         </q-expansion-item>
         <q-card-actions align="center">
-          <q-btn label="Annuler" color="negative" v-close-popup />
+          <q-btn
+            label="Annuler"
+            color="negative"
+            v-close-popup
+          />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -112,6 +200,7 @@ import GymyHeader from 'src/components/GymyHeader.vue'
 import { errorNotify } from 'src/helpers/notifyHelper'
 import draggable from 'vuedraggable'
 import { uid } from 'quasar'
+import formatting from 'src/helpers/formatting'
 
 export default {
   name: 'PlanWorkouts',
@@ -141,16 +230,26 @@ export default {
         label: ''
       },
       customWorkoutFormLoading: false,
-      showCustomWorkoutForm: false
+      showCustomWorkoutForm: false,
+      cachedList: []
     }
   },
   created() {
     this.workouts = getNoAbsWorkouts()
     this.loadPlanWorkouts()
+    this.cachedList = [...this.planWorkouts]
   },
   computed: {
     customWorkoutFormValid() {
       return this.customWorkout.label.trim().length > 2
+    }
+  },
+  watch: {
+    planWorkouts: {
+      handler() {
+        this.cachedList = [...this.planWorkouts]
+      },
+      deep: true
     }
   },
   methods: {
@@ -179,6 +278,36 @@ export default {
           return 'Dimanche'
       }
     },
+    onMove(e) {
+      let move = {}
+      switch (true) {
+        case e.willInsertAfter && e.draggedContext.futureIndex > e.draggedContext.index:
+          move = {
+            from: e.draggedContext.futureIndex - 1,
+            to: e.draggedContext.futureIndex
+          }
+          break
+        case !e.willInsertAfter && e.draggedContext.futureIndex < e.draggedContext.index:
+          move = {
+            from: e.draggedContext.futureIndex + 1,
+            to: e.draggedContext.futureIndex
+          }
+          break
+        case e.willInsertAfter && e.draggedContext.futureIndex < e.draggedContext.index:
+          move = {
+            from: e.draggedContext.futureIndex,
+            to: e.draggedContext.futureIndex + 1
+          }
+          break
+        case !e.willInsertAfter && e.draggedContext.futureIndex > e.draggedContext.index:
+          move = {
+            from: e.draggedContext.futureIndex,
+            to: e.draggedContext.futureIndex - 1
+          }
+          break
+      }
+      this.cachedList = formatting().array_move(this.cachedList, move.from, move.to)
+    },
     onDragEnd(e) {
       this.drag = false
       updatePlan(this.plan.id, {
@@ -196,11 +325,10 @@ export default {
         saturdayWorkoutLabel: this.planWorkouts[5].restDay ? null : this.planWorkouts[5].id ? null : this.planWorkouts[5].label,
         sundayWorkoutId: this.planWorkouts[6].restDay ? null : this.planWorkouts[6].id || null,
         sundayWorkoutLabel: this.planWorkouts[6].restDay ? null : this.planWorkouts[6].id ? null : this.planWorkouts[6].label
+      }).catch((err) => {
+        errorNotify('Une erreur est survenue lors du déplacement de votre entraînement')
+        this.loadPlanWorkouts()
       })
-        .catch((err) => {
-          errorNotify('Une erreur est survenue lors du déplacement de votre entraînement')
-          this.loadPlanWorkouts()
-        })
     },
     loadPlanWorkouts() {
       this.planWorkouts = getPlanWorkouts(this.plan.id)
@@ -265,12 +393,14 @@ export default {
           }
           break
       }
-      updatePlan(this.plan.id, payload).then(() => {
-        this.loadPlanWorkouts()
-      }).catch((err) => {
-        errorNotify('Une erreur est survenue lors du retrait de votre entraînement au programme')
-        this.loadPlanWorkouts()
-      })
+      updatePlan(this.plan.id, payload)
+        .then(() => {
+          this.loadPlanWorkouts()
+        })
+        .catch((err) => {
+          errorNotify('Une erreur est survenue lors du retrait de votre entraînement au programme')
+          this.loadPlanWorkouts()
+        })
     },
     selectWorkout(workout) {
       let payload = {}
@@ -351,14 +481,16 @@ export default {
             break
         }
       }
-      updatePlan(this.plan.id, payload).then(() => {
-        this.loadPlanWorkouts()
-        this.showAddPlan = false
-        this.indexToAddWorkout = null
-      }).catch((err) => {
-        errorNotify('Une erreur est survenue lors de l\'ajout de votre entraînement au programme')
-        this.loadPlanWorkouts()
-      })
+      updatePlan(this.plan.id, payload)
+        .then(() => {
+          this.loadPlanWorkouts()
+          this.showAddPlan = false
+          this.indexToAddWorkout = null
+        })
+        .catch((err) => {
+          errorNotify("Une erreur est survenue lors de l'ajout de votre entraînement au programme")
+          this.loadPlanWorkouts()
+        })
     },
     resetForm() {
       this.customWorkout = {
