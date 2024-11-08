@@ -1,25 +1,54 @@
 <template>
   <div class="flex column">
-    <GymyHeader :text="(workout.isAbs ? 'Abs - ' : 'Exercices - ')+ workout.label" />
+    <GymyHeader :text="(workout.isAbs ? 'Abs - ' : 'Exercices - ') + workout.label" />
     <div v-if="exercises && exercises.length > 0">
-      <draggable :list="exercises" class="list-group" ghost-class="ghost" itemKey="id" handle=".draggable-btn" @end="onDragEnd" @start="drag=true">
+      <draggable
+        :list="exercises"
+        class="list-group"
+        ghost-class="ghost"
+        itemKey="id"
+        handle=".draggable-btn"
+        @end="onDragEnd"
+        @start="drag = true"
+      >
         <template #item="{ element }">
-          <ExerciseCard :forAbs="workout.isAbs" :exercise="element" draggable :drag="drag" @edit="edit(element)" @showDeleteModal="showDeleteModal(element)" @click="onClickExercise(element)" />
+          <ExerciseCard
+            :forAbs="workout.isAbs"
+            :exercise="element"
+            draggable
+            :drag="drag"
+            @edit="edit(element)"
+            @showDeleteModal="showDeleteModal(element)"
+            @click="onClickExercise(element)"
+          />
         </template>
       </draggable>
     </div>
-    <span v-else class="text-center">Aucun exercice de disponible dans cet entraînement</span>
+    <span
+      v-else
+      class="text-center"
+      >Aucun exercice de disponible dans cet entraînement</span
+    >
     <q-dialog v-model="editForm">
       <q-card class="q-px-xs q-py-xs">
         <q-card-section>
           <div class="text-h6 text-center">Modifier l'exercice {{ exerciseToEdit.label }}</div>
         </q-card-section>
         <q-card-section>
-          <ExerciseForm :initData="exerciseToEdit" buttonLabel="Confirmer" :loading="editLoading"
-            @submit="onEditSubmit" :for-abs-workout="workout.isAbs" />
+          <ExerciseForm
+            :initData="exerciseToEdit"
+            buttonLabel="Confirmer"
+            :loading="editLoading"
+            @submit="onEditSubmit"
+            :for-abs-workout="workout.isAbs"
+          />
         </q-card-section>
         <q-card-actions align="center">
-          <q-btn label="Annuler" color="negative" v-close-popup />
+          <q-btn
+            label="Annuler"
+            color="negative"
+            v-close-popup
+          />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -29,15 +58,33 @@
           <div class="text-h6 text-center">Ajouter un exercice</div>
         </q-card-section>
         <q-card-section>
-          <ExerciseForm buttonLabel="Ajouter" buttonIcon="add" :loading="addLoading" @submit="onAddSubmit" :for-abs-workout="workout.isAbs" />
+          <ExerciseForm
+            buttonLabel="Ajouter"
+            buttonIcon="add"
+            :loading="addLoading"
+            @submit="onAddSubmit"
+            :for-abs-workout="workout.isAbs"
+          />
         </q-card-section>
         <q-card-actions align="center">
-          <q-btn label="Annuler" color="negative" v-close-popup />
+          <q-btn
+            label="Annuler"
+            color="negative"
+            v-close-popup
+          />
         </q-card-actions>
       </q-card>
     </q-dialog>
-    <q-page-sticky position="bottom-right" :offset="[18, 18]">
-      <q-btn fab icon="add" color="primary" @click="addForm = true" />
+    <q-page-sticky
+      position="bottom-right"
+      :offset="[18, 18]"
+    >
+      <q-btn
+        fab
+        icon="add"
+        color="primary"
+        @click="addForm = true"
+      />
     </q-page-sticky>
   </div>
 </template>
@@ -89,12 +136,20 @@ export default {
       }
     },
     onDragEnd(e) {
+      this.$q.loading.show({
+        delay: 400, // ms
+        message: 'Déplacement en cours...',
+        boxClass: 'text-h5'
+      })
       this.drag = false
       const newPosition = e.newIndex + 1
       moveExercise(this.workout.id, e.item['_underlying_vm_'].id, newPosition)
         .catch((err) => {
           errorNotify('Une erreur est survenue lors du déplacement de votre exercice')
           this.loadExercises()
+        })
+        .finally(() => {
+          this.$q.loading.hide()
         })
     },
     loadExercises() {
@@ -111,7 +166,7 @@ export default {
         })
         .catch((err) => {
           this.addLoading = false
-          errorNotify('Une erreur est survenue lors de l\'ajout de votre exercice')
+          errorNotify("Une erreur est survenue lors de l'ajout de votre exercice")
         })
     },
     onEditSubmit(payload) {
@@ -125,7 +180,7 @@ export default {
         })
         .catch((err) => {
           this.editLoading = false
-          errorNotify('Une erreur est survenue lors de l\'édition de votre exercice')
+          errorNotify("Une erreur est survenue lors de l'édition de votre exercice")
         })
     },
     edit(exercise) {
@@ -135,7 +190,7 @@ export default {
     showDeleteModal(exercise) {
       let deleteLoading = false
       Dialog.create({
-        title: 'Suppression d\'exercice',
+        title: "Suppression d'exercice",
         message: 'Êtes-vous sûr de vouloir supprimer votre exercice ' + exercise.label + ' ?',
         // persistent: true,
         ok: {
