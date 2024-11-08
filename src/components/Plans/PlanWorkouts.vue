@@ -310,6 +310,11 @@ export default {
     },
     onDragEnd(e) {
       this.drag = false
+      this.$q.loading.show({
+        delay: 400, // ms
+        message: 'Déplacement en cours...',
+        boxClass: 'text-h5'
+      })
       updatePlan(this.plan.id, {
         mondayWorkoutId: this.planWorkouts[0].restDay ? null : this.planWorkouts[0].id || null,
         mondayWorkoutLabel: this.planWorkouts[0].restDay ? null : this.planWorkouts[0].id ? null : this.planWorkouts[0].label,
@@ -325,10 +330,14 @@ export default {
         saturdayWorkoutLabel: this.planWorkouts[5].restDay ? null : this.planWorkouts[5].id ? null : this.planWorkouts[5].label,
         sundayWorkoutId: this.planWorkouts[6].restDay ? null : this.planWorkouts[6].id || null,
         sundayWorkoutLabel: this.planWorkouts[6].restDay ? null : this.planWorkouts[6].id ? null : this.planWorkouts[6].label
-      }).catch((err) => {
-        errorNotify('Une erreur est survenue lors du déplacement de votre entraînement')
-        this.loadPlanWorkouts()
       })
+        .catch((err) => {
+          errorNotify('Une erreur est survenue lors du déplacement de votre entraînement')
+          this.loadPlanWorkouts()
+        })
+        .finally(() => {
+          this.$q.loading.hide()
+        })
     },
     loadPlanWorkouts() {
       this.planWorkouts = getPlanWorkouts(this.plan.id)

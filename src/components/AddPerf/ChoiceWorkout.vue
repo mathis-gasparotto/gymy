@@ -187,12 +187,21 @@ export default {
   },
   methods: {
     onDragEnd(e) {
+      this.$q.loading.show({
+        delay: 400, // ms
+        message: 'Déplacement en cours...',
+        boxClass: 'text-h5'
+      })
       this.drag = false
       const newPosition = e.newIndex + 1
-      moveWorkout(e.item['_underlying_vm_'].id, newPosition).catch((err) => {
-        errorNotify('Une erreur est survenue lors du déplacement de votre entraînement')
-        this.loadWorkouts()
-      })
+      moveWorkout(e.item['_underlying_vm_'].id, newPosition)
+        .catch((err) => {
+          errorNotify('Une erreur est survenue lors du déplacement de votre entraînement')
+          this.loadWorkouts()
+        })
+        .finally(() => {
+          this.$q.loading.hide()
+        })
     },
     loadWorkouts() {
       this.workouts = getWorkouts()
