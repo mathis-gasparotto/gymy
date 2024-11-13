@@ -32,7 +32,7 @@
     <q-dialog v-model="editForm">
       <q-card class="q-px-xs q-py-xs">
         <q-card-section>
-          <div class="text-h6 text-center">Modifier l'exercice {{ exerciseToEdit.label }}</div>
+          <div class="text-h6 text-center">Modifier l'exercice {{ exerciseToEdit.abs ? 'Abs' : exerciseToEdit.label }}</div>
         </q-card-section>
         <q-card-section>
           <ExerciseForm
@@ -191,7 +191,7 @@ export default {
       let deleteLoading = false
       Dialog.create({
         title: "Suppression d'exercice",
-        message: 'Êtes-vous sûr de vouloir supprimer votre exercice ' + exercise.label + ' ?',
+        message: 'Êtes-vous sûr de vouloir supprimer votre exercice ' + (exercise.abs ? 'Abs' : exercise.label) + ' ?',
         // persistent: true,
         ok: {
           label: 'Supprimer',

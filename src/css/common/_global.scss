@@ -206,7 +206,7 @@
       height: $value;
     }
   }
-  .mh {
+  .max-h {
     @include bp-all {
       &-#{$key} {
         max-height: $value !important;
@@ -214,6 +214,16 @@
     }
     &-#{$key} {
       max-height: $value;
+    }
+  }
+  .min-h {
+    @include bp-all {
+      &-#{$key} {
+        min-height: $value !important;
+      }
+    }
+    &-#{$key} {
+      min-height: $value;
     }
   }
 }

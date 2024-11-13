@@ -25,7 +25,7 @@
           v-for="workout in workouts"
           :key="workout.id"
           class="q-mb-md"
-          :class="{ 'bg-primary': workout.selected, 'text-white': workout.selected }"
+          :class="{ 'bg-primary text-white': workout.selected }"
           @click="selectWorkout(workout)"
         >
           <q-card-section>
