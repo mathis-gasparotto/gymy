@@ -1,21 +1,33 @@
 <template>
-  <q-form @submit.prevent="onsubmit()" class="flex-center column">
-    <q-checkbox
-      v-if="!forAbsWorkout"
-      v-model="exerciseForm.abs"
-      label="Abs"
-      checked-icon="task_alt"
-      unchecked-icon="highlight_off"
-      class="q-mb-md"
-    />
-    <q-checkbox
-      v-if="forAbsWorkout"
-      v-model="exerciseForm.restAbs"
-      label="Repos"
-      checked-icon="task_alt"
-      unchecked-icon="highlight_off"
-      class="q-mb-md"
-    />
+  <q-form
+    @submit.prevent="onsubmit()"
+    class="flex-center column"
+  >
+    <div class="flex justify-between items-center q-mb-md w-100">
+      <q-toggle
+        :label="!exerciseForm.disabled ? 'Activé' : 'Désactivé'"
+        color="primary"
+        :false-value="true"
+        :true-value="false"
+        v-model="exerciseForm.disabled"
+      />
+      <q-checkbox
+        v-if="!forAbsWorkout"
+        v-model="exerciseForm.abs"
+        label="Abs"
+        left-label
+        checked-icon="task_alt"
+        unchecked-icon="highlight_off"
+      />
+      <q-checkbox
+        v-else
+        v-model="exerciseForm.restAbs"
+        label="Repos"
+        left-label
+        checked-icon="task_alt"
+        unchecked-icon="highlight_off"
+      />
+    </div>
     <q-input
       v-if="(!forAbsWorkout || !exerciseForm.restAbs) && !exerciseForm.abs"
       name="label"
@@ -26,9 +38,7 @@
       type="text"
       v-model="exerciseForm.label"
       lazy-rules
-      :rules="[
-        (val) => val.trim().length > 2 || 'Veuillez renseigner minimum 3 caractères'
-      ]"
+      :rules="[(val) => val.trim().length > 2 || 'Veuillez renseigner minimum 3 caractères']"
       hide-bottom-space
     ></q-input>
     <q-input
@@ -51,9 +61,7 @@
       class="q-mb-md"
       type="number"
       inputmode="numeric"
-      :rules="[
-        (val) => val !== '' || 'Veuillez renseigner une durée'
-      ]"
+      :rules="[(val) => val !== '' || 'Veuillez renseigner une durée']"
       v-model="exerciseForm.duration"
       hide-bottom-space
       suffix="s"
@@ -66,7 +74,10 @@
       unchecked-icon="highlight_off"
       class="q-mb-md"
     />
-    <div class="q-mb-xl text-center" v-if="!forAbsWorkout && !exerciseForm.abs">
+    <div
+      class="q-mb-xl text-center"
+      v-if="!forAbsWorkout && !exerciseForm.abs"
+    >
       <div class="q-mb-sm">Valeur de progression :</div>
       <q-btn-toggle
         v-model="exerciseForm.isReverse"
@@ -74,8 +85,8 @@
         name="isReverse"
         no-caps
         :options="[
-          {label: 'Croissante', value: false},
-          {label: 'Décroissante', value: true}
+          { label: 'Croissante', value: false },
+          { label: 'Décroissante', value: true }
         ]"
       />
     </div>
@@ -130,13 +141,14 @@ export default {
         forLastSeries: false,
         abs: false,
         restAbs: false,
-        isReverse: false
+        isReverse: false,
+        disabled: false
       }
     }
   },
   created() {
     if (this.initData) {
-      this.exerciseForm = {...this.exerciseForm, ...this.initData}
+      this.exerciseForm = { ...this.exerciseForm, ...this.initData }
     }
   },
   watch: {
@@ -176,5 +188,4 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
-</style>
+<style scoped lang="scss"></style>

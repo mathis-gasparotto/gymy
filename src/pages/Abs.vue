@@ -235,7 +235,7 @@ export default {
     selectedWorkout() {
       const workout = this.workouts.find((workout) => workout.selected)
       if (!workout) return null
-      workout.exercises = getExercises(workout.id)
+      workout.exercises = getExercises(workout.id).filter((exercise) => !exercise.disabled)
       return workout
     },
     totalDuration() {
@@ -298,8 +298,8 @@ export default {
         .map((workout) => ({
           ...workout,
           selected: false,
-          duration: Object.values(workout.exercises).reduce((acc, exercise) => acc + exercise.duration, 0) || 0,
-          durationWithoutFinishers: Object.values(workout.exercises).reduce((acc, exercise) => acc + (exercise.forLastSeries ? 0 : exercise.duration), 0) || 0
+          duration: Object.values(workout.exercises).reduce((acc, exercise) => acc + (exercise.disabled ? 0 : exercise.duration), 0) || 0,
+          durationWithoutFinishers: Object.values(workout.exercises).reduce((acc, exercise) => acc + (exercise.forLastSeries || exercise.disabled ? 0 : exercise.duration), 0) || 0
         }))
     },
     onAbsWorkoutSelectectUpdate() {

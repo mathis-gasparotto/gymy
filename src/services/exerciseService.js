@@ -19,7 +19,7 @@ export function getExercises(workoutId) {
 }
 
 export function getNextExercise(workoutId, id) {
-  const exercises = getExercises(workoutId)
+  const exercises = getExercises(workoutId).filter((e) => !e.disabled)
   const index = exercises.findIndex((e) => e.id === id)
   if (index === -1) return null
   if (index === exercises.length - 1) return null
@@ -27,7 +27,7 @@ export function getNextExercise(workoutId, id) {
 }
 
 export function getPreviousExercise(workoutId, id) {
-  const exercises = getExercises(workoutId)
+  const exercises = getExercises(workoutId).filter((e) => !e.disabled)
   const index = exercises.findIndex((e) => e.id === id)
   if (index === -1) return null
   if (index === 0) return null
