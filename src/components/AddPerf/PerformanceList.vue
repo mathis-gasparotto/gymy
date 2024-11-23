@@ -278,7 +278,7 @@
                 color="primary"
                 label="Confirmer"
                 @click="onCopySubmit"
-                :loading="editLoading"
+                :loading="copyLoading"
                 :disable="!copyInputsValid"
               />
             </q-card-section>
@@ -352,7 +352,8 @@ export default {
       showCopyModal: false,
       workouts: [],
       workoutCopyingDestination: null,
-      exerciseCopyingDestination: null
+      exerciseCopyingDestination: null,
+      copyLoading: false
     }
   },
   created() {
@@ -456,7 +457,7 @@ export default {
       this.performances = getPerformances(this.workout.id, this.exercise.id)
     },
     loadWorkouts() {
-      this.workouts = getNoAbsWorkouts().filter((workout) => workout.id !== this.workout.id)
+      this.workouts = getNoAbsWorkouts()
     },
     showDeleteModal(performance) {
       let deleteLoading = false
@@ -499,6 +500,7 @@ export default {
       this.showCopyModal = true
     },
     onCopySubmit() {
+      this.copyLoading = true
       addPerformance(this.workoutCopyingDestination.id, this.exerciseCopyingDestination.id, {
         series: this.performanceToCopy.series.map((serie) => ({
           ...serie,
@@ -516,6 +518,9 @@ export default {
         })
         .catch((err) => {
           errorNotify(translatting().translateError(err, 'Une erreur est survenue lors de la copie de votre performance'))
+        })
+        .finally(() => {
+          this.copyLoading = false
         })
     },
     onCopyModalClose() {
