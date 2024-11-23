@@ -3,6 +3,87 @@
     @submit.prevent="onsubmit()"
     class="flex-center column"
   >
+    <q-dialog
+      v-model="showLinkModal"
+      v-if="!forAbsWorkout && !exerciseForm.abs"
+      persistent
+    >
+      <q-card class="q-pa-md min-h-xs-auto min-h-100 no-wrap column justify-between">
+        <div>
+          <div class="row gap-10 no-wrap justify-between items-center q-my-md">
+            <q-btn
+              color="primary"
+              v-if="linkModalProgress > 0"
+              class="w-content"
+              icon="arrow_back"
+              no-wrap
+              round
+              flat
+              padding="sm"
+              @click="backLinkProcess"
+            />
+            <q-linear-progress
+              :value="linkModalProgress"
+              class="q-mx-auto q-my-md"
+            />
+          </div>
+          <q-card-section align="center">
+            <div class="text-h6 text-center">Liaison de l'exercice {{ exerciseForm.label }}</div>
+          </q-card-section>
+          <q-card-section v-if="!exerciseForm.link.workout">
+            <q-card-section v-if="workouts.length <= 0">Aucune séance non abs disponible</q-card-section>
+            <q-card-section v-else>
+              <q-item-label class="text-h6 text-center q-mb-lg"> Séances </q-item-label>
+              <q-card
+                v-for="workout in workouts"
+                :key="workout.id"
+                class="q-mb-md"
+                @click="exerciseForm.link.workout = workout.id"
+              >
+                <q-card-section>
+                  <q-item-label class="text-center text-weight-bold">{{ workout.label }}</q-item-label>
+                </q-card-section>
+              </q-card>
+            </q-card-section>
+          </q-card-section>
+          <q-card-section v-else>
+            <q-card-section v-if="exercisesListForLink.length <= 0">Aucun exercise non abs disponible</q-card-section>
+            <q-card-section v-else>
+              <q-item-label class="text-h6 text-center q-mb-lg"> Exercices </q-item-label>
+              <q-card
+                v-for="exercise in exercisesListForLink"
+                :key="exercise.id"
+                class="q-mb-md"
+                @click="exerciseForm.link.exercise = exercise.id"
+                :class="{ 'bg-primary text-white': exerciseForm.link?.exercise === exercise.id }"
+              >
+                <q-card-section>
+                  <q-item-label class="text-center text-weight-bold">{{ exercise.label }}</q-item-label>
+                </q-card-section>
+              </q-card>
+            </q-card-section>
+          </q-card-section>
+        </div>
+        <q-card-actions
+          align="center"
+          class="gap-20"
+        >
+          <q-btn
+            v-if="exerciseForm.link?.workout"
+            color="primary"
+            label="Confirmer"
+            v-close-popup
+            :disable="!linkIsValid"
+          />
+          <q-btn
+            label="Annuler"
+            color="negative"
+            v-close-popup
+            @click="onLinkCancel"
+          />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
     <div class="flex justify-between items-center q-mb-md w-100">
       <q-toggle
         :label="!exerciseForm.disabled ? 'Activé' : 'Désactivé'"
@@ -75,7 +156,7 @@
       class="q-mb-md"
     />
     <div
-      class="q-mb-xl text-center"
+      class="q-mb-lg text-center"
       v-if="!forAbsWorkout && !exerciseForm.abs"
     >
       <div class="q-mb-sm">Valeur de progression :</div>
@@ -91,6 +172,25 @@
       />
     </div>
     <q-btn
+      v-if="!forAbsWorkout && !exerciseForm.abs && linked"
+      class="q-mb-md"
+      color="white"
+      text-color="negative"
+      label="Délier l'exercice"
+      icon="link_off"
+      no-caps
+      @click="unlink"
+    />
+    <q-btn
+      class="q-mb-xl"
+      v-if="!forAbsWorkout && !exerciseForm.abs"
+      color="primary"
+      :label="linked ? 'Modifier la liaison' : 'Lier à un autre exercice'"
+      icon="link"
+      no-caps
+      @click="showLinkModal = true"
+    />
+    <q-btn
       color="primary"
       :label="buttonLabel"
       :icon="buttonIcon"
@@ -102,6 +202,9 @@
 </template>
 
 <script>
+import { getNoAbsWorkouts } from 'src/services/workoutService'
+import { getExercises } from 'src/services/exerciseService'
+
 export default {
   name: 'ExerciseForm',
   emits: ['submit'],
@@ -133,7 +236,6 @@ export default {
   },
   data() {
     return {
-      addLoading: false,
       exerciseForm: {
         label: '',
         config: '',
@@ -142,14 +244,21 @@ export default {
         abs: false,
         restAbs: false,
         isReverse: false,
-        disabled: false
-      }
+        disabled: false,
+        link: {
+          workout: null,
+          exercise: null
+        }
+      },
+      showLinkModal: false,
+      workouts: []
     }
   },
   created() {
     if (this.initData) {
       this.exerciseForm = { ...this.exerciseForm, ...this.initData }
     }
+    this.loadWorkouts()
   },
   watch: {
     exerciseForm: {
@@ -171,6 +280,24 @@ export default {
       } else {
         return this.exerciseForm.label.trim().length > 2
       }
+    },
+    linkModalProgress() {
+      if (this.exerciseForm.link?.workout && this.exerciseForm.link?.exercise) {
+        return 1
+      } else if (this.exerciseForm.link?.workout) {
+        return 0.5
+      } else {
+        return 0
+      }
+    },
+    exercisesListForLink() {
+      return this.exerciseForm.link?.workout ? getExercises(this.exerciseForm.link.workout).filter((exercise) => !exercise.abs && exercise.id !== this.initData.id) : []
+    },
+    linkIsValid() {
+      return this.exerciseForm.link?.workout && this.exerciseForm.link?.exercise
+    },
+    linked() {
+      return this.exerciseForm.link?.workout && this.exerciseForm.link?.exercise
     }
   },
   methods: {
@@ -178,11 +305,24 @@ export default {
       if (!this.formValid) return
       const payload = {
         ...this.exerciseForm,
+        link: this.exerciseForm.link.workout && this.exerciseForm.link.exercise ? this.exerciseForm.link : null,
         duration: this.exerciseForm.duration ? parseInt(this.exerciseForm.duration) : null,
         label: this.exerciseForm.label.trim(),
         config: this.exerciseForm.config && this.exerciseForm.config.trim().length > 0 ? this.exerciseForm.config.trim() : null
       }
       this.$emit('submit', payload)
+    },
+    loadWorkouts() {
+      this.workouts = getNoAbsWorkouts()
+    },
+    onLinkCancel() {
+      this.exerciseForm.link = this.initData?.link || { workout: null, exercise: null }
+    },
+    backLinkProcess() {
+      this.exerciseForm.link = { workout: null, exercise: null }
+    },
+    unlink() {
+      this.exerciseForm.link = { workout: null, exercise: null }
     }
   }
 }

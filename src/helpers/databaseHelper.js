@@ -234,6 +234,11 @@ const exerciseProps = [
     name: 'disabled',
     type: 'boolean',
     default: false
+  },
+  {
+    name: 'linkedTo',
+    type: 'object',
+    default: null
   }
 ]
 
