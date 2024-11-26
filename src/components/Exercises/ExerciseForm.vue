@@ -171,6 +171,12 @@
         ]"
       />
     </div>
+    <div
+      v-if="!forAbsWorkout && !exerciseForm.abs && linked"
+      class="q-mb-sm"
+    >
+      Lié à : <b>{{ linkedWorkout.label }}</b> - <b>{{ linkedExercise.label }}</b>
+    </div>
     <q-btn
       v-if="!forAbsWorkout && !exerciseForm.abs && linked"
       class="q-mb-md"
@@ -202,8 +208,8 @@
 </template>
 
 <script>
-import { getNoAbsWorkouts } from 'src/services/workoutService'
-import { getExercises } from 'src/services/exerciseService'
+import { getNoAbsWorkouts, getWorkout } from 'src/services/workoutService'
+import { getExercise, getExercises } from 'src/services/exerciseService'
 
 export default {
   name: 'ExerciseForm',
@@ -258,6 +264,9 @@ export default {
     if (this.initData) {
       this.exerciseForm = { ...this.exerciseForm, ...this.initData }
     }
+    if (!this.linked) {
+      this.exerciseForm.link = { workout: null, exercise: null }
+    }
     this.loadWorkouts()
   },
   watch: {
@@ -281,6 +290,12 @@ export default {
         return this.exerciseForm.label.trim().length > 2
       }
     },
+    linkedWorkout() {
+      return this.linked ? getWorkout(this.exerciseForm.link.workout) : null
+    },
+    linkedExercise() {
+      return this.exerciseForm.link?.exercise && this.exerciseForm.link?.workout ? getExercise(this.exerciseForm.link.workout, this.exerciseForm.link.exercise) : null
+    },
     linkModalProgress() {
       if (this.exerciseForm.link?.workout && this.exerciseForm.link?.exercise) {
         return 1
@@ -300,7 +315,7 @@ export default {
       return this.exerciseForm.link?.workout && this.exerciseForm.link?.exercise
     },
     linked() {
-      return this.exerciseForm.link?.workout && this.exerciseForm.link?.exercise
+      return !!this.linkedExercise
     }
   },
   methods: {
@@ -319,7 +334,11 @@ export default {
       this.workouts = getNoAbsWorkouts()
     },
     onLinkCancel() {
-      this.exerciseForm.link = this.initData?.link || { workout: null, exercise: null }
+      if (this.initData?.link) {
+        this.exerciseForm.link = getExercise(this.initData.link.workout, this.initData.link.exercise) ? this.initData.link : { workout: null, exercise: null }
+      } else {
+        this.exerciseForm.link = { workout: null, exercise: null }
+      }
     },
     backLinkProcess() {
       this.exerciseForm.link = { workout: null, exercise: null }
