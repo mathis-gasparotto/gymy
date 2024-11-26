@@ -173,7 +173,7 @@
     </div>
     <div
       v-if="!forAbsWorkout && !exerciseForm.abs && linked"
-      class="q-mb-sm"
+      class="q-mb-sm text-center"
     >
       Lié à : <b>{{ linkedWorkout.label }}</b> - <b>{{ linkedExercise.label }}</b>
     </div>
