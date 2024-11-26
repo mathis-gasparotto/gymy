@@ -49,7 +49,7 @@
           <q-card-section v-else>
             <q-card-section v-if="exercisesListForLink.length <= 0">Aucun exercise non abs disponible</q-card-section>
             <q-card-section v-else>
-              <q-item-label class="text-h6 text-center q-mb-lg"> Exercices </q-item-label>
+              <q-item-label class="text-h6 text-center q-mb-lg"> Exercices{{ workoutSelectedForLink ? ' - ' + workoutSelectedForLink.label : '' }}</q-item-label>
               <q-card
                 v-for="exercise in exercisesListForLink"
                 :key="exercise.id"
@@ -292,6 +292,9 @@ export default {
     },
     exercisesListForLink() {
       return this.exerciseForm.link?.workout ? getExercises(this.exerciseForm.link.workout).filter((exercise) => !exercise.abs && exercise.id !== this.initData.id) : []
+    },
+    workoutSelectedForLink() {
+      return this.exerciseForm.link?.workout && this.workouts ? this.workouts.find((workout) => workout.id === this.exerciseForm.link.workout) : null
     },
     linkIsValid() {
       return this.exerciseForm.link?.workout && this.exerciseForm.link?.exercise

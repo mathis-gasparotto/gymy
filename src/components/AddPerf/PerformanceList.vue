@@ -176,7 +176,7 @@
           <q-card-section v-else-if="!exerciseCopyingDestination">
             <q-card-section v-if="exercisesListForCopy.length <= 0">Aucun exercise non abs disponible</q-card-section>
             <q-card-section v-else>
-              <q-item-label class="text-h6 text-center q-mb-lg"> Exercices </q-item-label>
+              <q-item-label class="text-h6 text-center q-mb-lg"> Exercices - {{ workoutCopyingDestination.label }} </q-item-label>
               <q-card
                 v-for="exercise in exercisesListForCopy"
                 :key="exercise.id"
