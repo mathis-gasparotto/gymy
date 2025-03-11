@@ -306,7 +306,7 @@ export default {
       }
     },
     exercisesListForLink() {
-      return this.exerciseForm.link?.workout ? getExercises(this.exerciseForm.link.workout).filter((exercise) => !exercise.abs && exercise.id !== this.initData.id) : []
+      return this.exerciseForm.link?.workout ? getExercises(this.exerciseForm.link.workout).filter((exercise) => !exercise.abs && exercise.id !== this.exerciseForm.id) : []
     },
     workoutSelectedForLink() {
       return this.exerciseForm.link?.workout && this.workouts ? this.workouts.find((workout) => workout.id === this.exerciseForm.link.workout) : null
