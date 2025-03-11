@@ -101,7 +101,7 @@
 <script>
 import { PERFORMANCE_TYPE_DEFAULT, PERFORMANCE_TYPE_BAR, PERFORMANCE_TYPE_ARM } from 'src/helpers/performanceHelper'
 import { errorNotify, successNotify } from 'src/helpers/notifyHelper'
-import { addPerformance } from 'src/services/performanceService'
+import { addPerformanceWithRelated } from 'src/services/performanceService'
 import { getUser } from 'src/services/userService'
 import translatting from 'src/helpers/translatting'
 import { getExercise, updateExercise } from 'src/services/exerciseService'
@@ -190,35 +190,11 @@ export default {
         })),
         comment: this.comment
       }
-      addPerformance(this.workout.id, this.exercise.id, payload)
+      addPerformanceWithRelated(this.workout.id, this.exercise.id, payload)
         .then(() => {
-          if (this.exercise.link?.workout && this.exercise.link?.exercise) {
-            if (getExercise(this.exercise.link.workout, this.exercise.link.exercise)) {
-              addPerformance(this.exercise.link.workout, this.exercise.link.exercise, payload)
-                .then(() => {
-                  this.$emit('reloadPerformances')
-                  successNotify('Performance ajoutée')
-                  this.initInputs()
-                })
-                .catch((err) => {
-                  errorNotify(translatting().translateError(err, "Erreur lors de l'ajout de la performance"))
-                })
-            } else {
-              updateExercise(this.workout.id, this.exercise.id, { link: null })
-                .then(() => {
-                  this.$emit('reloadPerformances')
-                  successNotify('Performance ajoutée')
-                  this.initInputs()
-                })
-                .catch((err) => {
-                  errorNotify(translatting().translateError(err, "Erreur lors de l'ajout de la performance"))
-                })
-            }
-          } else {
-            this.$emit('reloadPerformances')
-            successNotify('Performance ajoutée')
-            this.initInputs()
-          }
+          this.$emit('reloadPerformances')
+          successNotify('Performance ajoutée')
+          this.initInputs()
         })
         .catch((err) => {
           errorNotify(translatting().translateError(err, "Erreur lors de l'ajout de la performance"))
