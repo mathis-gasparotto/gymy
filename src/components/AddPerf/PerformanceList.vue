@@ -21,7 +21,7 @@
     />
 
     <q-dialog v-model="editForm">
-      <q-card class="q-pa-md min-h-xs-auto min-h-100 no-wrap column justify-between">
+      <q-card class="q-pa-md no-wrap column gap-30">
         <div>
           <q-card-section align="center">
             <div class="text-h6 text-center">Modifier la performance du {{ formatting().dateToDisplay(performanceToEdit.date) }}</div>
