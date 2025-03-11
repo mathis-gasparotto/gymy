@@ -5,9 +5,11 @@ import { LOCALSTORAGE_DB_USER } from 'src/helpers/databaseHelper'
 import { PERFORMANCE_TYPE_BAR, PERFORMANCE_TYPE_DEFAULT } from 'src/helpers/performanceHelper'
 import { getUser } from './userService'
 import { USER_GUEST_UID } from 'src/helpers/userHelper'
+import { getExercise, updateExercise } from './exerciseService'
+import { getWorkout } from './workoutService'
 
 export function getPerformances(workoutId, exerciseId) {
-  const performancesObject = LocalStorage.getItem(LOCALSTORAGE_DB_USER).workouts[workoutId].exercises[exerciseId].performances
+  const performancesObject = LocalStorage.getItem(LOCALSTORAGE_DB_USER).workouts?.[workoutId]?.exercises?.[exerciseId]?.performances
   if (!performancesObject) return []
   return Object.keys(performancesObject)
     .map((key) => {
@@ -19,13 +21,35 @@ export function getPerformances(workoutId, exerciseId) {
     .sort((a, b) => (b.date === a.date ? new Date(b.createdAt) - new Date(a.createdAt) : new Date(b.date) - new Date(a.date)))
 }
 
+export function getRelatedExercise(workoutId, exerciseId) {
+  const exercise = getExercise(workoutId, exerciseId)
+  if (exercise.link?.workout && exercise.link?.exercise) {
+    const relatedExercise = getExercise(exercise.link.workout, exercise.link.exercise)
+    if (relatedExercise) {
+      const relatedExerciseWorkout = getWorkout(relatedExercise.link.workout)
+      return { workout: relatedExerciseWorkout, ...relatedExercise }
+    } else {
+      updateExercise(workoutId, exerciseId, { link: null })
+    }
+  }
+  return null
+}
+
 export function getPerformance(workoutId, exerciseId, id) {
-  const data = LocalStorage.getItem(LOCALSTORAGE_DB_USER).workouts[workoutId].exercises[exerciseId].performances[id]
+  const data = LocalStorage.getItem(LOCALSTORAGE_DB_USER).workouts?.[workoutId]?.exercises?.[exerciseId]?.performances?.[id]
   if (!data) return null
   return {
     ...data,
     id: id
   }
+}
+
+export function getRelatedPerformance(workoutId, exerciseId, id) {
+  const relatedExercise = getRelatedExercise(workoutId, exerciseId)
+  if (relatedExercise) {
+    return getPerformance(relatedExercise.workout.id, relatedExercise.id, id)
+  }
+  return null
 }
 
 export function getPerformanceAverage(workoutId, exerciseId, id) {
@@ -48,8 +72,8 @@ export function getPerformanceAverage(workoutId, exerciseId, id) {
   return Math.round(value * 100) / 100
 }
 
-export async function addPerformance(workoutId, exerciseId, payload) {
-  const id = uid()
+export async function addPerformance(workoutId, exerciseId, payload, customId = null) {
+  const id = customId || uid()
 
   payload = checkPerformance(payload)
 
@@ -60,13 +84,13 @@ export async function addPerformance(workoutId, exerciseId, payload) {
       workouts: {
         ...user.workouts,
         [workoutId]: {
-          ...user.workouts[workoutId],
+          ...user.workouts?.[workoutId],
           exercises: {
-            ...user.workouts[workoutId].exercises,
+            ...user.workouts?.[workoutId]?.exercises,
             [exerciseId]: {
-              ...user.workouts[workoutId].exercises[exerciseId],
+              ...user.workouts?.[workoutId]?.exercises?.[exerciseId],
               performances: {
-                ...user.workouts[workoutId].exercises[exerciseId].performances,
+                ...user.workouts?.[workoutId]?.exercises?.[exerciseId]?.performances,
                 [id]: {
                   ...payload,
                   id: null,
@@ -89,9 +113,20 @@ export async function addPerformance(workoutId, exerciseId, payload) {
   }
 }
 
-export async function updatePerformance(workoutId, exerciseId, id, payload) {
-  payload = checkPerformance(payload)
+export async function addPerformanceWithRelated(workoutId, exerciseId, payload) {
+  const performance = await addPerformance(workoutId, exerciseId, payload)
 
+  const exercise = getExercise(workoutId, exerciseId)
+
+  const relatedExercise = getRelatedExercise(workoutId, exerciseId)
+  if (relatedExercise) {
+    addPerformance(exercise.link.workout, exercise.link.exercise, payload, performance.id)
+  }
+
+  return performance
+}
+
+export async function updatePerformance(workoutId, exerciseId, id, payload) {
   const user = getUser()
   if (user && user.uid === USER_GUEST_UID) {
     LocalStorage.set(LOCALSTORAGE_DB_USER, {
@@ -99,15 +134,15 @@ export async function updatePerformance(workoutId, exerciseId, id, payload) {
       workouts: {
         ...user.workouts,
         [workoutId]: {
-          ...user.workouts[workoutId],
+          ...user.workouts?.[workoutId],
           exercises: {
-            ...user.workouts[workoutId].exercises,
+            ...user.workouts?.[workoutId]?.exercises,
             [exerciseId]: {
-              ...user.workouts[workoutId].exercises[exerciseId],
+              ...user.workouts?.[workoutId]?.exercises?.[exerciseId],
               performances: {
-                ...user.workouts[workoutId].exercises[exerciseId].performances,
+                ...user.workouts?.[workoutId]?.exercises?.[exerciseId]?.performances,
                 [id]: {
-                  ...user.workouts[workoutId].exercises[exerciseId].performances[id],
+                  ...user.workouts?.[workoutId]?.exercises?.[exerciseId]?.performances?.[id],
                   ...payload,
                   id: null,
                   updatedAt: new Date().toISOString()
@@ -125,6 +160,21 @@ export async function updatePerformance(workoutId, exerciseId, id, payload) {
   return payload
 }
 
+export async function updatePerformanceWithRelated(workoutId, exerciseId, id, payload) {
+  const performance = updatePerformance(workoutId, exerciseId, id, payload)
+
+  const relatedExercise = getRelatedExercise(workoutId, exerciseId)
+
+  if (relatedExercise) {
+    const relatedPerformance = getPerformance(relatedExercise.workout.id, relatedExercise.id, id)
+    if (relatedPerformance) {
+      updatePerformance(relatedExercise.workout.id, relatedExercise.id, relatedPerformance.id, payload)
+    }
+  }
+
+  return performance
+}
+
 export async function deletePerformance(workoutId, exerciseId, id) {
   const user = getUser()
   if (user && user.uid === USER_GUEST_UID) {
@@ -133,14 +183,14 @@ export async function deletePerformance(workoutId, exerciseId, id) {
       workouts: {
         ...user.workouts,
         [workoutId]: {
-          ...user.workouts[workoutId],
+          ...user.workouts?.[workoutId],
           exercises: {
-            ...user.workouts[workoutId].exercises,
+            ...user.workouts?.[workoutId]?.exercises,
             [exerciseId]: {
-              ...user.workouts[workoutId].exercises[exerciseId],
-              performances: Object.keys(user.workouts[workoutId].exercises[exerciseId].performances).reduce((acc, key) => {
+              ...user.workouts?.[workoutId]?.exercises?.[exerciseId],
+              performances: Object.keys(user.workouts?.[workoutId]?.exercises?.[exerciseId]?.performances).reduce((acc, key) => {
                 if (key !== id) {
-                  acc[key] = user.workouts[workoutId].exercises[exerciseId].performances[key]
+                  acc[key] = user.workouts?.[workoutId]?.exercises?.[exerciseId]?.performances[key]
                 }
                 return acc
               }, {})
@@ -152,6 +202,19 @@ export async function deletePerformance(workoutId, exerciseId, id) {
   } else {
     await removeData('users/' + auth.currentUser.uid + '/workouts/' + workoutId + '/exercises/' + exerciseId + '/performances/' + id)
   }
+}
+
+export async function deletePerformanceWithRelated(workoutId, exerciseId, id) {
+  const relatedExercise = getRelatedExercise(workoutId, exerciseId)
+
+  if (relatedExercise) {
+    const relatedPerformance = getPerformance(relatedExercise.workout.id, relatedExercise.id, id)
+    if (relatedPerformance) {
+      deletePerformance(relatedExercise.workout.id, relatedExercise.id, relatedPerformance.id)
+    }
+  }
+
+  deletePerformance(workoutId, exerciseId, id)
 }
 
 function checkPerformance(payload) {

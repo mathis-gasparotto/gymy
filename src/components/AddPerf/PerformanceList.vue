@@ -299,12 +299,12 @@
 <script>
 import { PERFORMANCE_TYPE_DEFAULT, PERFORMANCE_TYPE_BAR, PERFORMANCE_TYPE_ARM } from 'src/helpers/performanceHelper'
 import { errorNotify, successNotify } from 'src/helpers/notifyHelper'
-import { addPerformance, deletePerformance, getPerformances, updatePerformance } from 'src/services/performanceService'
+import { addPerformance, deletePerformance, deletePerformanceWithRelated, getPerformances, getRelatedExercise, getRelatedPerformance, updatePerformanceWithRelated } from 'src/services/performanceService'
 import formatting from 'src/helpers/formatting'
 import { Dialog } from 'quasar'
 import translatting from 'src/helpers/translatting'
 import PerformanceCard from 'src/components/Performances/PerformanceCard.vue'
-import { getNoAbsWorkouts, getWorkouts } from 'src/services/workoutService'
+import { getNoAbsWorkouts } from 'src/services/workoutService'
 
 export default {
   name: 'PerformanceList',
@@ -399,8 +399,7 @@ export default {
   },
   methods: {
     onEditSubmit() {
-      this.editLoading = true
-      updatePerformance(this.workout.id, this.exercise.id, this.performanceToEdit.id, {
+      const payload = {
         series: this.performanceToEdit.series.map((serie) => ({
           ...serie,
           id: null,
@@ -409,7 +408,10 @@ export default {
         })),
         date: this.performanceToEdit.date,
         comment: this.performanceToEdit.comment
-      })
+      }
+
+      this.editLoading = true
+      updatePerformanceWithRelated(this.workout.id, this.exercise.id, this.performanceToEdit.id, payload)
         .then(() => {
           this.$emit('reloadPerformances')
           successNotify('Votre performance a bien été modifiée')
@@ -461,7 +463,7 @@ export default {
     },
     showDeleteModal(performance) {
       let deleteLoading = false
-      Dialog.create({
+      const config = {
         title: 'Suppression de la performance',
         message: 'Êtes-vous sûr de vouloir supprimer votre performance du ' + formatting().dateToDisplay(performance.date) + ' ?',
         // persistent: true,
@@ -474,17 +476,33 @@ export default {
           label: 'Annuler',
           color: 'primary'
         }
-      })
-        .onOk(() => {
+      }
+
+      const relatedPerformance = getRelatedPerformance(this.workout.id, this.exercise.id, performance.id)
+      if (relatedPerformance) {
+        const relatedExercise = getRelatedExercise(this.workout.id, this.exercise.id)
+        config.options = {
+          type: 'checkbox',
+          model: [],
+          items: [{ label: 'Supprimer la performance liée de l\'exercice "' + relatedExercise.label + '"', value: 'deleteRelated', color: 'negative' }]
+        }
+      }
+
+      Dialog.create(config)
+        .onOk((data = []) => {
           deleteLoading = true
-          deletePerformance(this.workout.id, this.exercise.id, performance.id)
+          const deleteFunction = data.includes('deleteRelated') ? deletePerformanceWithRelated : deletePerformance
+
+          deleteFunction(this.workout.id, this.exercise.id, performance.id)
             .then(() => {
               this.$emit('reloadPerformances')
               successNotify('Votre performance a bien été supprimée')
             })
             .catch((err) => {
+              errorNotify(translatting().translateError(err, 'Une erreur est survenue lors de la suppression de votre performance'))
+            })
+            .finally(() => {
               deleteLoading = false
-              errorNotify('Une erreur est survenue lors de la suppression de votre performance')
             })
         })
         .onCancel(() => {

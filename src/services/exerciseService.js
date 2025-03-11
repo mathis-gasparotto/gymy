@@ -6,7 +6,7 @@ import { getUser } from './userService'
 import { USER_GUEST_UID } from 'src/helpers/userHelper'
 
 export function getExercises(workoutId) {
-  const exercisesObject = LocalStorage.getItem(LOCALSTORAGE_DB_USER).workouts[workoutId].exercises
+  const exercisesObject = LocalStorage.getItem(LOCALSTORAGE_DB_USER).workouts?.[workoutId]?.exercises
   if (!exercisesObject) return []
   return Object.keys(exercisesObject)
     .map((key) => {
@@ -35,7 +35,7 @@ export function getPreviousExercise(workoutId, id) {
 }
 
 export function getExercise(workoutId, id) {
-  const data = LocalStorage.getItem(LOCALSTORAGE_DB_USER).workouts[workoutId].exercises[id]
+  const data = LocalStorage.getItem(LOCALSTORAGE_DB_USER).workouts?.[workoutId]?.exercises[id]
   if (!data) return null
   return {
     ...data,
@@ -62,9 +62,9 @@ export async function addExercise(workoutId, payload) {
       workouts: {
         ...user.workouts,
         [workoutId]: {
-          ...user.workouts[workoutId],
+          ...user.workouts?.[workoutId],
           exercises: {
-            ...user.workouts[workoutId].exercises,
+            ...user.workouts?.[workoutId]?.exercises,
             [id]: {
               ...payload,
               id: null,
@@ -93,11 +93,11 @@ export async function updateExercise(workoutId, id, payload) {
       workouts: {
         ...user.workouts,
         [workoutId]: {
-          ...user.workouts[workoutId],
+          ...user.workouts?.[workoutId],
           exercises: {
-            ...user.workouts[workoutId].exercises,
+            ...user.workouts?.[workoutId]?.exercises,
             [id]: {
-              ...user.workouts[workoutId].exercises[id],
+              ...user.workouts?.[workoutId]?.exercises[id],
               ...payload,
               id: null,
               updatedAt: new Date().toISOString()
@@ -174,10 +174,10 @@ export async function deleteExercise(workoutId, id) {
       workouts: {
         ...user.workouts,
         [workoutId]: {
-          ...user.workouts[workoutId],
-          exercises: Object.keys(user.workouts[workoutId].exercises).reduce((acc, key) => {
+          ...user.workouts?.[workoutId],
+          exercises: Object.keys(user.workouts?.[workoutId]?.exercises).reduce((acc, key) => {
             if (key !== id) {
-              acc[key] = user.workouts[workoutId].exercises[key]
+              acc[key] = user.workouts?.[workoutId]?.exercises[key]
             }
             return acc
           }, {})
