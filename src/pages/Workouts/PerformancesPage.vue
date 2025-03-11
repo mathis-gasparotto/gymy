@@ -14,7 +14,7 @@
       <q-btn
         v-if="nextExercise"
         color="secondary"
-        :label="nextExercise.abs ? 'Abs' : 'Prochain'"
+        :label="nextExercise.abs ? 'Abs' : 'Suivant'"
         class="q-mb-lg w-content"
         icon-right="arrow_forward"
         :to="nextExercise.abs ? { name: 'abs' } : { name: 'performances', params: { workoutId: $route.params.workoutId, exerciseId: nextExercise.id } }"
