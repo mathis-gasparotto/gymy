@@ -145,6 +145,9 @@ export default {
     this.defaultNumberOfSeries = getUser().defaultNumberOfSeries
     this.initInputs()
   },
+  updated() {
+    this.initInputs()
+  },
   computed: {
     inputsValid() {
       const allDefault = this.series.filter((serie) => serie.value !== null && serie.value !== '').every((serie) => serie.type.value === PERFORMANCE_TYPE_DEFAULT)
