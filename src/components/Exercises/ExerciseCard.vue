@@ -93,6 +93,13 @@
       <q-btn
         flat
         round
+        color="secondary"
+        icon="content_copy"
+        @click.stop="$emit('copy')"
+      />
+      <q-btn
+        flat
+        round
         color="negative"
         icon="delete"
         @click.stop="$emit('showDeleteModal')"
@@ -108,6 +115,13 @@
         color="primary"
         icon="edit"
         @click.stop="$emit('edit')"
+      />
+      <q-btn
+        flat
+        round
+        color="secondary"
+        icon="content_copy"
+        @click.stop="$emit('copy')"
       />
       <q-btn
         flat
@@ -133,7 +147,7 @@
 <script>
 export default {
   name: 'ExerciseCard',
-  emits: ['edit', 'showDeleteModal'],
+  emits: ['edit', 'showDeleteModal', 'copy'],
   props: {
     exercise: {
       type: Object,

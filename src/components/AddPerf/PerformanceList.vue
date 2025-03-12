@@ -162,13 +162,18 @@
             <q-card-section v-else>
               <q-item-label class="text-h6 text-center q-mb-lg"> Séances </q-item-label>
               <q-card
-                v-for="workout in workouts"
-                :key="workout.id"
-                class="q-mb-md"
-                @click="workoutCopyingDestination = workout"
+                v-for="item in workouts"
+                :key="item.id"
+                class="q-mb-md cursor-pointer"
+                @click="workoutCopyingDestination = item"
               >
                 <q-card-section>
-                  <q-item-label class="text-center text-weight-bold">{{ workout.label }}</q-item-label>
+                  <q-item-label class="text-center text-weight-bold">{{ item.label }}</q-item-label>
+                  <q-item-label
+                    v-if="item.id == workout.id"
+                    class="text-center text-caption"
+                    >(Actuel)</q-item-label
+                  >
                 </q-card-section>
               </q-card>
             </q-card-section>
@@ -178,13 +183,13 @@
             <q-card-section v-else>
               <q-item-label class="text-h6 text-center q-mb-lg"> Exercices - {{ workoutCopyingDestination.label }} </q-item-label>
               <q-card
-                v-for="exercise in exercisesListForCopy"
-                :key="exercise.id"
-                class="q-mb-md"
-                @click="exerciseCopyingDestination = exercise"
+                v-for="item in exercisesListForCopy"
+                :key="item.id"
+                class="q-mb-md cursor-pointer"
+                @click="exerciseCopyingDestination = item"
               >
                 <q-card-section>
-                  <q-item-label class="text-center text-weight-bold">{{ exercise.label }}</q-item-label>
+                  <q-item-label class="text-center text-weight-bold">{{ item.label }}</q-item-label>
                 </q-card-section>
               </q-card>
             </q-card-section>

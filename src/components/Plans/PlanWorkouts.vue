@@ -136,7 +136,7 @@
       v-model="showAddPlan"
       @hide="resetForm"
     >
-      <q-card class="q-px-xs q-py-xs">
+      <q-card class="q-px-md q-py-xs">
         <q-card-section class="text-h5 text-center"> Choisissez un entraînement </q-card-section>
         <q-card-section>
           <q-card

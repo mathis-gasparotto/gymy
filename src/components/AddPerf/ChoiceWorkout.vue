@@ -33,7 +33,7 @@
       v-model="shareForm"
       @hide="workoutToShare = {}"
     >
-      <q-card class="q-px-xs q-py-xs">
+      <q-card class="q-px-md q-py-xs">
         <q-card-section>
           <div class="text-h6 text-center">Partager l'entraînement {{ workoutToShare.label }}</div>
         </q-card-section>
@@ -82,7 +82,7 @@
       v-model="editForm"
       @hide="workoutToEdit = {}"
     >
-      <q-card class="q-px-xs q-py-xs">
+      <q-card class="q-px-md q-py-xs">
         <q-card-section>
           <div class="text-h6 text-center">Modifier l'entraînement {{ workoutToEdit.label }}</div>
         </q-card-section>
@@ -104,7 +104,7 @@
       </q-card>
     </q-dialog>
     <q-dialog v-model="addForm">
-      <q-card class="q-px-xs q-py-xs">
+      <q-card class="q-px-md q-py-xs">
         <q-card-section>
           <div class="text-h6 text-center">Ajouter un entraînement</div>
         </q-card-section>
