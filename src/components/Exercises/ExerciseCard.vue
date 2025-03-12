@@ -70,6 +70,12 @@
         >
           Finisher !
         </div>
+        <div
+          v-if="exercise.notForLastSeries && forAbs"
+          class="text-center text-caption"
+        >
+          Exclu de la dernière série
+        </div>
       </q-card-section>
     </template>
     <q-card-section

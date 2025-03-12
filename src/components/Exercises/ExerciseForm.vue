@@ -153,6 +153,14 @@
       label="Juste pour la dernière série"
       checked-icon="task_alt"
       unchecked-icon="highlight_off"
+      class="q-mb-xs"
+    />
+    <q-checkbox
+      v-if="forAbsWorkout"
+      v-model="exerciseForm.notForLastSeries"
+      label="Exclure de la dernière série"
+      checked-icon="task_alt"
+      unchecked-icon="highlight_off"
       class="q-mb-md"
     />
     <div
@@ -247,6 +255,7 @@ export default {
         config: '',
         duration: '',
         forLastSeries: false,
+        notForLastSeries: false,
         abs: false,
         restAbs: false,
         isReverse: false,

@@ -31,7 +31,7 @@
           <q-card-section>
             <q-item-label class="text-center text-weight-bold">{{ workout.label }}</q-item-label>
             <q-item-label class="text-center text-weight-bold">
-              {{ formatting().durationFromSeconds(workout.durationWithoutFinishers) }}<span v-if="workout.duration !== workout.durationWithoutFinishers"> (dernière : {{ formatting().durationFromSeconds(workout.duration) }})</span> - {{ workout.restTime }}s
+              {{ formatting().durationFromSeconds(workout.commonDuration) }}<span v-if="workout.lastDuration !== workout.commonDuration"> (dernière : {{ formatting().durationFromSeconds(workout.lastDuration) }})</span> - {{ workout.restTime }}s
             </q-item-label>
           </q-card-section>
         </q-card>
@@ -239,25 +239,25 @@ export default {
       return workout
     },
     totalDuration() {
-      return this.selectedWorkout.durationWithoutFinishers * this.seriesNb + this.selectedWorkout.restTime * (this.seriesNb - 1) + (this.selectedWorkout.duration - this.selectedWorkout.durationWithoutFinishers)
+      return this.selectedWorkout.commonDuration * (this.seriesNb - 1) + this.selectedWorkout.restTime * (this.seriesNb - 1) + this.selectedWorkout.lastDuration
     },
     nbExercises() {
       if (this.lastSeries) {
-        return this.selectedWorkout.exercises.length
+        return this.selectedWorkout.exercises.filter((ex) => !ex.notForLastSeries).length
       } else {
         return this.selectedWorkout.exercises.filter((exercise) => !exercise.forLastSeries).length
       }
     },
     currentExercise() {
       if (this.lastSeries) {
-        return this.selectedWorkout.exercises[this.step - 1]
+        return this.selectedWorkout.exercises.filter((ex) => !ex.notForLastSeries)[this.step - 1]
       } else {
         return this.selectedWorkout.exercises.filter((ex) => !ex.forLastSeries)[this.step - 1]
       }
     },
     futurExercise() {
-      const series = this.lastSeries ? this.selectedWorkout.exercises : this.selectedWorkout.exercises.filter((ex) => !ex.forLastSeries)
-      const futurSeries = this.seriesNb === this.currentSeries + 1 ? this.selectedWorkout.exercises : this.selectedWorkout.exercises.filter((ex) => !ex.forLastSeries)
+      const series = this.lastSeries ? this.selectedWorkout.exercises.filter((ex) => !ex.notForLastSeries) : this.selectedWorkout.exercises.filter((ex) => !ex.forLastSeries)
+      const futurSeries = this.seriesNb === this.currentSeries + 1 ? this.selectedWorkout.exercises.filter((ex) => !ex.notForLastSeries) : this.selectedWorkout.exercises.filter((ex) => !ex.forLastSeries)
       switch (true) {
         case this.lastExercise && this.lastSeries:
           return null
@@ -298,8 +298,8 @@ export default {
         .map((workout) => ({
           ...workout,
           selected: false,
-          duration: Object.values(workout.exercises).reduce((acc, exercise) => acc + (exercise.disabled ? 0 : exercise.duration), 0) || 0,
-          durationWithoutFinishers: Object.values(workout.exercises).reduce((acc, exercise) => acc + (exercise.forLastSeries || exercise.disabled ? 0 : exercise.duration), 0) || 0
+          lastDuration: Object.values(workout.exercises).reduce((acc, exercise) => acc + (exercise.notForLastSeries || exercise.disabled ? 0 : exercise.duration), 0) || 0,
+          commonDuration: Object.values(workout.exercises).reduce((acc, exercise) => acc + (exercise.forLastSeries || exercise.disabled ? 0 : exercise.duration), 0) || 0
         }))
     },
     onAbsWorkoutSelectectUpdate() {
