@@ -1,13 +1,24 @@
 <template>
   <div>
-    <q-btn @click="show = true" color="primary" class="w-content">Modifier mon adresse e-mail</q-btn>
+    <q-btn
+      @click="show = true"
+      color="primary"
+      class="w-content"
+      >Modifier mon adresse e-mail</q-btn
+    >
     <q-dialog v-model="show">
-      <q-card class="q-px-xs q-py-xs">
+      <q-card class="q-px-md q-py-xs">
         <q-card-section align="center">
           <div class="text-h6 text-center">Modifier votre adresse e-mail</div>
         </q-card-section>
-        <q-card-section align="center" class="column">
-          <q-form ref="updateUserEmailForm" @submit.prevent="submit">
+        <q-card-section
+          align="center"
+          class="column"
+        >
+          <q-form
+            ref="updateUserEmailForm"
+            @submit.prevent="submit"
+          >
             <q-input
               name="email"
               outlined
@@ -15,10 +26,7 @@
               type="email"
               inputmode="email"
               v-model="form.newEmail"
-              :rules="[
-                (val, rules) =>
-                  rules.email(val) || 'Veuillez renseigner une adresse e-mail valide'
-              ]"
+              :rules="[(val, rules) => rules.email(val) || 'Veuillez renseigner une adresse e-mail valide']"
               label="Nouvelle adresse e-mail"
               lazy-rules
               hide-bottom-space
@@ -32,9 +40,7 @@
               :type="form.password.show ? 'text' : 'password'"
               v-model="form.password.value"
               lazy-rules
-              :rules="[
-                (val) => val.trim().length > 0 || 'Veuillez remplir ce champ'
-              ]"
+              :rules="[(val) => val.trim().length > 0 || 'Veuillez remplir ce champ']"
               hide-bottom-space
             >
               <template v-slot:append>
@@ -56,7 +62,11 @@
           </q-form>
         </q-card-section>
         <q-card-actions align="center">
-          <q-btn label="Annuler" color="negative" v-close-popup />
+          <q-btn
+            label="Annuler"
+            color="negative"
+            v-close-popup
+          />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -89,11 +99,14 @@ export default {
     form: {
       handler() {
         if (this.$refs.updateUserEmailForm && this.form.newEmail && this.form.newEmail.trim().length > 0 && this.form.password.value && this.form.password.value.trim().length > 0) {
-          this.$refs.updateUserEmailForm.validate().then((res) => {
-            this.isValid = res
-          }).catch(() => {
-            this.isValid = false
-          })
+          this.$refs.updateUserEmailForm
+            .validate()
+            .then((res) => {
+              this.isValid = res
+            })
+            .catch(() => {
+              this.isValid = false
+            })
         } else {
           this.isValid = false
         }
@@ -105,19 +118,20 @@ export default {
     submit() {
       if (!this.isValid) return
       this.loading = true
-      updateEmail(this.form.password.value, this.form.newEmail).then(() => {
-        this.$emit('reloadUser')
-        this.loading = false
-        this.show = false
-        successNotify('Une demande de modification de votre adresse e-mail a été envoyée. Veuillez vérifier votre boîte mail pour confirmer votre nouvelle adresse e-mail')
-      }).catch((err) => {
-        this.loading = false
-        errorNotify(translatting().translateUpdateUserEmailError(err, 'Une erreur est survenue lors de la modification de votre email'))
-      })
+      updateEmail(this.form.password.value, this.form.newEmail)
+        .then(() => {
+          this.$emit('reloadUser')
+          this.loading = false
+          this.show = false
+          successNotify('Une demande de modification de votre adresse e-mail a été envoyée. Veuillez vérifier votre boîte mail pour confirmer votre nouvelle adresse e-mail')
+        })
+        .catch((err) => {
+          this.loading = false
+          errorNotify(translatting().translateUpdateUserEmailError(err, 'Une erreur est survenue lors de la modification de votre email'))
+        })
     }
   }
 }
 </script>
 
-<styles scoped lang="scss">
-</styles>
+<styles scoped lang="scss"></styles>

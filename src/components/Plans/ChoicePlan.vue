@@ -81,7 +81,7 @@
       >Aucune planification de disponible</span
     >
     <q-dialog v-model="editForm">
-      <q-card class="q-px-xs q-py-xs">
+      <q-card class="q-px-md q-py-xs">
         <q-card-section>
           <div class="text-h6 text-center">Modifier la planification {{ planToEdit.label }}</div>
         </q-card-section>
@@ -103,7 +103,7 @@
       </q-card>
     </q-dialog>
     <q-dialog v-model="addForm">
-      <q-card class="q-px-xs q-py-xs">
+      <q-card class="q-px-md q-py-xs">
         <q-card-section>
           <div class="text-h6 text-center">Ajouter une planification</div>
         </q-card-section>

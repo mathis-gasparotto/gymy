@@ -37,7 +37,7 @@
               <q-card
                 v-for="workout in workouts"
                 :key="workout.id"
-                class="q-mb-md"
+                class="q-mb-md cursor-pointer"
                 @click="exerciseForm.link.workout = workout.id"
               >
                 <q-card-section>
@@ -53,8 +53,8 @@
               <q-card
                 v-for="exercise in exercisesListForLink"
                 :key="exercise.id"
-                class="q-mb-md"
-                @click="exerciseForm.link.exercise = exercise.id"
+                class="q-mb-md cursor-pointer"
+                @click="exerciseForm.link.exercise === exercise.id ? (exerciseForm.link.exercise = null) : (exerciseForm.link.exercise = exercise.id)"
                 :class="{ 'bg-primary text-white': exerciseForm.link?.exercise === exercise.id }"
               >
                 <q-card-section>

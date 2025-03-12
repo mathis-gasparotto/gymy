@@ -85,6 +85,29 @@ export async function addExercise(workoutId, payload) {
   }
 }
 
+export async function copyExercise(workoutId, id, workoutDestinationId) {
+  const exercise = getExercise(workoutId, id)
+
+  if (!exercise) throw new Error('Exercise not found')
+
+  let newExercise = { ...exercise }
+  newExercise.link = {
+    workout: workoutId,
+    exercise: id
+  }
+
+  newExercise = await addExercise(workoutDestinationId, newExercise)
+
+  await updateExercise(workoutId, id, {
+    link: {
+      workout: workoutDestinationId,
+      exercise: newExercise.id
+    }
+  })
+
+  return newExercise
+}
+
 export async function updateExercise(workoutId, id, payload) {
   const user = getUser()
   if (user && user.uid === USER_GUEST_UID) {

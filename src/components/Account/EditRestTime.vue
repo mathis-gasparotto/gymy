@@ -7,7 +7,7 @@
       >Modifier mon temps de repos</q-btn
     >
     <q-dialog v-model="show">
-      <q-card class="q-px-xs q-py-xs">
+      <q-card class="q-px-md q-py-xs">
         <q-card-section align="center">
           <div class="text-h6 text-center">Modifier votre temps de repos</div>
         </q-card-section>

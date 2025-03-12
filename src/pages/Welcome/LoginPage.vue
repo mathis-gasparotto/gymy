@@ -19,10 +19,7 @@
         type="email"
         inputmode="email"
         v-model="form.email"
-        :rules="[
-          (val, rules) =>
-            rules.email(val) || 'Veuillez renseigner une adresse email valide'
-        ]"
+        :rules="[(val, rules) => rules.email(val) || 'Veuillez renseigner une adresse email valide']"
         lazy-rules
         hide-bottom-space
       ></q-input>
@@ -64,31 +61,45 @@
           <!-- <router-link to="#">Mot de passe oublié ?</router-link> -->
         </p>
       </q-card-section>
-      <q-separator spaced size="2px" color="white" rounded />
+      <q-separator
+        spaced
+        size="2px"
+        color="white"
+        rounded
+      />
       <q-card-section class="text-center text-bold link">
-        <span @click="showForgotPassword">
-          Mot de passe oublié ?
-        </span>
+        <span @click="showForgotPassword"> Mot de passe oublié ? </span>
       </q-card-section>
       <q-card-section>
         <p class="q-my-xs text-center">
           Tu n'as pas de compte ?
-          <router-link :to="{ name: 'signup' }" class="text-bold"
+          <router-link
+            :to="{ name: 'signup' }"
+            class="text-bold"
             >Inscris toi</router-link
           >
         </p>
-        <p class="q-my-lg text-center text-bold link" @click="continueAsGuest">
+        <p
+          class="q-my-lg text-center text-bold link"
+          @click="continueAsGuest"
+        >
           Continuer en tant qu'invité
         </p>
       </q-card-section>
     </q-card>
     <q-dialog v-model="forgotPassword">
-      <q-card class="q-px-xs q-py-xs">
+      <q-card class="q-px-md q-py-xs">
         <q-card-section align="center">
           <div class="text-h6 text-center">Réinitialisez votre mot de passe</div>
         </q-card-section>
-        <q-card-section align="center" class="column">
-          <q-form ref="sendResetPasswordForm" @submit.prevent="sendResetPassword">
+        <q-card-section
+          align="center"
+          class="column"
+        >
+          <q-form
+            ref="sendResetPasswordForm"
+            @submit.prevent="sendResetPassword"
+          >
             <q-input
               name="email"
               outlined
@@ -97,16 +108,17 @@
               inputmode="email"
               v-model="emailForForgotPassword"
               min="1"
-              :rules="[
-                (val, rules) =>
-                  rules.email(val) || 'Veuillez renseigner une adresse email valide'
-              ]"
+              :rules="[(val, rules) => rules.email(val) || 'Veuillez renseigner une adresse email valide']"
               label="Adresse mail"
               lazy-rules
               hide-bottom-space
             >
             </q-input>
-            <p v-if="resetPasswordNotif" :class="'text-' + resetPasswordNotif.variant" v-html="resetPasswordNotif.message"></p>
+            <p
+              v-if="resetPasswordNotif"
+              :class="'text-' + resetPasswordNotif.variant"
+              v-html="resetPasswordNotif.message"
+            ></p>
             <q-btn
               label="Envoyer"
               icon="send"
@@ -117,7 +129,11 @@
           </q-form>
         </q-card-section>
         <q-card-actions align="center">
-          <q-btn label="Fermer" color="negative" v-close-popup />
+          <q-btn
+            label="Fermer"
+            color="negative"
+            v-close-popup
+          />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -173,22 +189,26 @@ export default {
     },
     sendResetPassword() {
       this.sendResetPasswordLoading = true
-      sendResetPasswordFirebase(this.emailForForgotPassword).then(() => {
-        this.resetPasswordNotif = { variant: 'positive', message: 'Un email de réinitialisation de mot de passe vous a été envoyé.<br/>Pensez à vérifier vos spams !' }
-        this.sendResetPasswordLoading = false
-      }).catch((err) => {
-        this.resetPasswordNotif = { variant: 'negative', message: translate().translateResetPasswordError(err, 'Une erreur est survenue lors de l\'envoi de l\'email de réinitialisation de mot de passe') }
-        this.sendResetPasswordLoading = false
-      })
+      sendResetPasswordFirebase(this.emailForForgotPassword)
+        .then(() => {
+          this.resetPasswordNotif = { variant: 'positive', message: 'Un email de réinitialisation de mot de passe vous a été envoyé.<br/>Pensez à vérifier vos spams !' }
+          this.sendResetPasswordLoading = false
+        })
+        .catch((err) => {
+          this.resetPasswordNotif = { variant: 'negative', message: translate().translateResetPasswordError(err, "Une erreur est survenue lors de l'envoi de l'email de réinitialisation de mot de passe") }
+          this.sendResetPasswordLoading = false
+        })
     },
     onsubmit() {
       this.loading = true
       this.$refs.loginForm.validate().then((success) => {
         if (success) {
-          login(this.form.email, this.form.password).then(() => {
+          login(this.form.email, this.form.password)
+            .then(() => {
               this.$router.push({ name: 'index' })
               successNotify('Vous êtes désormais connecté')
-            }).catch((err) => {
+            })
+            .catch((err) => {
               this.loading = false
               errorNotify(translate().translateSigninError(err))
             })
@@ -200,8 +220,8 @@ export default {
     },
     continueAsGuest() {
       Dialog.create({
-        title: 'Continuer en tant qu\'invité',
-        message: 'Tu ne pourra pas retouver tes données depuis un autre appareil, et si tu désinstalles l\'application, tu perdras toutes tes données.<br/><b>Tu pourra te connecter plus tard pour sauvegarder tes données en ligne et y accéder depuis un autre appareil 😉</b>',
+        title: "Continuer en tant qu'invité",
+        message: "Tu ne pourra pas retouver tes données depuis un autre appareil, et si tu désinstalles l'application, tu perdras toutes tes données.<br/><b>Tu pourra te connecter plus tard pour sauvegarder tes données en ligne et y accéder depuis un autre appareil 😉</b>",
         html: true,
         ok: {
           label: 'Continuer',
