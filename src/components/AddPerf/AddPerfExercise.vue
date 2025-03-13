@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-center column">
-    <q-card class="q-mb-md flex-center column q-px-md">
+    <q-card class="q-mb-md flex-center column q-px-none q-px-xs-md">
       <q-card-section>
         <div class="text-h6 text-center">{{ workout.label }} - {{ exercise.label }}</div>
         <div
@@ -12,17 +12,29 @@
       </q-card-section>
       <q-separator />
       <q-card-section
-        v-for="serie in series"
-        :key="serie.id"
-        class="flex justify-center q-py-sm no-wrap"
+        v-for="(item, index) in series"
+        :key="item.id"
+        class="flex justify-center items-center q-py-sm no-wrap"
       >
+        <q-btn
+          v-if="index > 0"
+          color="secondary"
+          icon="content_copy"
+          class="q-px-none q-mr-sm"
+          flat
+          @click="copySeriesFromPrev(item.id)"
+        />
+        <div
+          v-else
+          class="btn-replace q-mr-sm"
+        ></div>
         <q-input
-          :name="'value-' + serie.id"
+          :name="'value-' + item.id"
           outlined
           class="exercise-input w-40"
           type="number"
           inputmode="decimal"
-          v-model="serie.value"
+          v-model="item.value"
           min="0"
           :rules="[(val) => !val || val >= 0 || 'Veuillez renseigner une valeur positive']"
           label="Performance"
@@ -32,8 +44,8 @@
         </q-input>
         <q-select
           outlined
-          :name="'type-' + serie.id"
-          v-model="serie.type"
+          :name="'type-' + item.id"
+          v-model="item.type"
           :options="types"
           label="Type de performance"
           class="w-40"
@@ -44,10 +56,10 @@
         </q-select>
         <q-btn
           color="negative"
-          icon="delete"
-          class="btn-delete q-ml-md"
-          round
-          @click="removeSerie(serie.id)"
+          icon="remove"
+          class="q-px-none q-ml-sm"
+          flat
+          @click="removeSeries(item.id)"
         />
       </q-card-section>
       <q-card-section class="q-pt-none q-mb-sm">
@@ -55,7 +67,7 @@
           color="primary"
           icon="add"
           label="Ajouter une série"
-          @click="addSerie"
+          @click="addSeries"
         />
       </q-card-section>
       <q-separator />
@@ -150,9 +162,9 @@ export default {
   },
   computed: {
     inputsValid() {
-      const allDefault = this.series.filter((serie) => serie.value !== null && serie.value !== '').every((serie) => serie.type.value === PERFORMANCE_TYPE_DEFAULT)
-      const allNoDefault = this.series.filter((serie) => serie.value !== null && serie.value !== '').every((serie) => serie.type.value !== PERFORMANCE_TYPE_DEFAULT)
-      return this.series && this.series.filter((serie) => serie.value !== null && serie.value !== '' && serie.value >= 0).length >= 1 && ((allDefault && !allNoDefault) || (allNoDefault && !allDefault)) && this.date
+      const allDefault = this.series.filter((series) => series.value !== null && series.value !== '').every((series) => series.type.value === PERFORMANCE_TYPE_DEFAULT)
+      const allNoDefault = this.series.filter((series) => series.value !== null && series.value !== '').every((series) => series.type.value !== PERFORMANCE_TYPE_DEFAULT)
+      return this.series && this.series.filter((series) => series.value !== null && series.value !== '' && series.value >= 0).length >= 1 && ((allDefault && !allNoDefault) || (allNoDefault && !allDefault)) && this.date
     }
   },
   methods: {
@@ -168,25 +180,36 @@ export default {
         })
       }
     },
-    addSerie() {
+    addSeries() {
       this.series.push({
         id: new Date().getTime(),
         value: null,
         type: this.types[0]
       })
     },
-    removeSerie(id) {
+    removeSeries(id) {
       if (this.series.length > 1) {
-        this.series = this.series.filter((serie) => serie.id !== id)
+        this.series = this.series.filter((series) => series.id !== id)
       }
+    },
+    copySeriesFromPrev(id) {
+      if (this.series.length <= 1) return
+      const currentSeries = this.series.find((series) => series.id === id)
+      if (!currentSeries) return
+      const indexOfSeries = this.series.indexOf(currentSeries)
+      if (indexOfSeries < 1) return
+      const previousSeries = this.series[indexOfSeries - 1]
+      if (!previousSeries) return
+      currentSeries.value = previousSeries.value
+      currentSeries.type = previousSeries.type
     },
     submit() {
       if (!this.inputsValid) return
       const payload = {
         date: this.date,
-        series: this.series.map((serie) => ({
-          value: serie.value,
-          type: serie.type.value
+        series: this.series.map((series) => ({
+          value: series.value,
+          type: series.type.value
         })),
         comment: this.comment
       }
@@ -205,8 +228,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.btn-delete {
-  height: 3em;
-  width: 3em;
+.btn-replace {
+  width: 24px;
 }
 </style>
