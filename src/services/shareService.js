@@ -1,4 +1,4 @@
-import { LocalStorage, } from 'quasar'
+import { LocalStorage } from 'quasar'
 import { retrieveData } from './firebaseService'
 import { LOCALSTORAGE_DB_SHARED } from 'src/helpers/databaseHelper'
 import { getUser } from './userService'
@@ -33,19 +33,23 @@ export async function addSharedContentToOwnDB(shareId) {
         exercises: null,
         shareId: null
       })
-      const exercises = Object.keys(sharedData.exercises).map(key => {
-        return {
-          ...sharedData.exercises[key],
-          id: null,
-          performances: null
-        }
-      }).sort((a, b) => a.position - b.position)
+      const exercises = Object.keys(sharedData.exercises)
+        .map((key) => {
+          return {
+            ...sharedData.exercises[key],
+            id: null,
+            performances: null,
+            link: null
+          }
+        })
+        .sort((a, b) => a.position - b.position)
 
-      await Promise.all(exercises.map((exercise) => {
-        return addExercise(workout.id, exercise)
-      }))
+      await Promise.all(
+        exercises.map((exercise) => {
+          return addExercise(workout.id, exercise)
+        })
+      )
 
-      return {name: 'exercises', params: {workoutId: workout.id} }
+      return { name: 'exercises', params: { workoutId: workout.id } }
   }
-
 }
