@@ -1,7 +1,7 @@
 import { initializeApp } from 'firebase/app'
 import { getAnalytics } from 'firebase/analytics'
 import { getAuth } from 'firebase/auth'
-import { getDatabase } from 'firebase/database'
+import { getDatabase, ref, onDisconnect } from 'firebase/database'
 import { initUser } from 'src/services/userService'
 import { initShareBD } from 'src/services/firebaseService'
 
@@ -20,6 +20,10 @@ export const app = initializeApp(firebaseConfig)
 export const analytics = getAnalytics(app)
 export const auth = getAuth(app)
 export const db = getDatabase(app)
+
+const presenceRef = ref(db, 'disconnectmessage')
+// Write a string when this client loses connection
+onDisconnect(presenceRef).set('I disconnected!')
 
 initUser()
 initShareBD()
