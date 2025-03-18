@@ -361,6 +361,11 @@ export default {
       copyLoading: false
     }
   },
+  watch: {
+    $route() {
+      this.showMore = false
+    }
+  },
   created() {
     this.loadPerformances()
     this.loadWorkouts()
