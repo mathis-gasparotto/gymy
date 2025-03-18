@@ -79,7 +79,13 @@ export default {
           type: 'linear'
         },
         primary: {
-          format: (d) => (typeof d === 'string' && d.includes('/') ? d : '')
+          format: (d) => {
+            const noFullYear = this.data.length >= 5
+            const i = this.data.findIndex((item) => item.date === d)
+            const indexValueInterval = this.data.length >= this.maxDate ? Math.round(this.data.length / (this.maxDate - 1)) : 1
+            const showValue = i === this.data.length - 1 || (i % indexValueInterval === 0 && this.data.length - i > indexValueInterval)
+            return showValue ? (noFullYear ? formatting().dateToDisplayCompact(d) : formatting().dateToDisplay(d)) : ''
+          }
         }
       },
       margin: {
@@ -114,13 +120,12 @@ export default {
       let performances = getPerformances(this.workoutId, this.exerciseId)
       performances = performances.sort((a, b) => new Date(a.date) - new Date(b.date))
       this.data = []
-      const noYear = performances.length >= 5
       const indexValueInterval = performances.length >= this.maxDate ? Math.round(performances.length / (this.maxDate - 1)) : 1
       performances.forEach((perf, i) => {
         const showValue = i === performances.length - 1 || (i % indexValueInterval === 0 && performances.length - i > indexValueInterval)
         const value = getPerformanceAverage(this.workoutId, this.exerciseId, perf.id)
         this.data.push({
-          date: showValue ? (noYear ? formatting().dateToDisplayCompact(perf.date) : formatting().dateToDisplay(perf.date)) : perf.date,
+          date: perf.date,
           dateToShow: formatting().dateToDisplay(perf.date),
           value: value * (this.reversed ? -1 : 1),
           showValue,
