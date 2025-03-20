@@ -26,7 +26,7 @@ export function getRelatedExercise(workoutId, exerciseId) {
   if (exercise.link?.workout && exercise.link?.exercise) {
     const relatedExercise = getExercise(exercise.link.workout, exercise.link.exercise)
     if (relatedExercise) {
-      const relatedExerciseWorkout = getWorkout(relatedExercise.link.workout)
+      const relatedExerciseWorkout = getWorkout(exercise.link.workout)
       return { workout: relatedExerciseWorkout, ...relatedExercise }
     } else {
       updateExercise(workoutId, exerciseId, { link: null })
