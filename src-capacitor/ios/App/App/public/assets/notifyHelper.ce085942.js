@@ -1,1 +1,0 @@
-import{aB as i}from"./index.1d7fae07.js";function r(o,c){i.create({message:c,color:o==="success"?"positive":o==="error"?"negative":"warning",icon:o==="success"?"check_circle":o==="error"?"report_problem":"warning",position:"top",timeout:3e3,actions:[{icon:"close",color:"white"}]})}function e(o){r("success",o)}function n(o){r("error",o)}export{n as e,e as s};
