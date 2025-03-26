@@ -25,7 +25,7 @@
           @click="copySeriesFromPrev(item.id)"
         />
         <div
-          v-else
+          v-else-if="series.length > 1"
           class="btn-replace q-mr-sm"
         ></div>
         <q-input
@@ -47,14 +47,17 @@
           :name="'type-' + item.id"
           v-model="item.type"
           :options="types"
+          emit-value
+          map-options
           label="Type de performance"
           class="w-40"
           lazy-rules
-          :rules="[(val) => typeof val === 'object' || 'Veuillez renseigner un type de performance']"
+          :rules="[(val) => PERFORMANCE_TYPES.includes(val) || 'Veuillez renseigner un type de performance']"
           hide-bottom-space
         >
         </q-select>
         <q-btn
+          v-if="series.length > 1"
           color="negative"
           icon="remove"
           class="q-px-none q-ml-sm"
@@ -111,12 +114,11 @@
 </template>
 
 <script>
-import { PERFORMANCE_TYPE_DEFAULT, PERFORMANCE_TYPE_BAR, PERFORMANCE_TYPE_ARM } from 'src/helpers/performanceHelper'
+import { PERFORMANCE_TYPES, PERFORMANCE_TYPE_DEFAULT, PERFORMANCE_TYPE_BAR, PERFORMANCE_TYPE_ARM } from 'src/helpers/performanceHelper'
 import { errorNotify, successNotify } from 'src/helpers/notifyHelper'
 import { addPerformanceWithRelated } from 'src/services/performanceService'
 import { getUser } from 'src/services/userService'
 import translatting from 'src/helpers/translatting'
-import { getExercise, updateExercise } from 'src/services/exerciseService'
 
 export default {
   name: 'AddPerfExercise',
@@ -153,6 +155,9 @@ export default {
       defaultNumberOfSeries: null
     }
   },
+  setup() {
+    return { PERFORMANCE_TYPES }
+  },
   created() {
     this.defaultNumberOfSeries = getUser().defaultNumberOfSeries
     this.initInputs()
@@ -162,8 +167,8 @@ export default {
   },
   computed: {
     inputsValid() {
-      const allDefault = this.series.filter((series) => series.value !== null && series.value !== '').every((series) => series.type.value === PERFORMANCE_TYPE_DEFAULT)
-      const allNoDefault = this.series.filter((series) => series.value !== null && series.value !== '').every((series) => series.type.value !== PERFORMANCE_TYPE_DEFAULT)
+      const allDefault = this.series.filter((series) => series.value !== null && series.value !== '').every((series) => series.type === PERFORMANCE_TYPE_DEFAULT)
+      const allNoDefault = this.series.filter((series) => series.value !== null && series.value !== '').every((series) => series.type !== PERFORMANCE_TYPE_DEFAULT)
       return this.series && this.series.filter((series) => series.value !== null && series.value !== '' && series.value >= 0).length >= 1 && ((allDefault && !allNoDefault) || (allNoDefault && !allDefault)) && this.date
     }
   },
@@ -176,7 +181,7 @@ export default {
         this.series.push({
           id: new Date().getTime() + i,
           value: null,
-          type: this.types[0]
+          type: PERFORMANCE_TYPE_DEFAULT
         })
       }
     },
@@ -184,7 +189,7 @@ export default {
       this.series.push({
         id: new Date().getTime(),
         value: null,
-        type: this.types[0]
+        type: PERFORMANCE_TYPE_DEFAULT
       })
     },
     removeSeries(id) {
@@ -209,7 +214,7 @@ export default {
         date: this.date,
         series: this.series.map((series) => ({
           value: series.value,
-          type: series.type.value
+          type: series.type
         })),
         comment: this.comment
       }
