@@ -409,6 +409,9 @@ export default {
             .filter((exercise) => !exercise.abs)
             .sort((a, b) => a.position - b.position)
         : []
+    },
+    defaultSeriesType() {
+      return this.exercise.defaultSeriesType || PERFORMANCE_TYPE_DEFAULT
     }
   },
   methods: {
@@ -439,14 +442,14 @@ export default {
       this.performanceToEdit.series.push({
         id: new Date().getTime(),
         value: null,
-        type: PERFORMANCE_TYPE_DEFAULT
+        type: this.defaultSeriesType
       })
     },
     addSerieForCopy() {
       this.performanceToCopy.series.push({
         id: new Date().getTime(),
         value: null,
-        type: PERFORMANCE_TYPE_DEFAULT
+        type: this.defaultSeriesType
       })
     },
     removeSerieForEdit(id) {
