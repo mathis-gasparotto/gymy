@@ -51,10 +51,12 @@
               :name="'type-' + serie.id"
               v-model="serie.type"
               :options="types"
+              emit-value
+              map-options
               label="Type de performance"
               class="w-40"
               lazy-rules
-              :rules="[(val) => typeof val === 'object' || 'Veuillez renseigner un type de performance']"
+              :rules="[(val) => PERFORMANCE_TYPES.includes(val) || 'Veuillez renseigner un type de performance']"
               hide-bottom-space
             >
             </q-select>
@@ -220,10 +222,12 @@
                 :name="'type-' + serie.id"
                 v-model="serie.type"
                 :options="types"
+                emit-value
+                map-options
                 label="Type de performance"
                 class="w-40"
                 lazy-rules
-                :rules="[(val) => typeof val === 'object' || 'Veuillez renseigner un type de performance']"
+                :rules="[(val) => PERFORMANCE_TYPES.includes(val) || 'Veuillez renseigner un type de performance']"
                 hide-bottom-space
               >
               </q-select>
@@ -302,7 +306,7 @@
 </template>
 
 <script>
-import { PERFORMANCE_TYPE_DEFAULT, PERFORMANCE_TYPE_BAR, PERFORMANCE_TYPE_ARM } from 'src/helpers/performanceHelper'
+import { PERFORMANCE_TYPES, PERFORMANCE_TYPE_DEFAULT, PERFORMANCE_TYPE_BAR, PERFORMANCE_TYPE_ARM } from 'src/helpers/performanceHelper'
 import { errorNotify, successNotify } from 'src/helpers/notifyHelper'
 import { addPerformance, deletePerformance, deletePerformanceWithRelated, getPerformances, getRelatedExercise, getRelatedPerformance, updatePerformanceWithRelated } from 'src/services/performanceService'
 import formatting from 'src/helpers/formatting'
@@ -328,7 +332,7 @@ export default {
   },
   setup() {
     return {
-      PERFORMANCE_TYPE_DEFAULT,
+      PERFORMANCE_TYPES,
       formatting
     }
   },
@@ -372,13 +376,13 @@ export default {
   },
   computed: {
     editInputsValid() {
-      const allDefault = this.performanceToEdit.series.filter((serie) => serie.value !== null && serie.value !== '').every((serie) => serie.type.value === PERFORMANCE_TYPE_DEFAULT)
-      const allNoDefault = this.performanceToEdit.series.filter((serie) => serie.value !== null && serie.value !== '').every((serie) => serie.type.value !== PERFORMANCE_TYPE_DEFAULT)
+      const allDefault = this.performanceToEdit.series.filter((serie) => serie.value !== null && serie.value !== '').every((serie) => serie.type === PERFORMANCE_TYPE_DEFAULT)
+      const allNoDefault = this.performanceToEdit.series.filter((serie) => serie.value !== null && serie.value !== '').every((serie) => serie.type !== PERFORMANCE_TYPE_DEFAULT)
       return this.performanceToEdit.series && this.performanceToEdit.series.filter((serie) => serie.value !== null && serie.value !== '' && serie.value >= 0).length >= 1 && this.performanceToEdit.date && ((allDefault && !allNoDefault) || (allNoDefault && !allDefault))
     },
     copyInputsValid() {
-      const allDefault = this.performanceToCopy.series.filter((serie) => serie.value !== null && serie.value !== '').every((serie) => serie.type.value === PERFORMANCE_TYPE_DEFAULT)
-      const allNoDefault = this.performanceToCopy.series.filter((serie) => serie.value !== null && serie.value !== '').every((serie) => serie.type.value !== PERFORMANCE_TYPE_DEFAULT)
+      const allDefault = this.performanceToCopy.series.filter((serie) => serie.value !== null && serie.value !== '').every((serie) => serie.type === PERFORMANCE_TYPE_DEFAULT)
+      const allNoDefault = this.performanceToCopy.series.filter((serie) => serie.value !== null && serie.value !== '').every((serie) => serie.type !== PERFORMANCE_TYPE_DEFAULT)
       return this.performanceToCopy.series && this.performanceToCopy.series.filter((serie) => serie.value !== null && serie.value !== '' && serie.value >= 0).length >= 1 && this.performanceToCopy.date && ((allDefault && !allNoDefault) || (allNoDefault && !allDefault))
     },
     performancesToShow() {
@@ -412,9 +416,7 @@ export default {
       const payload = {
         series: this.performanceToEdit.series.map((serie) => ({
           ...serie,
-          id: null,
-          value: serie.value,
-          type: serie.type.value
+          id: null
         })),
         date: this.performanceToEdit.date,
         comment: this.performanceToEdit.comment
@@ -437,14 +439,14 @@ export default {
       this.performanceToEdit.series.push({
         id: new Date().getTime(),
         value: null,
-        type: this.types[0]
+        type: PERFORMANCE_TYPE_DEFAULT
       })
     },
     addSerieForCopy() {
       this.performanceToCopy.series.push({
         id: new Date().getTime(),
         value: null,
-        type: this.types[0]
+        type: PERFORMANCE_TYPE_DEFAULT
       })
     },
     removeSerieForEdit(id) {
@@ -461,7 +463,7 @@ export default {
       this.performanceToEdit = {
         comment: null,
         ...performance,
-        series: performance.series.map((serie, index) => ({ ...serie, id: index, type: this.types.find((type) => type.value === serie.type) }))
+        series: performance.series.map((serie, index) => ({ ...serie, id: index }))
       }
       this.editForm = true
     },
@@ -523,7 +525,7 @@ export default {
       this.performanceToCopy = {
         comment: null,
         ...performance,
-        series: performance.series.map((serie, index) => ({ ...serie, id: index, type: this.types.find((type) => type.value === serie.type) }))
+        series: performance.series.map((serie, index) => ({ ...serie, id: index }))
       }
       this.showCopyModal = true
     },
@@ -532,9 +534,7 @@ export default {
       addPerformance(this.workoutCopyingDestination.id, this.exerciseCopyingDestination.id, {
         series: this.performanceToCopy.series.map((serie) => ({
           ...serie,
-          id: null,
-          value: serie.value,
-          type: serie.type.value
+          id: null
         })),
         date: this.performanceToCopy.date,
         comment: this.performanceToCopy.comment
