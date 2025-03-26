@@ -21,115 +21,22 @@
     />
 
     <q-dialog v-model="editForm">
-      <q-card class="q-pa-md no-wrap column gap-30">
-        <div>
+      <q-card class="q-py-md no-wrap column gap-30">
+        <q-card-section align="center">
           <q-card-section align="center">
             <div class="text-h6 text-center">Modifier la performance du {{ formatting().dateToDisplay(performanceToEdit.date) }}</div>
           </q-card-section>
-          <q-card-section
-            align="center"
-            v-for="serie in performanceToEdit.series"
-            :key="serie.id"
-            class="flex flex-center q-py-sm no-wrap"
-          >
-            <q-input
-              :name="'value-' + serie.id"
-              outlined
-              class="exercise-input w-40"
-              type="number"
-              inputmode="decimal"
-              v-model="serie.value"
-              min="0"
-              :rules="[(val) => !val || val >= 0 || 'Veuillez renseigner une valeur positive']"
-              label="Performance"
-              lazy-rules
-              hide-bottom-space
-            >
-            </q-input>
-            <q-select
-              outlined
-              :name="'type-' + serie.id"
-              v-model="serie.type"
-              :options="types"
-              emit-value
-              map-options
-              label="Type de performance"
-              class="w-40"
-              lazy-rules
-              :rules="[(val) => PERFORMANCE_TYPES.includes(val) || 'Veuillez renseigner un type de performance']"
-              hide-bottom-space
-            >
-            </q-select>
-            <q-btn
-              color="negative"
-              icon="delete"
-              class="btn-delete q-ml-md"
-              round
-              @click="removeSerieForEdit(serie.id)"
-            />
-          </q-card-section>
-          <q-card-section
-            align="center"
-            class="q-pt-none q-mb-sm"
-          >
-            <q-btn
-              color="primary"
-              icon="add"
-              label="Ajouter une série"
-              @click="addSerieForEdit"
-            />
-          </q-card-section>
-          <q-card-section
-            align="center"
-            class="q-pt-none q-mb-sm"
-          >
-            <q-input
-              rounded
-              outlined
-              name="date"
-              v-model="performanceToEdit.date"
-              type="date"
-              mask="date"
-              class="q-mb-sm"
-              lazy-rules
-              label="Date de la performance"
-              hide-bottom-space
-            >
-            </q-input>
-            <q-input
-              rounded
-              outlined
-              name="comment"
-              v-model="performanceToEdit.comment"
-              type="text"
-              lazy-rules
-              label="Commentaire (optionnel)"
-              hide-bottom-space
-            >
-            </q-input>
-          </q-card-section>
-        </div>
-        <div>
-          <q-card-section
-            align="center"
-            class="q-pt-none q-mb-sm"
-          >
-            <q-btn
-              color="primary"
-              label="Confirmer"
-              @click="onEditSubmit"
-              :loading="editLoading"
-              :disable="!editInputsValid"
-            />
-          </q-card-section>
-          <q-card-actions align="center">
-            <q-btn
-              label="Annuler"
-              color="negative"
-              v-close-popup
-            />
-          </q-card-actions>
-        </div>
+          <PerformanceForm
+            ref="editPerfForm"
+            :init-data="performanceToEdit"
+            :exercise="exercise"
+            @submit="onEditSubmit"
+            :loading="editLoading"
+            submit-text="Confirmer"
+            close-btn
+            close-btn-text="Annuler"
+          />
+        </q-card-section>
       </q-card>
     </q-dialog>
 
@@ -197,109 +104,18 @@
             </q-card-section>
           </q-card-section>
           <template v-else>
-            <q-card-section
-              align="center"
-              v-for="serie in performanceToCopy.series"
-              :key="serie.id"
-              class="flex flex-center q-py-sm no-wrap"
-            >
-              <q-input
-                :name="'value-' + serie.id"
-                outlined
-                class="exercise-input w-40"
-                type="number"
-                inputmode="decimal"
-                v-model="serie.value"
-                min="0"
-                :rules="[(val) => !val || val >= 0 || 'Veuillez renseigner une valeur positive']"
-                label="Performance"
-                lazy-rules
-                hide-bottom-space
-              >
-              </q-input>
-              <q-select
-                outlined
-                :name="'type-' + serie.id"
-                v-model="serie.type"
-                :options="types"
-                emit-value
-                map-options
-                label="Type de performance"
-                class="w-40"
-                lazy-rules
-                :rules="[(val) => PERFORMANCE_TYPES.includes(val) || 'Veuillez renseigner un type de performance']"
-                hide-bottom-space
-              >
-              </q-select>
-              <q-btn
-                color="negative"
-                icon="delete"
-                class="btn-delete q-ml-md"
-                round
-                @click="removeSerieForCopy(serie.id)"
-              />
-            </q-card-section>
-            <q-card-section
-              align="center"
-              class="q-pt-none q-mb-sm"
-            >
-              <q-btn
-                color="primary"
-                icon="add"
-                label="Ajouter une série"
-                @click="addSerieForCopy"
-              />
-            </q-card-section>
-            <q-card-section
-              align="center"
-              class="q-pt-none q-mb-sm"
-            >
-              <q-input
-                rounded
-                outlined
-                name="date"
-                v-model="performanceToCopy.date"
-                type="date"
-                mask="date"
-                class="q-mb-sm"
-                lazy-rules
-                label="Date de la performance"
-                hide-bottom-space
-              >
-              </q-input>
-              <q-input
-                rounded
-                outlined
-                name="comment"
-                v-model="performanceToCopy.comment"
-                type="text"
-                lazy-rules
-                label="Commentaire (optionnel)"
-                hide-bottom-space
-              >
-              </q-input>
-            </q-card-section>
-            <q-card-section
-              align="center"
-              class="q-pt-none q-mb-sm"
-            >
-              <q-btn
-                color="primary"
-                label="Confirmer"
-                @click="onCopySubmit"
-                :loading="copyLoading"
-                :disable="!copyInputsValid"
-              />
-            </q-card-section>
+            <PerformanceForm
+              ref="addPerfForm"
+              :init-data="performanceToCopy"
+              :exercise="exercise"
+              @submit="onCopySubmit"
+              :loading="copyLoading"
+              submit-text="Copier"
+              close-btn
+              close-btn-text="Annuler"
+            />
           </template>
         </div>
-        <q-card-actions align="center">
-          <q-btn
-            label="Annuler"
-            color="negative"
-            v-close-popup
-          />
-        </q-card-actions>
       </q-card>
     </q-dialog>
   </div>
@@ -313,6 +129,7 @@ import formatting from 'src/helpers/formatting'
 import { Dialog } from 'quasar'
 import translatting from 'src/helpers/translatting'
 import PerformanceCard from 'src/components/Performances/PerformanceCard.vue'
+import PerformanceForm from 'src/components/AddPerf/PerformanceForm.vue'
 import { getNoAbsWorkouts } from 'src/services/workoutService'
 
 export default {
@@ -328,7 +145,8 @@ export default {
     }
   },
   components: {
-    PerformanceCard
+    PerformanceCard,
+    PerformanceForm
   },
   setup() {
     return {
@@ -415,27 +233,19 @@ export default {
     }
   },
   methods: {
-    onEditSubmit() {
-      const payload = {
-        series: this.performanceToEdit.series.map((serie) => ({
-          ...serie,
-          id: null
-        })),
-        date: this.performanceToEdit.date,
-        comment: this.performanceToEdit.comment
-      }
-
+    onEditSubmit(payload) {
       this.editLoading = true
       updatePerformanceWithRelated(this.workout.id, this.exercise.id, this.performanceToEdit.id, payload)
         .then(() => {
           this.$emit('reloadPerformances')
           successNotify('Votre performance a bien été modifiée')
           this.editForm = false
-          this.editLoading = false
         })
         .catch((err) => {
-          this.editLoading = false
           errorNotify(translatting().translateError(err, "Une erreur est survenue lors de l'édition de votre performance"))
+        })
+        .finally(() => {
+          this.editLoading = false
         })
     },
     addSerieForEdit() {
@@ -532,16 +342,9 @@ export default {
       }
       this.showCopyModal = true
     },
-    onCopySubmit() {
+    onCopySubmit(payload) {
       this.copyLoading = true
-      addPerformance(this.workoutCopyingDestination.id, this.exerciseCopyingDestination.id, {
-        series: this.performanceToCopy.series.map((serie) => ({
-          ...serie,
-          id: null
-        })),
-        date: this.performanceToCopy.date,
-        comment: this.performanceToCopy.comment
-      })
+      addPerformance(this.workoutCopyingDestination.id, this.exerciseCopyingDestination.id, payload)
         .then(() => {
           this.$emit('reloadPerformances')
           successNotify('Votre performance a bien été copiée')
