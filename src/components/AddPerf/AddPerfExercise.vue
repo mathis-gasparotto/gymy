@@ -170,6 +170,9 @@ export default {
       const allDefault = this.series.filter((series) => series.value !== null && series.value !== '').every((series) => series.type === PERFORMANCE_TYPE_DEFAULT)
       const allNoDefault = this.series.filter((series) => series.value !== null && series.value !== '').every((series) => series.type !== PERFORMANCE_TYPE_DEFAULT)
       return this.series && this.series.filter((series) => series.value !== null && series.value !== '' && series.value >= 0).length >= 1 && ((allDefault && !allNoDefault) || (allNoDefault && !allDefault)) && this.date
+    },
+    defaultSeriesType() {
+      return this.exercise.defaultSeriesType || PERFORMANCE_TYPE_DEFAULT
     }
   },
   methods: {
@@ -181,7 +184,7 @@ export default {
         this.series.push({
           id: new Date().getTime() + i,
           value: null,
-          type: PERFORMANCE_TYPE_DEFAULT
+          type: this.defaultSeriesType
         })
       }
     },
@@ -189,7 +192,7 @@ export default {
       this.series.push({
         id: new Date().getTime(),
         value: null,
-        type: PERFORMANCE_TYPE_DEFAULT
+        type: this.defaultSeriesType
       })
     },
     removeSeries(id) {

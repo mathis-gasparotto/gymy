@@ -133,6 +133,19 @@
       v-model="exerciseForm.config"
       hide-bottom-space
     ></q-input>
+    <q-select
+      outlined
+      name="defaultSeriesType"
+      rounded
+      v-model="exerciseForm.defaultSeriesType"
+      emit-value
+      map-options
+      :options="seriesTypes"
+      label="Type de performance par défaut"
+      class="q-mb-md w-100"
+      :rules="[(val) => PERFORMANCE_TYPES.includes(val) || 'Veuillez renseigner un type de performance']"
+      hide-bottom-space
+    ></q-select>
     <q-input
       v-if="forAbsWorkout"
       name="duration"
@@ -218,6 +231,7 @@
 <script>
 import { getNoAbsWorkouts, getWorkout } from 'src/services/workoutService'
 import { getExercise, getExercises } from 'src/services/exerciseService'
+import { PERFORMANCE_TYPES, PERFORMANCE_TYPE_ARM, PERFORMANCE_TYPE_BAR, PERFORMANCE_TYPE_DEFAULT } from 'src/helpers/performanceHelper'
 
 export default {
   name: 'ExerciseForm',
@@ -248,6 +262,9 @@ export default {
       default: false
     }
   },
+  setup() {
+    return { PERFORMANCE_TYPES }
+  },
   data() {
     return {
       exerciseForm: {
@@ -260,11 +277,26 @@ export default {
         restAbs: false,
         isReverse: false,
         disabled: false,
+        defaultSeriesType: PERFORMANCE_TYPE_DEFAULT,
         link: {
           workout: null,
           exercise: null
         }
       },
+      seriesTypes: [
+        {
+          value: PERFORMANCE_TYPE_DEFAULT,
+          label: 'Défaut'
+        },
+        {
+          value: PERFORMANCE_TYPE_BAR,
+          label: 'Barre'
+        },
+        {
+          value: PERFORMANCE_TYPE_ARM,
+          label: 'Bras'
+        }
+      ],
       showLinkModal: false,
       workouts: []
     }

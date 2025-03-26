@@ -242,6 +242,12 @@ const exerciseProps = [
     name: 'linkedTo',
     type: 'object',
     default: null
+  },
+  {
+    name: 'defaultSeriesType',
+    type: 'enum',
+    choices: PERFORMANCE_TYPES,
+    default: PERFORMANCE_TYPE_DEFAULT
   }
 ]
 
