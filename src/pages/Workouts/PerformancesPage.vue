@@ -37,7 +37,7 @@
     :workoutId="workout.id"
     :exerciseId="exercise.id"
     ref="performanceGraph"
-    :reversed="exercise.isReverse"
+    :reversed="exercise.isReverse ?? false"
   />
 </template>
 
