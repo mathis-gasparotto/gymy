@@ -218,7 +218,7 @@ export default {
     this.stopAllIntervals()
     this.stopAllTimeouts()
     this.stopAllSounds()
-    this.$emit('showNavbar')
+    if (!this.started) this.$emit('showNavbar')
     if (this.finishTime.interval) clearInterval(this.finishTime.interval)
     window.removeEventListener('beforeunload', this.preventReload)
   },
