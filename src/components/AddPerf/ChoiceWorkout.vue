@@ -213,11 +213,20 @@ export default {
           this.loadWorkouts()
           successNotify('Votre entraînement a bien été ajouté')
           this.addForm = false
-          this.addLoading = false
+          this.$q.loading.show({
+            delay: 0, // ms
+            message: 'Ajout en cours...',
+            boxClass: 'text-h5'
+          })
+          setTimeout(() => {
+            this.$q.loading.hide()
+          }, 1500)
         })
         .catch((err) => {
-          this.addLoading = false
           errorNotify("Une erreur est survenue lors de l'ajout de votre entraînement")
+        })
+        .finally(() => {
+          this.addLoading = false
         })
     },
     onEditSubmit(payload) {
