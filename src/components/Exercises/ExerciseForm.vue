@@ -133,90 +133,100 @@
       v-model="exerciseForm.config"
       hide-bottom-space
     ></q-input>
-    <q-select
-      outlined
-      name="defaultSeriesType"
-      rounded
-      v-model="exerciseForm.defaultSeriesType"
-      emit-value
-      map-options
-      :options="seriesTypes"
-      label="Type de performance par défaut"
-      class="q-mb-md w-100"
-      :rules="[(val) => PERFORMANCE_TYPES.includes(val) || 'Veuillez renseigner un type de performance']"
-      hide-bottom-space
-    ></q-select>
-    <q-input
-      v-if="forAbsWorkout"
-      name="duration"
-      rounded
-      outlined
-      :label="!forAbsWorkout || !exerciseForm.restAbs ? 'Durée de l\'exercice' : 'Temps de repos'"
-      class="q-mb-md"
-      type="number"
-      inputmode="numeric"
-      :rules="[(val) => val !== '' || 'Veuillez renseigner une durée']"
-      v-model="exerciseForm.duration"
-      hide-bottom-space
-      suffix="s"
-    ></q-input>
-    <q-checkbox
-      v-if="forAbsWorkout"
-      v-model="exerciseForm.forLastSeries"
-      label="Juste pour la dernière série"
-      checked-icon="task_alt"
-      unchecked-icon="highlight_off"
-      class="q-mb-xs"
-    />
-    <q-checkbox
-      v-if="forAbsWorkout"
-      v-model="exerciseForm.notForLastSeries"
-      label="Exclure de la dernière série"
-      checked-icon="task_alt"
-      unchecked-icon="highlight_off"
-      class="q-mb-md"
-    />
-    <div
-      class="q-mb-lg text-center"
-      v-if="!forAbsWorkout && !exerciseForm.abs"
-    >
-      <div class="q-mb-sm">Valeur de progression :</div>
-      <q-btn-toggle
-        v-model="exerciseForm.isReverse"
-        toggle-color="primary"
-        name="isReverse"
-        no-caps
-        :options="[
-          { label: 'Croissante', value: false },
-          { label: 'Décroissante', value: true }
-        ]"
+    <template v-if="forAbsWorkout">
+      <q-input
+        name="duration"
+        rounded
+        outlined
+        :label="!forAbsWorkout || !exerciseForm.restAbs ? 'Durée de l\'exercice' : 'Temps de repos'"
+        class="q-mb-md"
+        type="number"
+        inputmode="numeric"
+        :rules="[(val) => val !== '' || 'Veuillez renseigner une durée']"
+        v-model="exerciseForm.duration"
+        hide-bottom-space
+        suffix="s"
+      ></q-input>
+      <q-checkbox
+        v-model="exerciseForm.forLastSeries"
+        label="Juste pour la dernière série"
+        checked-icon="task_alt"
+        unchecked-icon="highlight_off"
+        class="q-mb-xs"
       />
-    </div>
-    <div
-      v-if="!forAbsWorkout && !exerciseForm.abs && linked"
-      class="q-mb-sm text-center"
-    >
-      Lié à : <b>{{ linkedWorkout.label }}</b> - <b>{{ linkedExercise.label }}</b>
-    </div>
-    <q-btn
-      v-if="!forAbsWorkout && !exerciseForm.abs && linked"
-      class="q-mb-md"
-      color="white"
-      text-color="negative"
-      label="Délier l'exercice"
-      icon="link_off"
-      no-caps
-      @click="unlink"
-    />
-    <q-btn
-      class="q-mb-xl"
-      v-if="!forAbsWorkout && !exerciseForm.abs"
-      color="primary"
-      :label="linked ? 'Modifier la liaison' : 'Lier à un autre exercice'"
-      icon="link"
-      no-caps
-      @click="showLinkModal = true"
-    />
+      <q-checkbox
+        v-model="exerciseForm.notForLastSeries"
+        label="Exclure de la dernière série"
+        checked-icon="task_alt"
+        unchecked-icon="highlight_off"
+        class="q-mb-md"
+      />
+    </template>
+    <template v-if="!forAbsWorkout && !exerciseForm.abs">
+      <q-select
+        outlined
+        name="defaultSeriesType"
+        rounded
+        v-model="exerciseForm.defaultSeriesType"
+        emit-value
+        map-options
+        :options="seriesTypes"
+        label="Type de performance par défaut"
+        class="q-mb-md w-100"
+        :rules="[(val) => PERFORMANCE_TYPES.includes(val) || 'Veuillez renseigner un type de performance']"
+        hide-bottom-space
+      ></q-select>
+      <q-input
+        outlined
+        name="defaultSeriesNumber"
+        rounded
+        v-model="exerciseForm.defaultSeriesNumber"
+        type="number"
+        inputmode="numeric"
+        label="Nombre de séries par défaut (nombre par défaut si pas renseigné)"
+        class="q-mb-md w-100"
+        min="1"
+        :rules="[(val) => !val || val > 0 || 'Veuillez renseigner un nombre de séries positif']"
+        hide-bottom-space
+      ></q-input>
+      <div class="q-mb-lg text-center">
+        <div class="q-mb-sm">Valeur de progression :</div>
+        <q-btn-toggle
+          v-model="exerciseForm.isReverse"
+          toggle-color="primary"
+          name="isReverse"
+          no-caps
+          :options="[
+            { label: 'Croissante', value: false },
+            { label: 'Décroissante', value: true }
+          ]"
+        />
+      </div>
+      <div
+        v-if="linked"
+        class="q-mb-sm text-center"
+      >
+        Lié à : <b>{{ linkedWorkout.label }}</b> - <b>{{ linkedExercise.label }}</b>
+      </div>
+      <q-btn
+        v-if="linked"
+        class="q-mb-md"
+        color="white"
+        text-color="negative"
+        label="Délier l'exercice"
+        icon="link_off"
+        no-caps
+        @click="unlink"
+      />
+      <q-btn
+        class="q-mb-xl"
+        color="primary"
+        :label="linked ? 'Modifier la liaison' : 'Lier à un autre exercice'"
+        icon="link"
+        no-caps
+        @click="showLinkModal = true"
+      />
+    </template>
     <q-btn
       color="primary"
       :label="buttonLabel"
@@ -281,7 +291,8 @@ export default {
         link: {
           workout: null,
           exercise: null
-        }
+        },
+        defaultSeriesNumber: null
       },
       seriesTypes: [
         {

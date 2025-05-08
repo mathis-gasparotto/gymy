@@ -180,7 +180,7 @@ export default {
       this.date = this.initData.date
       this.comment = this.initData.comment
     } else {
-      this.defaultNumberOfSeries = getUser().defaultNumberOfSeries
+      this.defaultNumberOfSeries = this.exercise.defaultSeriesNumber || getUser().defaultNumberOfSeries
       this.initInputs()
     }
   },
