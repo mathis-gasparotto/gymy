@@ -158,7 +158,7 @@ import { errorNotify, successNotify } from 'src/helpers/notifyHelper'
 import ExerciseForm from 'src/components/Exercises/ExerciseForm.vue'
 import draggable from 'vuedraggable'
 import ExerciseCard from 'src/components/Exercises/ExerciseCard.vue'
-import { getNoAbsWorkouts } from 'src/services/workoutService'
+import { getAbsWorkouts, getNoAbsWorkouts } from 'src/services/workoutService'
 
 export default {
   name: 'ChoiceExercise',
@@ -319,7 +319,7 @@ export default {
         })
     },
     loadWorkouts() {
-      this.workouts = getNoAbsWorkouts()
+      this.workouts = this.workout.isAbs ? getAbsWorkouts() : getNoAbsWorkouts()
     },
     copy(exercise) {
       this.exerciseToCopy = exercise
