@@ -104,6 +104,7 @@
             </q-card-section>
           </q-card-section>
           <template v-else>
+            <div class="text-weight-medium text-center text-body1">Destination : {{ workoutCopyingDestination.label }} - {{ exerciseCopyingDestination.label }}</div>
             <PerformanceForm
               ref="addPerfForm"
               :init-data="performanceToCopy"
