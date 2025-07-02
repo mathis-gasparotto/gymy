@@ -69,17 +69,17 @@
           class="gap-20"
         >
           <q-btn
+            label="Annuler"
+            color="negative"
+            v-close-popup
+            @click="onLinkCancel"
+          />
+          <q-btn
             v-if="exerciseForm.link?.workout"
             color="primary"
             label="Confirmer"
             v-close-popup
             :disable="!linkIsValid"
-          />
-          <q-btn
-            label="Annuler"
-            color="negative"
-            v-close-popup
-            @click="onLinkCancel"
           />
         </q-card-actions>
       </q-card>
