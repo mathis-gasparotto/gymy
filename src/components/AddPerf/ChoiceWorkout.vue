@@ -208,19 +208,19 @@ export default {
     },
     onAddSubmit(payload) {
       this.addLoading = true
+      this.$q.loading.show({
+        delay: 0, // ms
+        message: 'Ajout en cours...',
+        boxClass: 'text-h5'
+      })
       addWorkout(payload)
         .then(() => {
           this.loadWorkouts()
           successNotify('Votre entraînement a bien été ajouté')
           this.addForm = false
-          this.$q.loading.show({
-            delay: 0, // ms
-            message: 'Ajout en cours...',
-            boxClass: 'text-h5'
-          })
           setTimeout(() => {
             this.$q.loading.hide()
-          }, 1500)
+          }, 1000)
         })
         .catch((err) => {
           errorNotify("Une erreur est survenue lors de l'ajout de votre entraînement")

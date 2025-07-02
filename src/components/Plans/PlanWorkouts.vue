@@ -402,9 +402,17 @@ export default {
           }
           break
       }
+      this.$q.loading.show({
+        delay: 0, // ms
+        message: 'Retrait de l\'entraînement en cours...',
+        boxClass: 'text-h5'
+      })
       updatePlan(this.plan.id, payload)
         .then(() => {
           this.loadPlanWorkouts()
+          setTimeout(() => {
+            this.$q.loading.hide()
+          }, 1000)
         })
         .catch((err) => {
           errorNotify('Une erreur est survenue lors du retrait de votre entraînement au programme')
