@@ -9,7 +9,7 @@
     </q-header> -->
 
     <q-page-container>
-      <router-view @hideNavbar="showFooter = false" @showNavbar="showFooter = true" />
+      <router-view @hideNavbar="hideNavBar" @showNavbar="showNavBar" />
     </q-page-container>
 
     <q-footer class="main-nav-bar-container" v-model="showFooter">
@@ -31,7 +31,8 @@ export default {
   name: 'MainLayout',
   data() {
     return {
-      showFooter: true
+      showFooter: true,
+      hideNavBarFromComponent: false
     }
   },
   created() {
@@ -40,8 +41,18 @@ export default {
         this.showFooter = false
       })
       Keyboard.addListener('keyboardWillHide', () => {
-        this.showFooter = true
+        this.showFooter = !this.hideNavBarFromComponent
       })
+    }
+  },
+  methods: {
+    hideNavBar() {
+      this.showFooter = false
+      this.hideNavBarFromComponent = true
+    },
+    showNavBar() {
+      this.showFooter = true
+      this.hideNavBarFromComponent = false
     }
   }
 }
