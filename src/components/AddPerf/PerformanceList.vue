@@ -1,6 +1,6 @@
 <template>
-  <div class="column flex-center">
-    <div class="flex flex-center performance-list">
+  <div class="column flex-center max-w-100">
+    <div class="flex flex-center performance-list max-w-100">
       <PerformanceCard
         v-for="performance in performancesToShow"
         :key="performance.id"

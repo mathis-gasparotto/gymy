@@ -1,15 +1,15 @@
 <template>
-  <q-card class="flex-center column q-px-md">
+  <q-card class="flex-center column q-px-md w-100 max-w-100 w-xs-unset">
     <q-card-section>
       <div class="text-h6">
         {{ formatting().dateToDisplay(performance.date) }}
       </div>
     </q-card-section>
-    <q-card-section class="column flex-center">
+    <q-card-section class="column flex-center max-w-100">
       {{ performance.series.map((serie) => serie.value + (serie.type === PERFORMANCE_TYPE_DEFAULT ? '' : ' (' + getPerfromanceType(serie.type) + ')')).join(' - ') }}
       <div
         v-if="performance.comment"
-        class="text-center"
+        class="text-center max-w-100 q-mt-md"
       >
         {{ performance.comment }}
       </div>
