@@ -33,3 +33,4 @@ yarn-error.log*
 .firebase/
 
 google-services.json
+src-capacitor/ios/App/App/public/assets/
