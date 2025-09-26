@@ -36,6 +36,7 @@
           </div>
         </div>
       </div>
+      <DarkModeToggle />
       <EditDefaultNumberOfSeries :initData="user.defaultNumberOfSeries" @reloadUser="loadUser" class="q-mt-lg" />
       <EditRestTime :initData="user.restTime" @reloadUser="loadUser" class="q-mt-lg" />
       <EditUsername v-if="user.uid !== USER_GUEST_UID" @reloadUser="loadUser" class="q-mt-lg" />
@@ -62,6 +63,7 @@ import UpdatePassword from 'src/components/Account/UpdatePassword.vue'
 import SignupAsGuest from 'src/components/Account/SignupAsGuest.vue'
 import EditUsername from 'src/components/Account/EditUsername.vue'
 import UpdateEmail from 'src/components/Account/UpdateEmail.vue'
+import DarkModeToggle from 'src/components/DarkModeToggle.vue'
 
 export default {
   name: 'AccountPage',
@@ -72,7 +74,8 @@ export default {
     UpdatePassword,
     SignupAsGuest,
     EditUsername,
-    UpdateEmail
+    UpdateEmail,
+    DarkModeToggle
   },
   setup() {
     return {

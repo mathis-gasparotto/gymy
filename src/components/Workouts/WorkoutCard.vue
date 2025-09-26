@@ -4,7 +4,7 @@
       <div class="q-mr-lg flex flex-cente">
         <img
           v-if="workout.isAbs"
-          src="~/assets/picto-abs.png"
+          :src="`/pictos/picto-abs${isDarkMode ? '-white' : '-dark'}.png`"
           width="40px"
         />
       </div>
@@ -37,7 +37,7 @@
       class="lt-md abs-indicator-section q-pa-none"
     >
       <img
-        src="~assets/picto-abs.png"
+        :src="`/pictos/picto-abs${isDarkMode ? '-white' : '-dark'}.png`"
         width="50px"
       />
     </q-card-section>
@@ -107,9 +107,25 @@
 </template>
 
 <script>
+import { useQuasar } from 'quasar'
+import { ref, watch } from 'vue'
+
 export default {
   name: 'WorkoutCard',
   emits: ['share', 'edit', 'showDeleteModal'],
+  setup () {
+    const $q = useQuasar()
+
+    const isDarkMode = ref(false)
+    isDarkMode.value = $q.dark.isActive
+    watch(() => $q.dark.isActive, val => {
+      isDarkMode.value = val
+    })
+
+    return {
+      isDarkMode
+    }
+  },
   props: {
     workout: {
       type: Object,
