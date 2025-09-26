@@ -101,17 +101,17 @@
     align="center"
   >
     <q-btn
+      v-if="closeBtn"
+      :label="closeBtnText"
+      color="negative"
+      v-close-popup
+    />
+    <q-btn
       color="primary"
       :label="submitText"
       @click="submit"
       :loading="loading"
       :disable="!inputsValid || loading"
-    />
-    <q-btn
-      v-if="closeBtn"
-      :label="closeBtnText"
-      color="negative"
-      v-close-popup
     />
   </q-card-actions>
 </template>
