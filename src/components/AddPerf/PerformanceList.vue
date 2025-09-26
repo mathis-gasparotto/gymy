@@ -99,6 +99,11 @@
               >
                 <q-card-section>
                   <q-item-label class="text-center text-weight-bold">{{ item.label }}</q-item-label>
+                  <q-item-label
+                    v-if="item.id == exercise.id"
+                    class="text-center text-caption"
+                    >(Actuel)</q-item-label
+                  >
                 </q-card-section>
               </q-card>
             </q-card-section>
@@ -117,6 +122,17 @@
             />
           </template>
         </div>
+        <q-card-actions
+          v-if="copyModalProgress < 1"
+          class="q-pt-none q-mb-sm"
+          align="center"
+        >
+          <q-btn
+            label="Annuler"
+            color="negative"
+            v-close-popup
+          />
+        </q-card-actions>
       </q-card>
     </q-dialog>
   </div>
