@@ -83,8 +83,9 @@ export async function addWorkout(payload) {
   }
 }
 
-export async function updateWorkout(id, payload) {
+export async function updateWorkout(id, payload, timestamp = true) {
   const user = getUser()
+  const updatedAt = timestamp ? new Date().toISOString() : user.workouts?.[id]?.updatedAt
   if (user && user.uid === USER_GUEST_UID) {
     LocalStorage.set(LOCALSTORAGE_DB_USER, {
       ...user,
@@ -94,55 +95,27 @@ export async function updateWorkout(id, payload) {
           ...user.workouts[id],
           ...payload,
           id: null,
-          updatedAt: new Date().toISOString()
+          updatedAt: updatedAt
         }
       }
     })
   } else {
-    await updateData('users/' + auth.currentUser.uid + '/workouts/' + id, { ...payload, id: null })
+    await updateData('users/' + auth.currentUser.uid + '/workouts/' + id, { ...payload, id: null }, timestamp)
   }
 
   return payload
 }
 
-export async function moveWorkout(id, newPosition) {
-  if (newPosition < 1) throw new Error('Invalid position')
+export async function moveWorkout(newWorkoutOrder) {
+  await Promise.all(
+    newWorkoutOrder.map((id, index) => {
+      return updateWorkout(id, {
+        position: index + 1
+      }, false)
+    })
+  )
 
-  const workouts = getWorkouts()
-
-  if (newPosition > workouts.length) newPosition = workouts.length
-
-  const workoutToMove = workouts.find(e => e.id === id)
-
-  if (!workoutToMove) throw new Error('Workout not found')
-
-  if (workouts.length > 1) {
-    // update positions
-    if (newPosition > workoutToMove.position) {
-      const workoutsToUpdate = workouts.filter(w => w.position > workoutToMove.position && w.position <= newPosition)
-      workoutsToUpdate.forEach(w => {
-        updateWorkout(w.id, {
-          position: w.position - 1
-        })
-      })
-    }
-    if (newPosition < workoutToMove.position) {
-      const workoutsToUpdate = workouts.filter(w => w.position < workoutToMove.position && w.position >= newPosition)
-      workoutsToUpdate.forEach(w => {
-        updateWorkout(w.id, {
-          position: w.position + 1
-        })
-      })
-    }
-  }
-  await updateWorkout(id, {
-    position: newPosition
-  })
-
-  return {
-    ...workoutToMove,
-    position: newPosition
-  }
+  return newWorkoutOrder
 }
 
 export async function deleteWorkout(id) {

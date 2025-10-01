@@ -14,11 +14,12 @@
         class="cursor-pointer q-mb-md flex-center column q-px-md"
       >
         <slot name="content" :element="element" />
-        <div class="draggable-btn-container" @click.stop>
+        <div class="draggable-btn-container">
           <q-icon
             :class="'draggable-btn ' + (drag ? 'cursor-grabbing' : 'cursor-grab')"
             size="sm"
             name="menu"
+            @click.stop
           ></q-icon>
         </div>
       </q-card>

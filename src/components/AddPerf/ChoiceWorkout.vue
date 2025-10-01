@@ -159,7 +159,7 @@ export default {
   data() {
     return {
       drag: false,
-      workouts: {},
+      workouts: [],
       addForm: false,
       addLoading: false,
       editForm: false,
@@ -187,13 +187,13 @@ export default {
         message: 'Déplacement en cours...',
         boxClass: 'text-h5'
       })
-      const newPosition = e.newIndex + 1
-      moveWorkout(e.item['_underlying_vm_'].id, newPosition)
+      const newWorkoutOrder = this.workouts.map((e) => e.id)
+      moveWorkout(newWorkoutOrder)
         .catch((err) => {
           errorNotify('Une erreur est survenue lors du déplacement de votre entraînement')
-          this.loadWorkouts()
         })
         .finally(() => {
+          this.loadWorkouts()
           this.$q.loading.hide()
           this.drag = false
         })

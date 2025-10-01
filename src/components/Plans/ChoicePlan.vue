@@ -142,7 +142,7 @@ export default {
   data() {
     return {
       drag: false,
-      plans: {},
+      plans: [],
       addForm: false,
       addLoading: false,
       editForm: false,
@@ -160,13 +160,13 @@ export default {
         message: 'Déplacement en cours...',
         boxClass: 'text-h5'
       })
-      const newPosition = e.newIndex + 1
-      movePlan(e.item['_underlying_vm_'].id, newPosition)
+      const newPlansOrder = this.plans.map((e) => e.id)
+      movePlan(newPlansOrder)
         .catch((err) => {
           errorNotify('Une erreur est survenue lors du déplacement de votre planification')
-          this.loadPlans()
         })
         .finally(() => {
+          this.loadPlans()
           this.$q.loading.hide()
           this.drag = false
         })

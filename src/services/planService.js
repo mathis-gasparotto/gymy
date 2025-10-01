@@ -89,8 +89,9 @@ export async function addPlan(payload) {
   }
 }
 
-export async function updatePlan(id, payload) {
+export async function updatePlan(id, payload, timestamp = true) {
   const user = getUser()
+  const updatedAt = timestamp ? new Date().toISOString() : user.plans?.[id]?.updatedAt
   if (user && user.uid === USER_GUEST_UID) {
     LocalStorage.set(LOCALSTORAGE_DB_USER, {
       ...user,
@@ -100,55 +101,27 @@ export async function updatePlan(id, payload) {
           ...user.plans[id],
           ...payload,
           id: null,
-          updatedAt: new Date().toISOString()
+          updatedAt: updatedAt
         }
       }
     })
   } else {
-    await updateData('users/' + auth.currentUser.uid + '/plans/' + id, { ...payload, id: null })
+    await updateData('users/' + auth.currentUser.uid + '/plans/' + id, { ...payload, id: null }, timestamp)
   }
 
   return payload
 }
 
-export async function movePlan(id, newPosition) {
-  if (newPosition < 1) throw new Error('Invalid position')
+export async function movePlan(newPlanOrder) {
+  await Promise.all(
+    newPosition.map((id, index) => {
+      return updatePlan(id, {
+        position: index + 1
+      }, false)
+    })
+  )
 
-  const plans = getPlans()
-
-  if (newPosition > plans.length) newPosition = plans.length
-
-  const planToMove = plans.find(e => e.id === id)
-
-  if (!planToMove) throw new Error('Plan not found')
-
-  if (plans.length > 1) {
-    // update positions
-    if (newPosition > planToMove.position) {
-      const plansToUpdate = plans.filter(w => w.position > planToMove.position && w.position <= newPosition)
-      plansToUpdate.forEach(w => {
-        updatePlan(w.id, {
-          position: w.position - 1
-        })
-      })
-    }
-    if (newPosition < planToMove.position) {
-      const plansToUpdate = plans.filter(w => w.position < planToMove.position && w.position >= newPosition)
-      plansToUpdate.forEach(w => {
-        updatePlan(w.id, {
-          position: w.position + 1
-        })
-      })
-    }
-  }
-  await updatePlan(id, {
-    position: newPosition
-  })
-
-  return {
-    ...planToMove,
-    position: newPosition
-  }
+  return newPlanOrder
 }
 
 export async function deletePlan(id) {

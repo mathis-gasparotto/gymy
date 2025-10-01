@@ -30,11 +30,11 @@ export function createData(refStr, data) {
   return set(ref(db, refStr), data)
 }
 
-export function updateData(refStr, data) {
-  data = {
+export function updateData(refStr, data, timestamp = true) {
+  data = timestamp ? {
     ...data,
     updatedAt: new Date().toISOString()
-  }
+  } : {...data}
   return update(ref(db, refStr), data)
 }
 

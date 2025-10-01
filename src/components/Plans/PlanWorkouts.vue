@@ -112,6 +112,7 @@
                     :class="'draggable-btn ' + (drag ? 'cursor-grabbing' : 'cursor-grab')"
                     size="sm"
                     name="menu"
+                    @click.stop
                   ></q-icon>
                 </div>
               </q-card>
@@ -309,7 +310,6 @@ export default {
       this.cachedList = formatting().array_move(this.cachedList, move.from, move.to)
     },
     onDragEnd(e) {
-      this.drag = false
       this.$q.loading.show({
         delay: 400, // ms
         message: 'Déplacement en cours...',
@@ -333,10 +333,11 @@ export default {
       })
         .catch((err) => {
           errorNotify('Une erreur est survenue lors du déplacement de votre entraînement')
-          this.loadPlanWorkouts()
         })
         .finally(() => {
+          this.loadPlanWorkouts()
           this.$q.loading.hide()
+          this.drag = false
         })
     },
     loadPlanWorkouts() {

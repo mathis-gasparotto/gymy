@@ -226,13 +226,13 @@ export default {
         message: 'Déplacement en cours...',
         boxClass: 'text-h5'
       })
-      const newPosition = e.newIndex + 1
-      moveExercise(this.workout.id, e.item['_underlying_vm_'].id, newPosition)
+      const newExercisesOrder = this.exercises.map((e) => e.id)
+      moveExercise(this.workout.id, newExercisesOrder)
         .catch((err) => {
           errorNotify('Une erreur est survenue lors du déplacement de votre exercice')
-          this.loadExercises()
         })
         .finally(() => {
+          this.loadExercises()
           this.$q.loading.hide()
           this.drag = false
         })
