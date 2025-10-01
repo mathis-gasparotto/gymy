@@ -2,78 +2,63 @@
   <div class="flex column">
     <GymyHeader text="Planifications" />
     <div v-if="plans && plans.length > 0">
-      <draggable
+      <CardDraggable
         :list="plans"
-        class="list-group"
-        ghost-class="ghost"
-        itemKey="id"
-        handle=".draggable-btn"
-        @end="onDragEnd"
-        @start="drag = true"
+        @dragEnd="onDragEnd"
+        @cardClick="(e) => $emit('selectPlan', e)"
+        v-model:drag="drag"
       >
-        <template #item="{ element }">
-          <q-card
-            @click="$emit('selectPlan', element)"
-            class="cursor-pointer q-mb-md flex-center column q-px-md"
-          >
-            <q-card-section class="gt-xs">
-              <div class="text-h6 text-center">
-                {{ element.label }}
-              </div>
-            </q-card-section>
-            <q-card-section class="q-pb-none lt-sm">
-              <div class="text-h6 text-center">
-                {{ element.label }}
-              </div>
-            </q-card-section>
-            <q-card-actions
-              horizontal
-              class="absolute-right gt-xs no-wrap"
-            >
-              <q-btn
-                flat
-                round
-                color="primary"
-                icon="edit"
-                @click.stop="edit(element)"
-              />
-              <q-btn
-                flat
-                round
-                color="negative"
-                icon="delete"
-                @click.stop="showDeleteModal(element)"
-              />
-            </q-card-actions>
-            <q-card-actions
-              horizontal
-              class="lt-sm no-wrap q-pa-none"
-            >
-              <q-btn
-                flat
-                round
-                color="primary"
-                icon="edit"
-                @click.stop="edit(element)"
-              />
-              <q-btn
-                flat
-                round
-                color="negative"
-                icon="delete"
-                @click.stop="showDeleteModal(element)"
-              />
-            </q-card-actions>
-            <div class="draggable-btn-container">
-              <q-icon
-                :class="'draggable-btn ' + (drag ? 'cursor-grabbing' : 'cursor-grab')"
-                size="sm"
-                name="menu"
-              ></q-icon>
+        <template #content="{ element }">
+          <q-card-section class="gt-xs">
+            <div class="text-h6 text-center">
+              {{ element.label }}
             </div>
-          </q-card>
+          </q-card-section>
+          <q-card-section class="q-pb-none lt-sm">
+            <div class="text-h6 text-center">
+              {{ element.label }}
+            </div>
+          </q-card-section>
+          <q-card-actions
+            horizontal
+            class="absolute-right gt-xs no-wrap"
+          >
+            <q-btn
+              flat
+              round
+              color="primary"
+              icon="edit"
+              @click.stop="edit(element)"
+            />
+            <q-btn
+              flat
+              round
+              color="negative"
+              icon="delete"
+              @click.stop="showDeleteModal(element)"
+            />
+          </q-card-actions>
+          <q-card-actions
+            horizontal
+            class="lt-sm no-wrap q-pa-none"
+          >
+            <q-btn
+              flat
+              round
+              color="primary"
+              icon="edit"
+              @click.stop="edit(element)"
+            />
+            <q-btn
+              flat
+              round
+              color="negative"
+              icon="delete"
+              @click.stop="showDeleteModal(element)"
+            />
+          </q-card-actions>
         </template>
-      </draggable>
+      </CardDraggable>
     </div>
     <span
       v-else
@@ -144,7 +129,7 @@ import GymyHeader from 'src/components/GymyHeader.vue'
 import { Dialog } from 'quasar'
 import { errorNotify, successNotify } from 'src/helpers/notifyHelper'
 import PlanForm from 'src/components/Plans/PlanForm.vue'
-import draggable from 'vuedraggable'
+import CardDraggable from 'src/components/CardDraggable.vue'
 
 export default {
   name: 'ChoicePlan',
@@ -152,7 +137,7 @@ export default {
   components: {
     GymyHeader,
     PlanForm,
-    draggable
+    CardDraggable
   },
   data() {
     return {
@@ -175,7 +160,6 @@ export default {
         message: 'Déplacement en cours...',
         boxClass: 'text-h5'
       })
-      this.drag = false
       const newPosition = e.newIndex + 1
       movePlan(e.item['_underlying_vm_'].id, newPosition)
         .catch((err) => {
@@ -184,6 +168,7 @@ export default {
         })
         .finally(() => {
           this.$q.loading.hide()
+          this.drag = false
         })
     },
     loadPlans() {

@@ -2,28 +2,23 @@
   <div class="flex column">
     <GymyHeader :text="(workout.isAbs ? 'Abs - ' : 'Exercices - ') + workout.label" />
     <div v-if="exercises && exercises.length > 0">
-      <draggable
+      <CardDraggable
         :list="exercises"
-        class="list-group"
-        ghost-class="ghost"
-        itemKey="id"
-        handle=".draggable-btn"
-        @end="onDragEnd"
-        @start="drag = true"
+        @dragEnd="onDragEnd"
+        @cardClick="(e) => onClickExercise(e)"
+        v-model:drag="drag"
       >
-        <template #item="{ element }">
+        <template #content="{ element }">
           <ExerciseCard
             :forAbs="workout.isAbs"
             :exercise="element"
             draggable
-            :drag="drag"
             @edit="edit(element)"
             @showDeleteModal="showDeleteModal(element)"
-            @click="onClickExercise(element)"
             @copy="copy(element)"
           />
         </template>
-      </draggable>
+      </CardDraggable>
     </div>
     <span
       v-else
@@ -156,7 +151,7 @@ import GymyHeader from 'src/components/GymyHeader.vue'
 import { Dialog } from 'quasar'
 import { errorNotify, successNotify } from 'src/helpers/notifyHelper'
 import ExerciseForm from 'src/components/Exercises/ExerciseForm.vue'
-import draggable from 'vuedraggable'
+import CardDraggable from 'src/components/CardDraggable.vue'
 import ExerciseCard from 'src/components/Exercises/ExerciseCard.vue'
 import { getAbsWorkouts, getNoAbsWorkouts } from 'src/services/workoutService'
 
@@ -166,7 +161,7 @@ export default {
   components: {
     GymyHeader,
     ExerciseForm,
-    draggable,
+    CardDraggable,
     ExerciseCard
   },
   props: {
@@ -231,7 +226,6 @@ export default {
         message: 'Déplacement en cours...',
         boxClass: 'text-h5'
       })
-      this.drag = false
       const newPosition = e.newIndex + 1
       moveExercise(this.workout.id, e.item['_underlying_vm_'].id, newPosition)
         .catch((err) => {
@@ -240,6 +234,7 @@ export default {
         })
         .finally(() => {
           this.$q.loading.hide()
+          this.drag = false
         })
     },
     loadExercises() {

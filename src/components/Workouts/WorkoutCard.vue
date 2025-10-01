@@ -1,130 +1,18 @@
 <template>
-  <q-card class="cursor-pointer q-mb-md flex-center column q-px-md">
-    <q-card-section class="gt-sm flex flex-center">
-      <div class="q-mr-lg flex flex-cente">
-        <img
-          v-if="workout.isAbs"
-          :src="`/pictos/picto-abs${isDarkMode ? '-white' : '-dark'}.png`"
-          width="40px"
-        />
-      </div>
-      <div :class="{ 'title-container': workout.isAbs }">
-        <div class="text-h6 text-center flex flex-center">
-          {{ workout.label }}
-        </div>
-        <div
-          v-if="workout.comment"
-          class="text-center"
-        >
-          {{ workout.comment }}
-        </div>
-      </div>
-    </q-card-section>
-    <q-card-section class="q-pb-none lt-md">
-      <div class="text-h6 text-center">
-        {{ workout.label }}
-      </div>
-      <div
-        v-if="workout.comment"
-        class="text-center"
-        :class="{ 'q-mr-lg': workout.isAbs }"
-      >
-        {{ workout.comment }}
-      </div>
-    </q-card-section>
-    <q-card-section
-      v-if="workout.isAbs"
-      class="lt-md abs-indicator-section q-pa-none"
-    >
-      <img
-        :src="`/pictos/picto-abs${isDarkMode ? '-white' : '-dark'}.png`"
-        width="50px"
-      />
-    </q-card-section>
-    <q-card-actions
-      horizontal
-      class="absolute-right gt-sm no-wrap"
-    >
-      <q-btn
-        flat
-        round
-        color="secondary"
-        icon="share"
-        @click.stop="$emit('share')"
-      />
-      <q-btn
-        flat
-        round
-        color="primary"
-        icon="edit"
-        @click.stop="$emit('edit')"
-      />
-      <q-btn
-        flat
-        round
-        color="negative"
-        icon="delete"
-        @click.stop="$emit('showDeleteModal')"
-      />
-    </q-card-actions>
-    <q-card-actions
-      horizontal
-      class="lt-md no-wrap q-pa-none"
-    >
-      <q-btn
-        flat
-        round
-        color="secondary"
-        icon="share"
-        @click.stop="$emit('share')"
-      />
-      <q-btn
-        flat
-        round
-        color="primary"
-        icon="edit"
-        @click.stop="$emit('edit')"
-      />
-      <q-btn
-        flat
-        round
-        color="negative"
-        icon="delete"
-        @click.stop="$emit('showDeleteModal')"
-      />
-    </q-card-actions>
-    <div
-      v-if="draggable"
-      class="draggable-btn-container"
-    >
-      <q-icon
-        :class="'draggable-btn ' + (drag ? 'cursor-grabbing' : 'cursor-grab')"
-        size="sm"
-        name="menu"
-      ></q-icon>
-    </div>
+  <q-card class="cursor-pointer q-mb-md flex-center column q-px-md" v-if="!draggable">
+    <WorkoutCardContent :workout="workout" @share="$emit('share')" @edit="$emit('edit')" @showDeleteModal="$emit('showDeleteModal')" />
   </q-card>
+  <WorkoutCardContent v-else :workout="workout" @share="$emit('share')" @edit="$emit('edit')" @showDeleteModal="$emit('showDeleteModal')" />
 </template>
 
 <script>
-import { useQuasar } from 'quasar'
-import { ref, watch } from 'vue'
+import WorkoutCardContent from 'src/components/Workouts/WorkoutCardContent.vue'
 
 export default {
   name: 'WorkoutCard',
   emits: ['share', 'edit', 'showDeleteModal'],
-  setup () {
-    const $q = useQuasar()
-
-    const isDarkMode = ref(false)
-    isDarkMode.value = $q.dark.isActive
-    watch(() => $q.dark.isActive, val => {
-      isDarkMode.value = val
-    })
-
-    return {
-      isDarkMode
-    }
+  components: {
+    WorkoutCardContent
   },
   props: {
     workout: {
@@ -134,33 +22,10 @@ export default {
     draggable: {
       type: Boolean,
       default: false
-    },
-    drag: {
-      type: Boolean,
-      default: false
     }
   }
 }
 </script>
 
 <style scoped lang="scss">
-.draggable-btn {
-  &-container {
-    position: absolute;
-    left: 10px;
-    height: 100%;
-    display: flex;
-    align-items: center;
-  }
-}
-.abs-indicator-section {
-  position: absolute;
-  right: 10px;
-  height: 100%;
-  display: flex;
-  align-items: center;
-}
-.title-container {
-  padding-right: 40px;
-}
 </style>

@@ -2,27 +2,22 @@
   <div class="flex column">
     <GymyHeader text="Entraînements" />
     <div v-if="workouts && workouts.length > 0">
-      <draggable
+      <CardDraggable
         :list="workouts"
-        class="list-group"
-        ghost-class="ghost"
-        itemKey="id"
-        handle=".draggable-btn"
-        @end="onDragEnd"
-        @start="drag = true"
+        @dragEnd="onDragEnd"
+        @cardClick="(e) => $emit('selectWorkout', e)"
+        v-model:drag="drag"
       >
-        <template #item="{ element }">
+        <template #content="{ element }">
           <WorkoutCard
             :workout="element"
             draggable
-            :drag="drag"
             @share="share(element)"
             @edit="edit(element)"
             @showDeleteModal="showDeleteModal(element)"
-            @click="$emit('selectWorkout', element)"
           />
         </template>
-      </draggable>
+      </CardDraggable>
     </div>
     <span
       v-else
@@ -145,7 +140,7 @@ import GymyHeader from 'src/components/GymyHeader.vue'
 import { Dialog } from 'quasar'
 import { errorNotify, successNotify } from 'src/helpers/notifyHelper'
 import WorkoutForm from 'src/components/Workouts/WorkoutForm.vue'
-import draggable from 'vuedraggable'
+import CardDraggable from 'src/components/CardDraggable.vue'
 import WorkoutCard from 'src/components/Workouts/WorkoutCard.vue'
 import { copyToClipboard } from 'quasar'
 import { Share } from '@capacitor/share'
@@ -158,7 +153,7 @@ export default {
   components: {
     GymyHeader,
     WorkoutForm,
-    draggable,
+    CardDraggable,
     WorkoutCard
   },
   data() {
@@ -192,7 +187,6 @@ export default {
         message: 'Déplacement en cours...',
         boxClass: 'text-h5'
       })
-      this.drag = false
       const newPosition = e.newIndex + 1
       moveWorkout(e.item['_underlying_vm_'].id, newPosition)
         .catch((err) => {
@@ -201,6 +195,7 @@ export default {
         })
         .finally(() => {
           this.$q.loading.hide()
+          this.drag = false
         })
     },
     loadWorkouts() {
