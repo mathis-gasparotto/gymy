@@ -204,7 +204,7 @@ export default {
     onAddSubmit(payload) {
       this.addLoading = true
       this.$q.loading.show({
-        delay: 0, // ms
+        delay: 400, // ms
         message: 'Ajout en cours...',
         boxClass: 'text-h5'
       })
@@ -213,30 +213,35 @@ export default {
           this.loadWorkouts()
           successNotify('Votre entraînement a bien été ajouté')
           this.addForm = false
-          setTimeout(() => {
-            this.$q.loading.hide()
-          }, 1000)
         })
         .catch((err) => {
           errorNotify("Une erreur est survenue lors de l'ajout de votre entraînement")
         })
         .finally(() => {
           this.addLoading = false
+          this.$q.loading.hide()
         })
     },
     onEditSubmit(payload) {
       this.editLoading = true
+      this.$q.loading.show({
+        delay: 400, // ms
+        message: 'Modification en cours...',
+        boxClass: 'text-h5'
+      })
       updateWorkout(payload.id, payload)
         .then(() => {
           this.loadWorkouts()
           successNotify('Votre entraînement a bien été modifié')
           this.editForm = false
-          this.editLoading = false
           this.workoutToEdit = {}
         })
         .catch((err) => {
-          this.editLoading = false
           errorNotify("Une erreur est survenue lors de l'édition de votre entraînement")
+        })
+        .finally(() => {
+          this.editLoading = false
+          this.$q.loading.hide()
         })
     },
     shareBtn(workout) {

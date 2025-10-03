@@ -176,30 +176,44 @@ export default {
     },
     onAddSubmit(payload) {
       this.addLoading = true
+      this.$q.loading.show({
+        delay: 400, // ms
+        message: 'Ajout en cours...',
+        boxClass: 'text-h5'
+      })
       addPlan(payload)
         .then(() => {
           this.loadPlans()
           successNotify('Votre planification a bien été ajoutée')
           this.addForm = false
-          this.addLoading = false
         })
         .catch((err) => {
-          this.addLoading = false
           errorNotify("Une erreur est survenue lors de l'ajout de votre planification")
+        })
+        .finally(() => {
+          this.addLoading = false
+          this.$q.loading.hide()
         })
     },
     onEditSubmit(payload) {
       this.editLoading = true
+      this.$q.loading.show({
+        delay: 400, // ms
+        message: 'Modification en cours...',
+        boxClass: 'text-h5'
+      })
       updatePlan(payload.id, { label: payload.label })
         .then(() => {
           this.loadPlans()
           successNotify('Votre planification a bien été modifiée')
           this.editForm = false
-          this.editLoading = false
         })
         .catch((err) => {
-          this.editLoading = false
           errorNotify("Une erreur est survenue lors de l'édition de votre planification")
+        })
+        .finally(() => {
+          this.editLoading = false
+          this.$q.loading.hide()
         })
     },
     edit(plan) {
