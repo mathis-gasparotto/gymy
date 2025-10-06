@@ -1,23 +1,39 @@
 <template>
   <div class="flex justify-between justify-xs-center gap-20">
-    <div>
+    <div class="column items-start q-mb-lg w-content h-content gap-15">
       <q-btn
         v-if="previousExercise"
         color="negative"
         label="Précédent"
-        class="q-mb-lg w-content"
+        class="w-content h-content"
         icon="arrow_back"
         :to="{ name: 'performances', params: { workoutId: $route.params.workoutId, exerciseId: previousExercise.id } }"
       />
+      <q-btn
+        v-if="previousExercise && previousExercise.abs"
+        color="negative"
+        label="Abs"
+        class="w-content h-content"
+        icon="arrow_back"
+        :to="{ name: 'abs' }"
+      />
     </div>
-    <div>
+    <div class="column items-end q-mb-lg w-content h-content gap-15">
       <q-btn
         v-if="nextExercise"
         color="secondary"
-        :label="nextExercise.abs ? 'Abs' : 'Suivant'"
-        class="q-mb-lg w-content"
+        label="Suivant"
+        class="w-content h-content"
         icon-right="arrow_forward"
-        :to="nextExercise.abs ? { name: 'abs' } : { name: 'performances', params: { workoutId: $route.params.workoutId, exerciseId: nextExercise.id } }"
+        :to="{ name: 'performances', params: { workoutId: $route.params.workoutId, exerciseId: nextExercise.id } }"
+      />
+      <q-btn
+        v-if="nextExercise && nextExercise.abs"
+        color="secondary"
+        label="Abs"
+        class="w-content h-content"
+        icon-right="arrow_forward"
+        :to="{ name: 'abs' }"
       />
     </div>
   </div>
