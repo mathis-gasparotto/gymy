@@ -1,11 +1,7 @@
 <template>
   <q-card-section class="gt-sm flex flex-center">
-    <div class="q-mr-lg flex flex-cente">
-      <img
-        v-if="workout.isAbs"
-        :src="`/pictos/picto-abs${isDarkMode ? '-white' : '-dark'}.png`"
-        width="40px"
-      />
+    <div class="q-mr-lg flex flex-center">
+      <AbsIcon v-if="workout.isAbs" :color="isDarkMode ? '#FFF': '#000'" width="40" />
     </div>
     <div :class="{ 'title-container': workout.isAbs }">
       <div class="text-h6 text-center flex flex-center">
@@ -35,10 +31,7 @@
     v-if="workout.isAbs"
     class="lt-md abs-indicator-section q-pa-none"
   >
-    <img
-      :src="`/pictos/picto-abs${isDarkMode ? '-white' : '-dark'}.png`"
-      width="50px"
-    />
+    <AbsIcon :color="isDarkMode ? '#FFF': '#000'" width="50" />
   </q-card-section>
   <q-card-actions
     horizontal
@@ -97,10 +90,14 @@
 <script>
 import { useQuasar } from 'quasar'
 import { ref, watch } from 'vue'
+import AbsIcon from 'src/components/Icons/Abs.vue';
 
 export default {
   name: 'WorkoutCardContent',
   emits: ['share', 'edit', 'showDeleteModal'],
+  components: {
+    AbsIcon
+  },
   setup () {
     const $q = useQuasar()
 

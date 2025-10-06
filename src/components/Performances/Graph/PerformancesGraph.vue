@@ -144,3 +144,9 @@ export default {
   height: 420px;
 }
 </style>
+
+<style lang="scss">
+body.body--dark line {
+  stroke: white;
+}
+</style>
