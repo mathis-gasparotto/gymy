@@ -9,7 +9,7 @@
         v-if="exercise.config"
         class="text-center"
       >
-        ({{ exercise.config }})
+        {{ exercise.config }}
       </div>
     </q-card-section>
     <q-card-section
@@ -21,7 +21,7 @@
         v-if="exercise.config"
         class="text-center"
       >
-        ({{ exercise.config }})
+        {{ exercise.config }}
       </div>
     </q-card-section>
   </template>
@@ -37,7 +37,7 @@
         v-if="exercise.config && (!forAbs || !exercise.restAbs)"
         class="text-center"
       >
-        ({{ exercise.config }})
+        {{ exercise.config }}
       </div>
       <div
         v-if="exercise.duration && forAbs"
@@ -58,7 +58,7 @@
         class="text-center"
         :class="{ 'q-mr-lg': exercise.duration && forAbs }"
       >
-        ({{ exercise.config }})
+        {{ exercise.config }}
       </div>
       <div
         v-if="exercise.forLastSeries && forAbs"

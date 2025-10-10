@@ -7,7 +7,7 @@
           v-if="exercise.config"
           class="text-center"
         >
-          ({{ exercise.config }})
+          {{ exercise.config }}
         </div>
       </q-card-section>
       <q-separator />
