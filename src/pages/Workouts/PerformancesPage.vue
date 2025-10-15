@@ -37,6 +37,15 @@
       />
     </div>
   </div>
+  <div v-if="exercise.abs" class="flex flex-center q-mb-lg">
+    <q-btn
+      color="primary"
+      label="Abs"
+      class="w-content h-content"
+      icon-right="open_in_new"
+      :to="{ name: 'abs' }"
+    />
+  </div>
   <AddPerfExercise
     class="q-mb-lg"
     :workout="workout"
