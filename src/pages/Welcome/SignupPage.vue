@@ -8,7 +8,6 @@
         outlined
         label="Nom d'utilisateur*"
         class="q-mb-md signup-input"
-        bg-color="white"
         type="text"
         v-model="form.username"
         lazy-rules
@@ -23,7 +22,6 @@
         outlined
         label="Addresse email*"
         class="q-mb-md signup-input"
-        bg-color="white"
         type="email"
         inputmode="email"
         v-model="form.email"
@@ -40,7 +38,6 @@
         outlined
         label="Mot de passe*"
         class="q-mb-md signup-input"
-        bg-color="white"
         :type="showPassword ? 'text' : 'password'"
         v-model="form.password"
         lazy-rules
@@ -69,7 +66,6 @@
         outlined
         label="Confirmation du mot de passe*"
         class="q-mb-md signup-input"
-        bg-color="white"
         :type="showConfirmPassword ? 'text' : 'password'"
         v-model="form.confirmPassword"
         lazy-rules

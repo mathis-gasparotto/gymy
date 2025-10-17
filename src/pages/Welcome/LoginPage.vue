@@ -55,7 +55,7 @@
         :class="`form-btn btn btn-${validate ? 'primary' : 'disabled'}`"
       />
     </q-form>
-    <q-card flat>
+    <q-card flat class="bg-transparent">
       <q-card-section>
         <p class="q-my-xs text-center">
           <!-- <router-link to="#">Mot de passe oublié ?</router-link> -->
@@ -67,8 +67,8 @@
         color="white"
         rounded
       />
-      <q-card-section class="text-center text-bold link">
-        <span @click="showForgotPassword"> Mot de passe oublié ? </span>
+      <q-card-section class="text-center text-bold">
+        <span class="link" @click="showForgotPassword"> Mot de passe oublié ? </span>
       </q-card-section>
       <q-card-section>
         <p class="q-my-xs text-center">
