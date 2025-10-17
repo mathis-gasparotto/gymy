@@ -1,5 +1,6 @@
 import { auth } from 'src/boot/firebase'
-import { LocalStorage, uid } from 'quasar'
+import { uid } from 'quasar'
+import { LocalDb } from './localDbService'
 import { createData, removeData, updateData } from './firebaseService'
 import { LOCALSTORAGE_DB_USER } from 'src/helpers/databaseHelper'
 import { getUser } from './userService'
@@ -7,7 +8,7 @@ import { USER_GUEST_UID } from 'src/helpers/userHelper'
 import { getWorkout } from './workoutService'
 
 export function getPlans() {
-  const plansObject = LocalStorage.getItem(LOCALSTORAGE_DB_USER).plans
+  const plansObject = LocalDb.get(LOCALSTORAGE_DB_USER).plans
   if (!plansObject) return []
   return Object.keys(plansObject).map(key => {
     return {
@@ -18,7 +19,7 @@ export function getPlans() {
 }
 
 export function getPlan(id) {
-  const data = LocalStorage.getItem(LOCALSTORAGE_DB_USER).plans[id]
+  const data = LocalDb.get(LOCALSTORAGE_DB_USER).plans[id]
   if (!data) return null
   return {
     ...data,
@@ -67,7 +68,7 @@ export async function addPlan(payload) {
 
   const user = getUser()
   if (user && user.uid === USER_GUEST_UID) {
-    LocalStorage.set(LOCALSTORAGE_DB_USER, {
+    LocalDb.set(LOCALSTORAGE_DB_USER, {
       ...user,
       plans: {
         ...user.plans,
@@ -93,7 +94,7 @@ export async function updatePlan(id, payload, timestamp = true) {
   const user = getUser()
   const updatedAt = timestamp ? new Date().toISOString() : user.plans?.[id]?.updatedAt
   if (user && user.uid === USER_GUEST_UID) {
-    LocalStorage.set(LOCALSTORAGE_DB_USER, {
+    LocalDb.set(LOCALSTORAGE_DB_USER, {
       ...user,
       plans: {
         ...user.plans,
@@ -140,7 +141,7 @@ export async function deletePlan(id) {
 
   const user = getUser()
   if (user && user.uid === USER_GUEST_UID) {
-    LocalStorage.set(LOCALSTORAGE_DB_USER, {
+    LocalDb.set(LOCALSTORAGE_DB_USER, {
       ...user,
       plans: Object.keys(user.plans).reduce((acc, key) => {
         if (key !== id) {

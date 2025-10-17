@@ -1,12 +1,13 @@
 import { auth } from 'src/boot/firebase'
-import { LocalStorage, uid } from 'quasar'
+import { uid } from 'quasar'
+import { LocalDb } from './localDbService'
 import { createData, removeData, updateData } from './firebaseService'
 import { LOCALSTORAGE_DB_USER } from 'src/helpers/databaseHelper'
 import { getUser } from './userService'
 import { USER_GUEST_UID } from 'src/helpers/userHelper'
 
 export function getExercises(workoutId) {
-  const exercisesObject = LocalStorage.getItem(LOCALSTORAGE_DB_USER).workouts?.[workoutId]?.exercises
+  const exercisesObject = LocalDb.get(LOCALSTORAGE_DB_USER).workouts?.[workoutId]?.exercises
   if (!exercisesObject) return []
   return Object.keys(exercisesObject)
     .map((key) => {
@@ -35,7 +36,7 @@ export function getPreviousExercise(workoutId, id) {
 }
 
 export function getExercise(workoutId, id) {
-  const data = LocalStorage.getItem(LOCALSTORAGE_DB_USER).workouts?.[workoutId]?.exercises[id]
+  const data = LocalDb.get(LOCALSTORAGE_DB_USER).workouts?.[workoutId]?.exercises[id]
   if (!data) return null
   return {
     ...data,
@@ -57,7 +58,7 @@ export async function addExercise(workoutId, payload) {
   const user = getUser()
 
   if (user && user.uid === USER_GUEST_UID) {
-    LocalStorage.set(LOCALSTORAGE_DB_USER, {
+    LocalDb.set(LOCALSTORAGE_DB_USER, {
       ...user,
       workouts: {
         ...user.workouts,
@@ -112,7 +113,7 @@ export async function updateExercise(workoutId, id, payload, timestamp = true) {
   const user = getUser()
   const updatedAt = timestamp ? new Date().toISOString() : user.workouts?.[workoutId]?.exercises[id]?.updatedAt
   if (user && user.uid === USER_GUEST_UID) {
-    LocalStorage.set(LOCALSTORAGE_DB_USER, {
+    LocalDb.set(LOCALSTORAGE_DB_USER, {
       ...user,
       workouts: {
         ...user.workouts,
@@ -165,7 +166,7 @@ export async function deleteExercise(workoutId, id) {
 
   const user = getUser()
   if (user && user.uid === USER_GUEST_UID) {
-    LocalStorage.set(LOCALSTORAGE_DB_USER, {
+    LocalDb.set(LOCALSTORAGE_DB_USER, {
       ...user,
       workouts: {
         ...user.workouts,

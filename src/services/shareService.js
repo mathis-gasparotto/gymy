@@ -1,4 +1,4 @@
-import { LocalStorage } from 'quasar'
+import { LocalDb } from './localDbService'
 import { retrieveData } from './firebaseService'
 import { LOCALSTORAGE_DB_SHARED } from 'src/helpers/databaseHelper'
 import { getUser } from './userService'
@@ -8,7 +8,7 @@ import { addExercise } from './exerciseService'
 
 export async function addSharedContentToOwnDB(shareId) {
   const user = getUser()
-  const shareData = LocalStorage.getItem(LOCALSTORAGE_DB_SHARED)[shareId]
+  const shareData = LocalDb.get(LOCALSTORAGE_DB_SHARED)[shareId]
   if (!shareData) throw new Error('Shared data not found')
   if (shareData.userId === user.uid) throw new Error('You cannot add your own shared content')
   const author = await retrieveData('users/' + shareData.userId)

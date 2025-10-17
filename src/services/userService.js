@@ -1,12 +1,12 @@
 import { auth } from 'src/boot/firebase'
-import { LocalStorage } from 'quasar'
+import { LocalDb } from './localDbService'
 import { DEFAULT_NUMBER_OF_SERIES, DEFAULT_REST_TIME, USER_GUEST_UID } from 'src/helpers/userHelper'
 import { createData, initData, removeData, removeListenner, retrieveData, updateData } from './firebaseService'
 import { LOCALSTORAGE_DB_USER } from 'src/helpers/databaseHelper'
 import { onAuthStateChanged, signInWithEmailAndPassword, verifyBeforeUpdateEmail } from 'firebase/auth'
 
 export function getUser() {
-  return LocalStorage.getItem(LOCALSTORAGE_DB_USER)
+  return LocalDb.get(LOCALSTORAGE_DB_USER)
 }
 
 export async function addUser(userUid, payload, username) {
@@ -44,7 +44,7 @@ export async function updateUser(payload, userUid = null) {
   }
   const localUser = getUser()
   if (localUser && localUser.uid === USER_GUEST_UID) {
-    LocalStorage.set(LOCALSTORAGE_DB_USER, {
+    LocalDb.set(LOCALSTORAGE_DB_USER, {
       ...user,
       ...newData,
       updatedAt: new Date().toISOString()
@@ -64,7 +64,7 @@ export async function deleteUser() {
   if (localUser && localUser.uid !== USER_GUEST_UID) {
     await removeData('users/' + auth.currentUser.uid)
   }
-  LocalStorage.remove(LOCALSTORAGE_DB_USER)
+  LocalDb.remove(LOCALSTORAGE_DB_USER)
 }
 
 export async function initUser() {
@@ -73,7 +73,7 @@ export async function initUser() {
     if (user && !user.emailVerified) {
       const localUser = getUser()
       if (localUser) removeListenner('users/' + localUser.uid)
-      return LocalStorage.remove(LOCALSTORAGE_DB_USER)
+      return LocalDb.remove(LOCALSTORAGE_DB_USER)
     }
     if (user && user.uid) {
       initData('users/' + user.uid, LOCALSTORAGE_DB_USER)
@@ -85,7 +85,7 @@ export async function initUser() {
     } else {
       const localUser = getUser()
       if (localUser) removeListenner('users/' + localUser.uid)
-      return LocalStorage.remove(LOCALSTORAGE_DB_USER)
+      return LocalDb.remove(LOCALSTORAGE_DB_USER)
     }
   })
 }

@@ -1,5 +1,6 @@
 import { auth } from 'src/boot/firebase'
-import { LocalStorage, uid } from 'quasar'
+import { uid } from 'quasar'
+import { LocalDb } from './localDbService'
 import { createData, removeData, updateData } from './firebaseService'
 import { LOCALSTORAGE_DB_USER } from 'src/helpers/databaseHelper'
 import { PERFORMANCE_TYPE_BAR, PERFORMANCE_TYPE_DEFAULT } from 'src/helpers/performanceHelper'
@@ -9,7 +10,7 @@ import { getExercise, updateExercise } from './exerciseService'
 import { getWorkout } from './workoutService'
 
 export function getPerformances(workoutId, exerciseId) {
-  const performancesObject = LocalStorage.getItem(LOCALSTORAGE_DB_USER).workouts?.[workoutId]?.exercises?.[exerciseId]?.performances
+  const performancesObject = LocalDb.get(LOCALSTORAGE_DB_USER).workouts?.[workoutId]?.exercises?.[exerciseId]?.performances
   if (!performancesObject) return []
   return Object.keys(performancesObject)
     .map((key) => {
@@ -36,7 +37,7 @@ export function getRelatedExercise(workoutId, exerciseId) {
 }
 
 export function getPerformance(workoutId, exerciseId, id) {
-  const data = LocalStorage.getItem(LOCALSTORAGE_DB_USER).workouts?.[workoutId]?.exercises?.[exerciseId]?.performances?.[id]
+  const data = LocalDb.get(LOCALSTORAGE_DB_USER).workouts?.[workoutId]?.exercises?.[exerciseId]?.performances?.[id]
   if (!data) return null
   return {
     ...data,
@@ -79,7 +80,7 @@ export async function addPerformance(workoutId, exerciseId, payload, customId = 
 
   const user = getUser()
   if (user && user.uid === USER_GUEST_UID) {
-    LocalStorage.set(LOCALSTORAGE_DB_USER, {
+    LocalDb.set(LOCALSTORAGE_DB_USER, {
       ...user,
       workouts: {
         ...user.workouts,
@@ -129,7 +130,7 @@ export async function addPerformanceWithRelated(workoutId, exerciseId, payload) 
 export async function updatePerformance(workoutId, exerciseId, id, payload) {
   const user = getUser()
   if (user && user.uid === USER_GUEST_UID) {
-    LocalStorage.set(LOCALSTORAGE_DB_USER, {
+    LocalDb.set(LOCALSTORAGE_DB_USER, {
       ...user,
       workouts: {
         ...user.workouts,
@@ -178,7 +179,7 @@ export async function updatePerformanceWithRelated(workoutId, exerciseId, id, pa
 export async function deletePerformance(workoutId, exerciseId, id) {
   const user = getUser()
   if (user && user.uid === USER_GUEST_UID) {
-    LocalStorage.set(LOCALSTORAGE_DB_USER, {
+    LocalDb.set(LOCALSTORAGE_DB_USER, {
       ...user,
       workouts: {
         ...user.workouts,

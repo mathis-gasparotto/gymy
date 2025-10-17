@@ -1,7 +1,7 @@
 import { set, ref, onValue, remove, update, off, get } from 'firebase/database'
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth'
 import { getUser, initUser } from './userService'
-import { LocalStorage } from 'quasar'
+import { LocalDb } from './localDbService'
 import { auth, db} from 'src/boot/firebase'
 import { USER_GUEST_UID } from 'src/helpers/userHelper'
 import { LOCALSTORAGE_DB_SHARED } from 'src/helpers/databaseHelper'
@@ -48,7 +48,7 @@ export function initData(refStr, localStorageKey, initValue = null) {
   return onValue(dataRef, (snapshot) => {
     const data = snapshot.val()
     if (localStorageKey) {
-      LocalStorage.set(localStorageKey, initValue && !data ? initValue : data)
+      LocalDb.set(localStorageKey, initValue && !data ? initValue : data)
     }
   })
 }

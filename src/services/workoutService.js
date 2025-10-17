@@ -1,5 +1,6 @@
 import { auth } from 'src/boot/firebase'
-import { LocalStorage, uid } from 'quasar'
+import { uid } from 'quasar'
+import { LocalDb } from './localDbService'
 import { createData, removeData, updateData } from './firebaseService'
 import { LOCALSTORAGE_DB_USER } from 'src/helpers/databaseHelper'
 import { getUser } from './userService'
@@ -7,7 +8,7 @@ import { USER_GUEST_UID } from 'src/helpers/userHelper'
 import { SHARED_DATA_TYPE_WORKOUT } from 'src/helpers/shareHelper'
 
 export function getWorkouts() {
-  const workoutsObject = LocalStorage.getItem(LOCALSTORAGE_DB_USER).workouts
+  const workoutsObject = LocalDb.get(LOCALSTORAGE_DB_USER).workouts
   if (!workoutsObject) return []
   return Object.keys(workoutsObject).map(key => {
     return {
@@ -18,7 +19,7 @@ export function getWorkouts() {
 }
 
 export function getNoAbsWorkouts() {
-  const workoutsObject = LocalStorage.getItem(LOCALSTORAGE_DB_USER).workouts
+  const workoutsObject = LocalDb.get(LOCALSTORAGE_DB_USER).workouts
   if (!workoutsObject) return []
   return Object.keys(workoutsObject).map(key => {
     return {
@@ -29,7 +30,7 @@ export function getNoAbsWorkouts() {
 }
 
 export function getAbsWorkouts() {
-  const workoutsObject = LocalStorage.getItem(LOCALSTORAGE_DB_USER).workouts
+  const workoutsObject = LocalDb.get(LOCALSTORAGE_DB_USER).workouts
   if (!workoutsObject) return []
   return Object.keys(workoutsObject).map(key => {
     return {
@@ -40,7 +41,7 @@ export function getAbsWorkouts() {
 }
 
 export function getWorkout(id) {
-  const data = LocalStorage.getItem(LOCALSTORAGE_DB_USER).workouts[id]
+  const data = LocalDb.get(LOCALSTORAGE_DB_USER).workouts[id]
   if (!data) return null
   return {
     ...data,
@@ -61,7 +62,7 @@ export async function addWorkout(payload) {
 
   const user = getUser()
   if (user && user.uid === USER_GUEST_UID) {
-    LocalStorage.set(LOCALSTORAGE_DB_USER, {
+    LocalDb.set(LOCALSTORAGE_DB_USER, {
       ...user,
       workouts: {
         ...user.workouts,
@@ -87,7 +88,7 @@ export async function updateWorkout(id, payload, timestamp = true) {
   const user = getUser()
   const updatedAt = timestamp ? new Date().toISOString() : user.workouts?.[id]?.updatedAt
   if (user && user.uid === USER_GUEST_UID) {
-    LocalStorage.set(LOCALSTORAGE_DB_USER, {
+    LocalDb.set(LOCALSTORAGE_DB_USER, {
       ...user,
       workouts: {
         ...user.workouts,
@@ -135,7 +136,7 @@ export async function deleteWorkout(id) {
 
   const user = getUser()
   if (user && user.uid === USER_GUEST_UID) {
-    LocalStorage.set(LOCALSTORAGE_DB_USER, {
+    LocalDb.set(LOCALSTORAGE_DB_USER, {
       ...user,
       workouts: Object.keys(user.workouts).reduce((acc, key) => {
         if (key !== id) {

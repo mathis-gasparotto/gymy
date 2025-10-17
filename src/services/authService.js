@@ -10,7 +10,7 @@ import {
   sendEmailVerification
 } from 'firebase/auth'
 import { app, auth, db } from 'src/boot/firebase'
-import { LocalStorage } from 'quasar'
+import { LocalDb } from './localDbService'
 import { addUser, checkUsername, getUser, initUser } from './userService'
 import { removeData } from './firebaseService'
 import { LOCALSTORAGE_DATABASES, LOCALSTORAGE_DB_USER } from 'src/helpers/databaseHelper'
@@ -43,7 +43,7 @@ export async function signup(email, password, username, defaultNumberOfSeries, r
 }
 
 export function loginAsGuest() {
-  return LocalStorage.set(LOCALSTORAGE_DB_USER, USER_GUEST)
+  return LocalDb.set(LOCALSTORAGE_DB_USER, USER_GUEST)
 }
 
 export async function login(email, password) {
@@ -60,7 +60,7 @@ export async function login(email, password) {
       } else {
         update(ref(db, 'users/' + userCredential.user.uid), {active: true})
       }
-      await LocalStorage.set(LOCALSTORAGE_DB_USER, userCredential.user)
+      await LocalDb.set(LOCALSTORAGE_DB_USER, userCredential.user)
       await initUser()
       await update(ref(db, 'users/' + userCredential.user.uid), {lastLoginAt: new Date().toISOString()}).catch((error) => {
         throw new Error(error.message)
@@ -74,15 +74,15 @@ export async function login(email, password) {
 
 export async function logout() {
   if (getUser().uid ===  USER_GUEST_UID) {
-    return LocalStorage.remove(LOCALSTORAGE_DB_USER)
+    return LocalDb.remove(LOCALSTORAGE_DB_USER)
   }
   const auth = getAuth(app)
   return auth
     .signOut()
     .then(() => {
-      // removeListenner('users/' + LocalStorage.getItem(LOCALSTORAGE_DB_USER).uid)
+      // removeListenner('users/' + LocalDb.get(LOCALSTORAGE_DB_USER).uid)
       LOCALSTORAGE_DATABASES.forEach((db) => {
-        LocalStorage.remove(db)
+        LocalDb.remove(db)
       })
       return true
     })
