@@ -2,6 +2,7 @@
   <q-form @submit.prevent="onsubmit()" class="flex-center column">
     <q-input
       name="label"
+      autofocus
       rounded
       outlined
       label="Nom de la planification"

@@ -112,6 +112,7 @@
     <q-input
       v-if="(!forAbsWorkout || !exerciseForm.restAbs) && !exerciseForm.abs"
       name="label"
+      autofocus
       rounded
       outlined
       label="Nom de l'exercice"

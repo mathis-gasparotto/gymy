@@ -202,6 +202,8 @@ import { errorNotify } from 'src/helpers/notifyHelper'
 import draggable from 'vuedraggable'
 import { uid } from 'quasar'
 import formatting from 'src/helpers/formatting'
+import { getUser } from 'src/services/userService'
+import { USER_GUEST_UID } from 'src/helpers/userHelper'
 
 export default {
   name: 'PlanWorkouts',
@@ -403,11 +405,13 @@ export default {
           }
           break
       }
-      this.$q.loading.show({
-        delay: 0, // ms
-        message: 'Retrait de l\'entraînement en cours...',
-        boxClass: 'text-h5'
-      })
+      if (getUser()?.uid !== USER_GUEST_UID) {
+        this.$q.loading.show({
+          delay: 0, // ms
+          message: 'Retrait de l\'entraînement en cours...',
+          boxClass: 'text-h5'
+        })
+      }
       updatePlan(this.plan.id, payload)
         .then(() => {
           this.loadPlanWorkouts()

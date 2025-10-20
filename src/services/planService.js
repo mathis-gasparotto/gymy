@@ -110,7 +110,7 @@ export async function updatePlan(id, payload, timestamp = true) {
 
 export async function movePlan(newPlanOrder) {
   await Promise.all(
-    newPosition.map((id, index) => {
+    newPlanOrder.map((id, index) => {
       return updatePlan(id, {
         position: index + 1
       }, false)
