@@ -5,7 +5,6 @@ import { createData, removeData, updateData } from './firebaseService'
 import { LOCALSTORAGE_DB_USER } from 'src/helpers/databaseHelper'
 import { getUser } from './userService'
 import { USER_GUEST_UID } from 'src/helpers/userHelper'
-import { cp } from 'app/src-capacitor/www/assets/index.bd8e0816'
 
 export function getExercises(workoutId) {
   const exercisesObject = LocalDb.get(LOCALSTORAGE_DB_USER).workouts?.[workoutId]?.exercises
