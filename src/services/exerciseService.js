@@ -5,6 +5,7 @@ import { createData, removeData, updateData } from './firebaseService'
 import { LOCALSTORAGE_DB_USER } from 'src/helpers/databaseHelper'
 import { getUser } from './userService'
 import { USER_GUEST_UID } from 'src/helpers/userHelper'
+import { cp } from 'app/src-capacitor/www/assets/index.bd8e0816'
 
 export function getExercises(workoutId) {
   const exercisesObject = LocalDb.get(LOCALSTORAGE_DB_USER).workouts?.[workoutId]?.exercises
@@ -58,24 +59,18 @@ export async function addExercise(workoutId, payload) {
   const user = getUser()
 
   if (user && user.uid === USER_GUEST_UID) {
-    LocalDb.set(LOCALSTORAGE_DB_USER, {
-      ...user,
-      workouts: {
-        ...user.workouts,
-        [workoutId]: {
-          ...user.workouts?.[workoutId],
-          exercises: {
-            ...user.workouts?.[workoutId]?.exercises,
-            [id]: {
-              ...payload,
-              id: null,
-              createdAt: new Date().toISOString(),
-              updatedAt: new Date().toISOString()
-            }
-          }
-        }
-      }
-    })
+    const dataToStore = {...user}
+    if (!dataToStore.workouts[workoutId].exercises) {
+      dataToStore.workouts[workoutId].exercises = {}
+    }
+    dataToStore.workouts[workoutId].exercises[id] = {
+      ...payload,
+      id: null,
+      performances: {},
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    }
+    LocalDb.set(LOCALSTORAGE_DB_USER, dataToStore)
   } else {
     await createData('users/' + auth.currentUser.uid + '/workouts/' + workoutId + '/exercises/' + id, { ...payload, id: null })
   }
@@ -113,24 +108,14 @@ export async function updateExercise(workoutId, id, payload, timestamp = true) {
   const user = getUser()
   const updatedAt = timestamp ? new Date().toISOString() : user.workouts?.[workoutId]?.exercises[id]?.updatedAt
   if (user && user.uid === USER_GUEST_UID) {
-    LocalDb.set(LOCALSTORAGE_DB_USER, {
-      ...user,
-      workouts: {
-        ...user.workouts,
-        [workoutId]: {
-          ...user.workouts?.[workoutId],
-          exercises: {
-            ...user.workouts?.[workoutId]?.exercises,
-            [id]: {
-              ...user.workouts?.[workoutId]?.exercises[id],
-              ...payload,
-              id: null,
-              updatedAt
-            }
-          }
-        }
-      }
-    })
+    const dataToStore = {...user}
+    dataToStore.workouts[workoutId].exercises[id] = {
+      ...user.workouts?.[workoutId]?.exercises[id],
+      ...payload,
+      id: null,
+      updatedAt
+    }
+    LocalDb.set(LOCALSTORAGE_DB_USER, dataToStore)
   } else {
     await updateData('users/' + auth.currentUser.uid + '/workouts/' + workoutId + '/exercises/' + id, { ...payload, id: null}, timestamp)
   }
@@ -166,21 +151,9 @@ export async function deleteExercise(workoutId, id) {
 
   const user = getUser()
   if (user && user.uid === USER_GUEST_UID) {
-    LocalDb.set(LOCALSTORAGE_DB_USER, {
-      ...user,
-      workouts: {
-        ...user.workouts,
-        [workoutId]: {
-          ...user.workouts?.[workoutId],
-          exercises: Object.keys(user.workouts?.[workoutId]?.exercises).reduce((acc, key) => {
-            if (key !== id) {
-              acc[key] = user.workouts?.[workoutId]?.exercises[key]
-            }
-            return acc
-          }, {})
-        }
-      }
-    })
+    const dataToStore = {...user}
+    delete dataToStore.workouts[workoutId].exercises[id]
+    LocalDb.set(LOCALSTORAGE_DB_USER, dataToStore)
   } else {
     await removeData('users/' + auth.currentUser.uid + '/workouts/' + workoutId + '/exercises/' + id)
   }

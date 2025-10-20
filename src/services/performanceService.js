@@ -76,34 +76,22 @@ export function getPerformanceAverage(workoutId, exerciseId, id) {
 export async function addPerformance(workoutId, exerciseId, payload, customId = null) {
   const id = customId || uid()
 
+
   payload = checkPerformance(payload)
 
   const user = getUser()
   if (user && user.uid === USER_GUEST_UID) {
-    LocalDb.set(LOCALSTORAGE_DB_USER, {
-      ...user,
-      workouts: {
-        ...user.workouts,
-        [workoutId]: {
-          ...user.workouts?.[workoutId],
-          exercises: {
-            ...user.workouts?.[workoutId]?.exercises,
-            [exerciseId]: {
-              ...user.workouts?.[workoutId]?.exercises?.[exerciseId],
-              performances: {
-                ...user.workouts?.[workoutId]?.exercises?.[exerciseId]?.performances,
-                [id]: {
-                  ...payload,
-                  id: null,
-                  createdAt: new Date().toISOString(),
-                  updatedAt: new Date().toISOString()
-                }
-              }
-            }
-          }
-        }
-      }
-    })
+    const dataToStore = {...user}
+    if (!dataToStore.workouts[workoutId].exercises[exerciseId].performances) {
+      dataToStore.workouts[workoutId].exercises[exerciseId].performances = {}
+    }
+    dataToStore.workouts[workoutId].exercises[exerciseId].performances[id] = {
+      ...payload,
+      id: null,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    }
+    LocalDb.set(LOCALSTORAGE_DB_USER, dataToStore)
   } else {
     await createData('users/' + auth.currentUser.uid + '/workouts/' + workoutId + '/exercises/' + exerciseId + '/performances/' + id, { ...payload, id: null })
   }
@@ -130,30 +118,14 @@ export async function addPerformanceWithRelated(workoutId, exerciseId, payload) 
 export async function updatePerformance(workoutId, exerciseId, id, payload) {
   const user = getUser()
   if (user && user.uid === USER_GUEST_UID) {
-    LocalDb.set(LOCALSTORAGE_DB_USER, {
-      ...user,
-      workouts: {
-        ...user.workouts,
-        [workoutId]: {
-          ...user.workouts?.[workoutId],
-          exercises: {
-            ...user.workouts?.[workoutId]?.exercises,
-            [exerciseId]: {
-              ...user.workouts?.[workoutId]?.exercises?.[exerciseId],
-              performances: {
-                ...user.workouts?.[workoutId]?.exercises?.[exerciseId]?.performances,
-                [id]: {
-                  ...user.workouts?.[workoutId]?.exercises?.[exerciseId]?.performances?.[id],
-                  ...payload,
-                  id: null,
-                  updatedAt: new Date().toISOString()
-                }
-              }
-            }
-          }
-        }
-      }
-    })
+    const dataToStore = {...user}
+    dataToStore.workouts[workoutId].exercises[exerciseId].performances[id] = {
+      ...user.workouts?.[workoutId]?.exercises?.[exerciseId]?.performances?.[id],
+      ...payload,
+      id: null,
+      updatedAt: new Date().toISOString()
+    }
+    LocalDb.set(LOCALSTORAGE_DB_USER, dataToStore)
   } else {
     await updateData('users/' + auth.currentUser.uid + '/workouts/' + workoutId + '/exercises/' + exerciseId + '/performances/' + id, { ...payload, id: null })
   }
@@ -179,27 +151,9 @@ export async function updatePerformanceWithRelated(workoutId, exerciseId, id, pa
 export async function deletePerformance(workoutId, exerciseId, id) {
   const user = getUser()
   if (user && user.uid === USER_GUEST_UID) {
-    LocalDb.set(LOCALSTORAGE_DB_USER, {
-      ...user,
-      workouts: {
-        ...user.workouts,
-        [workoutId]: {
-          ...user.workouts?.[workoutId],
-          exercises: {
-            ...user.workouts?.[workoutId]?.exercises,
-            [exerciseId]: {
-              ...user.workouts?.[workoutId]?.exercises?.[exerciseId],
-              performances: Object.keys(user.workouts?.[workoutId]?.exercises?.[exerciseId]?.performances).reduce((acc, key) => {
-                if (key !== id) {
-                  acc[key] = user.workouts?.[workoutId]?.exercises?.[exerciseId]?.performances[key]
-                }
-                return acc
-              }, {})
-            }
-          }
-        }
-      }
-    })
+    const dataToStore = {...user}
+    delete dataToStore.workouts[workoutId].exercises[exerciseId].performances[id]
+    LocalDb.set(LOCALSTORAGE_DB_USER, dataToStore)
   } else {
     await removeData('users/' + auth.currentUser.uid + '/workouts/' + workoutId + '/exercises/' + exerciseId + '/performances/' + id)
   }

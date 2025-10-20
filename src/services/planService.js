@@ -68,18 +68,17 @@ export async function addPlan(payload) {
 
   const user = getUser()
   if (user && user.uid === USER_GUEST_UID) {
-    LocalDb.set(LOCALSTORAGE_DB_USER, {
-      ...user,
-      plans: {
-        ...user.plans,
-        [id]: {
-          ...payload,
-          id: null,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString()
-        }
-      }
-    })
+    const dataToStore = {...user}
+    if (!dataToStore.plans) {
+      dataToStore.plans = {}
+    }
+    dataToStore.plans[id] = {
+      ...payload,
+      id: null,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    }
+    LocalDb.set(LOCALSTORAGE_DB_USER, dataToStore)
   } else {
     await createData('users/' + auth.currentUser.uid + '/plans/' + id, { ...payload, id: null })
   }
@@ -94,18 +93,14 @@ export async function updatePlan(id, payload, timestamp = true) {
   const user = getUser()
   const updatedAt = timestamp ? new Date().toISOString() : user.plans?.[id]?.updatedAt
   if (user && user.uid === USER_GUEST_UID) {
-    LocalDb.set(LOCALSTORAGE_DB_USER, {
-      ...user,
-      plans: {
-        ...user.plans,
-        [id]: {
-          ...user.plans[id],
-          ...payload,
-          id: null,
-          updatedAt: updatedAt
-        }
-      }
-    })
+    const dataToStore = {...user}
+    dataToStore.plans[id] = {
+      ...user.plans[id],
+      ...payload,
+      id: null,
+      updatedAt
+    }
+    LocalDb.set(LOCALSTORAGE_DB_USER, dataToStore)
   } else {
     await updateData('users/' + auth.currentUser.uid + '/plans/' + id, { ...payload, id: null }, timestamp)
   }
@@ -141,15 +136,9 @@ export async function deletePlan(id) {
 
   const user = getUser()
   if (user && user.uid === USER_GUEST_UID) {
-    LocalDb.set(LOCALSTORAGE_DB_USER, {
-      ...user,
-      plans: Object.keys(user.plans).reduce((acc, key) => {
-        if (key !== id) {
-          acc[key] = user.plans[key]
-        }
-        return acc
-      }, {})
-    })
+    const dataToStore = {...user}
+    delete dataToStore.plans[id]
+    LocalDb.set(LOCALSTORAGE_DB_USER, dataToStore)
   } else {
     await removeData('users/' + auth.currentUser.uid + '/plans/' + id)
   }
