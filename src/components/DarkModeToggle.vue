@@ -3,7 +3,7 @@
     toggle-indeterminate
     checked-icon="dark_mode"
     unchecked-icon="light_mode"
-    indeterminate-icon="desktop_mac"
+    indeterminate-icon="phone_iphone"
     color="white"
     icon-color="dark"
     @update:model-value="toggleDarkMode"
