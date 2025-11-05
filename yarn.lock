@@ -965,6 +965,11 @@
   resolved "https://registry.yarnpkg.com/@capacitor/share/-/share-6.0.2.tgz#ba14f207fd0b51d4829e090884cbb44266a1ea1f"
   integrity sha512-qQIeyjzFB1VgP4ojyNg2O98TCigDWLKZ5melVMSVeDO0YQov5OeammsVgaCGSzvYBPSgyOwX41QvcDWG4yHN1A==
 
+"@capacitor/status-bar@^6.0.0":
+  version "6.0.2"
+  resolved "https://registry.yarnpkg.com/@capacitor/status-bar/-/status-bar-6.0.2.tgz#a28a46630af1677f3e9c73f0e6921431d5340152"
+  integrity sha512-AmRIX6QvFemItlY7/69ARkIAqitRQqJ2qwgZmD1KqgFb78pH+XFXm1guvS/a8CuOOm/IqZ4ddDbl20yxtBqzGA==
+
 "@esbuild/linux-loong64@0.14.54":
   version "0.14.54"
   resolved "https://registry.yarnpkg.com/@esbuild/linux-loong64/-/linux-loong64-0.14.54.tgz#de2a4be678bd4d0d1ffbb86e6de779cde5999028"

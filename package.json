@@ -25,6 +25,7 @@
     "@capacitor/core": "^6.0.0",
     "@capacitor/keyboard": "^6.0.0",
     "@capacitor/share": "^6.0.0",
+    "@capacitor/status-bar": "^6.0.0",
     "@ionic/pwa-elements": "^3.2.2",
     "@quasar/extras": "^1.0.0",
     "@vueuse/sound": "^2.0.1",
