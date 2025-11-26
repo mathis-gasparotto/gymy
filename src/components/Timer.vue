@@ -48,6 +48,7 @@
         icon="restart_alt"
         round
         size="lg"
+        v-if="timerInterval || minutes !== initialMinutes || seconds !== initialSeconds"
         @click="setTimer"
       />
       <q-btn
