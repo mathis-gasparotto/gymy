@@ -52,6 +52,14 @@
         @click="setTimer"
       />
       <q-btn
+        color="secondary"
+        icon="sym_o_reset_settings"
+        round
+        size="lg"
+        v-if="!timerInterval && editedTimerVal !== initTimerVal"
+        @click="resetTimer"
+      />
+      <q-btn
         v-if="!timerInterval"
         color="orange"
         :icon="showEdit ? 'check' : 'edit'"
@@ -98,7 +106,9 @@ export default {
       minutes: 0,
       seconds: 0,
       timerInterval: null,
-      showEdit: false
+      showEdit: false,
+      initTimerVal: null,
+      editedTimerVal: null
     }
   },
   computed: {
@@ -109,28 +119,36 @@ export default {
       set(val) {
         this.initialMinutes = Number(val.split(':')[0])
         this.initialSeconds = Number(val.split(':')[1])
-        this.initTimerVal = val
+        this.editedTimerVal = val
         this.minutes = this.initialMinutes
         this.seconds = this.initialSeconds
       }
     }
   },
   created() {
-    this.initTimerVal = this.timer
-    if (!this.initTimerVal) {
-      const user = getUser()
-      this.initTimerVal = user.restTime
-    }
-    this.initialMinutes = Number(this.initTimerVal.split(':')[0])
-    this.initialSeconds = Number(this.initTimerVal.split(':')[1])
-
-    this.setTimer()
+    this.resetTimer()
   },
   methods: {
     setTimer() {
       this.minutes = this.initialMinutes
       this.seconds = this.initialSeconds
       this.stopTimer()
+    },
+    resetTimer() {
+      this.initTimerVal = this.timer
+      if (!this.initTimerVal) {
+        const user = getUser()
+        this.initTimerVal = user.restTime
+      }
+      this.showEdit = false
+
+      this.initialMinutes = Number(this.initTimerVal.split(':')[0])
+      this.initialSeconds = Number(this.initTimerVal.split(':')[1])
+
+      this.initTimerVal = this.initialMinutes + ':' + this.initialSeconds
+      this.editedTimerVal = this.initTimerVal
+
+      this.setTimer()
     },
     startTimer() {
       this.playInProgressSound()
