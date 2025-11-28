@@ -22,7 +22,7 @@
     </div>
 
     <DurationPicker
-      v-if="showEdit && !timerInterval"
+      v-if="showEdit"
       class="q-mb-lg"
       v-model="durationPickerVal"
     />
@@ -56,7 +56,7 @@
         icon="sym_o_reset_settings"
         round
         size="lg"
-        v-if="!timerInterval && editedTimerVal !== initTimerVal"
+        v-if="!timerInterval && minutes === initialMinutes && seconds === initialSeconds && editedTimerVal !== initTimerVal"
         @click="resetTimer"
       />
       <q-btn
@@ -76,6 +76,7 @@ import { getUser } from 'src/services/userService'
 import { useSound } from '@vueuse/sound'
 import endTimerSfx from 'src/assets/sounds/rest-timer-end.mp3'
 import timerInProgressSfx from 'src/assets/sounds/timer-in-progress.mp3'
+import last3Sec from 'src/assets/sounds/clock-ticking.mp3'
 import DurationPicker from 'src/components/KeenSlider/DurationPicker.vue'
 
 export default {
@@ -93,10 +94,13 @@ export default {
   setup() {
     const { play: playEndSound } = useSound(endTimerSfx, { volume: 2.5, autoplay: false, interrupt: true })
     const { play: playInProgressSound, stop: stopInProgressSound } = useSound(timerInProgressSfx, { volume: 1, autoplay: false, interrupt: true, loop: true })
+    const { play: playLast3SecSound, stop: stopLast3SecSound } = useSound(last3Sec, { volume: 1, autoplay: false, interrupt: true, loop: true })
     return {
       playEndSound,
       playInProgressSound,
-      stopInProgressSound
+      stopInProgressSound,
+      playLast3SecSound,
+      stopLast3SecSound
     }
   },
   data() {
@@ -151,7 +155,14 @@ export default {
       this.setTimer()
     },
     startTimer() {
-      this.playInProgressSound()
+      this.showEdit = false
+
+      if (this.seconds <= 3 && this.minutes === 0) {
+        this.playSoundLast3Sec()
+      } else {
+        this.playInProgressSound()
+      }
+
       this.timerInterval = setInterval(() => {
         if (this.seconds === 0) {
           if (this.minutes > 0) {
@@ -160,6 +171,9 @@ export default {
           }
         } else {
           this.seconds--
+        }
+        if (this.seconds === 3 && this.minutes === 0) {
+          this.playSoundLast3Sec()
         }
         if (this.seconds === 0 && this.minutes === 0) {
           this.setTimer()
@@ -170,14 +184,20 @@ export default {
     },
     stopTimer() {
       this.stopInProgressSound()
+      this.stopLast3SecSound()
       clearInterval(this.timerInterval)
       this.timerInterval = null
     },
     timerEnd() {
       this.$emit('timerEnd')
       this.stopInProgressSound()
+      this.stopLast3SecSound()
       this.playEndSound()
-    }
+    },
+    playSoundLast3Sec() {
+      this.stopInProgressSound()
+      this.playLast3SecSound()
+    },
   }
 }
 </script>
