@@ -37,7 +37,7 @@
       />
       <q-btn
         color="negative"
-        icon="stop"
+        icon="pause"
         round
         size="lg"
         @click="stopTimer"
@@ -81,7 +81,6 @@ import DurationPicker from 'src/components/KeenSlider/DurationPicker.vue'
 
 export default {
   name: 'Timer',
-  emits: ['timerEnd'],
   props: {
     timer: {
       type: String,
@@ -176,7 +175,6 @@ export default {
           this.playSoundLast3Sec()
         }
         if (this.seconds === 0 && this.minutes === 0) {
-          this.setTimer()
           this.timerEnd()
           return
         }
@@ -189,10 +187,10 @@ export default {
       this.timerInterval = null
     },
     timerEnd() {
-      this.$emit('timerEnd')
       this.stopInProgressSound()
       this.stopLast3SecSound()
       this.playEndSound()
+      this.setTimer()
     },
     playSoundLast3Sec() {
       this.stopInProgressSound()

@@ -122,7 +122,7 @@
     </q-dialog>
     <q-page-sticky
       position="bottom-right"
-      :offset="[18, 18]"
+      :offset="[18, 90]"
     >
       <q-btn
         fab

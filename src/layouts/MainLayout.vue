@@ -10,6 +10,17 @@
 
     <q-page-container>
       <router-view @hideNavbar="hideNavBar" @showNavbar="showNavBar" />
+      <q-page-sticky
+        position="bottom-right"
+        :offset="[18, 18]"
+        v-if="showTimer"
+      >
+        <q-fab color="primary" text-color="black" icon="timer" direction="left" :label="time">
+          <q-fab-action color="green" text-color="black" @click.capture="startTimer" icon="play_arrow" v-if="!timerInterval" />
+          <q-fab-action color="warning" text-color="black" @click.capture="stopTimer" icon="pause" v-else />
+          <q-fab-action color="primary" text-color="black" @click.capture="setTimer" icon="restart_alt" v-if="timerInterval || minutes !== initialMinutes || seconds !== initialSeconds" />
+        </q-fab>
+      </q-page-sticky>
     </q-page-container>
 
     <q-footer class="main-nav-bar-container" v-model="showFooter">
@@ -26,13 +37,45 @@
 
 <script>
 import { Keyboard } from '@capacitor/keyboard'
+import { getUser } from 'src/services/userService'
+import { useSound } from '@vueuse/sound'
+import endTimerSfx from 'src/assets/sounds/rest-timer-end.mp3'
+import timerInProgressSfx from 'src/assets/sounds/timer-in-progress.mp3'
+import last3Sec from 'src/assets/sounds/clock-ticking.mp3'
 
 export default {
   name: 'MainLayout',
+  setup() {
+    const { play: playEndSound } = useSound(endTimerSfx, { volume: 2.5, autoplay: false, interrupt: true })
+    const { play: playInProgressSound, stop: stopInProgressSound } = useSound(timerInProgressSfx, { volume: 1, autoplay: false, interrupt: true, loop: true })
+    const { play: playLast3SecSound, stop: stopLast3SecSound } = useSound(last3Sec, { volume: 1, autoplay: false, interrupt: true, loop: true })
+    return {
+      playEndSound,
+      playInProgressSound,
+      stopInProgressSound,
+      playLast3SecSound,
+      stopLast3SecSound
+    }
+  },
   data() {
     return {
       showFooter: true,
-      hideNavBarFromComponent: false
+      hideNavBarFromComponent: false,
+      initialMinutes: 0,
+      initialSeconds: 0,
+      minutes: 0,
+      seconds: 0,
+      timerInterval: null,
+      excludedRoutesFromTimer: ['share', 'abs', 'account']
+    }
+  },
+  computed: {
+    time() {
+      if (!this.timerInterval && this.minutes === this.initialMinutes && this.seconds === this.initialSeconds) return undefined
+      return (this.minutes <= 9 ? '0' + this.minutes : this.minutes) + ':' + (this.seconds <= 9 ? '0' + this.seconds : this.seconds)
+    },
+    showTimer() {
+      return !this.excludedRoutesFromTimer.includes(this.$route.name)
     }
   },
   created() {
@@ -44,6 +87,10 @@ export default {
         this.showFooter = !this.hideNavBarFromComponent
       })
     }
+    const user = getUser()
+    this.initialMinutes = Number(user.restTime.split(':')[0])
+    this.initialSeconds = Number(user.restTime.split(':')[1])
+    this.setTimer()
   },
   methods: {
     hideNavBar() {
@@ -53,7 +100,53 @@ export default {
     showNavBar() {
       this.showFooter = true
       this.hideNavBarFromComponent = false
-    }
+    },
+    setTimer() {
+      this.minutes = this.initialMinutes
+      this.seconds = this.initialSeconds
+      this.stopTimer()
+    },
+    startTimer() {
+      if (this.seconds <= 3 && this.minutes === 0) {
+        this.playSoundLast3Sec()
+      } else {
+        this.playInProgressSound()
+      }
+
+      this.timerInterval = setInterval(() => {
+        if (this.seconds === 0) {
+          if (this.minutes > 0) {
+            this.minutes--
+            this.seconds = 59
+          }
+        } else {
+          this.seconds--
+        }
+        if (this.seconds === 3 && this.minutes === 0) {
+          this.playSoundLast3Sec()
+        }
+        if (this.seconds === 0 && this.minutes === 0) {
+          this.timerEnd()
+          return
+        }
+      }, 1000)
+    },
+    stopTimer() {
+      this.stopInProgressSound()
+      this.stopLast3SecSound()
+      clearInterval(this.timerInterval)
+      this.timerInterval = null
+    },
+    timerEnd() {
+      this.stopInProgressSound()
+      this.stopLast3SecSound()
+      this.playEndSound()
+      this.setTimer()
+    },
+    playSoundLast3Sec() {
+      this.stopInProgressSound()
+      this.playLast3SecSound()
+    },
   }
 }
 </script>
