@@ -16,6 +16,7 @@
         :exercise="exercise"
         @submit="submit"
         :loading="addLoading"
+        v-if="!exercise.abs"
       />
     </q-card>
   </div>
@@ -49,7 +50,7 @@ export default {
     }
   },
   updated() {
-    this.$refs.addPerfForm.initInputs()
+    this.$refs.addPerfForm?.initInputs()
   },
   methods: {
     submit(payload) {
@@ -58,7 +59,7 @@ export default {
         .then(() => {
           this.$emit('reloadPerformances')
           successNotify('Performance ajoutée')
-          this.$refs.addPerfForm.initInputs()
+          this.$refs.addPerfForm?.initInputs()
         })
         .catch((err) => {
           errorNotify(translatting().translateError(err, "Erreur lors de l'ajout de la performance"))

@@ -14,7 +14,7 @@
         color="negative"
         label="Abs"
         class="w-content h-content"
-        icon="arrow_back"
+        icon="open_in_new"
         :to="{ name: 'abs' }"
       />
     </div>
@@ -32,11 +32,17 @@
         color="secondary"
         label="Abs"
         class="w-content h-content"
-        icon-right="arrow_forward"
+        icon-right="open_in_new"
         :to="{ name: 'abs' }"
       />
     </div>
   </div>
+  <AddPerfExercise
+    class="q-mb-lg"
+    :workout="workout"
+    :exercise="exercise"
+    @reloadPerformances="reloadPerformances"
+  />
   <div v-if="exercise.abs" class="flex flex-center q-mb-lg">
     <q-btn
       color="primary"
@@ -46,23 +52,19 @@
       :to="{ name: 'abs' }"
     />
   </div>
-  <AddPerfExercise
-    class="q-mb-lg"
-    :workout="workout"
-    :exercise="exercise"
-    @reloadPerformances="reloadPerformances"
-  />
   <PerformanceList
     :workout="workout"
     :exercise="exercise"
     @reloadPerformances="reloadPerformances"
     ref="performanceList"
+    v-if="!exercise.abs"
   />
   <PerformancesGraph
     :workoutId="workout.id"
     :exerciseId="exercise.id"
     ref="performanceGraph"
     :reversed="exercise.isReverse ?? false"
+    v-if="!exercise.abs"
   />
 </template>
 
@@ -125,8 +127,8 @@ export default {
       })
     },
     reloadPerformances() {
-      this.$refs.performanceList.loadPerformances()
-      this.$refs.performanceGraph.loadPerformances()
+      this.$refs.performanceList?.loadPerformances()
+      this.$refs.performanceGraph?.loadPerformances()
     }
   }
 }
