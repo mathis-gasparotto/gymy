@@ -15,10 +15,10 @@
         :offset="[18, 18]"
         v-if="showTimer"
       >
-        <q-fab color="primary" text-color="black" icon="timer" direction="left" :label="time">
-          <q-fab-action color="green" text-color="black" @click.capture="startTimer" icon="play_arrow" v-if="!timerInterval" />
-          <q-fab-action color="warning" text-color="black" @click.capture="stopTimer" icon="pause" v-else />
-          <q-fab-action color="primary" text-color="black" @click.capture="setTimer" icon="restart_alt" v-if="timerInterval || minutes !== initialMinutes || seconds !== initialSeconds" />
+        <q-fab color="primary" text-color="white" icon="timer" direction="left" :label="time">
+          <q-fab-action color="green" text-color="white" @click.capture="startTimer" icon="play_arrow" v-if="!timerInterval" />
+          <q-fab-action color="warning" text-color="white" @click.capture="stopTimer" icon="pause" v-else />
+          <q-fab-action color="primary" text-color="white" @click.capture="setTimer" icon="restart_alt" v-if="timerInterval || minutes !== initialMinutes || seconds !== initialSeconds" />
         </q-fab>
       </q-page-sticky>
     </q-page-container>
