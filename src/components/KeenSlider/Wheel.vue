@@ -52,6 +52,8 @@ import 'keen-slider/keen-slider.min.css'
 // import tickAudio from 'https://drive.google.com/uc?export=download&id=10e1YkbNsRh-vGx1jmS1Nntz8xzkBp4_I'
 import tickAudio from 'src/assets/sounds/wheel_tick.mp3'
 import { useSound } from '@vueuse/sound'
+import { Haptics, ImpactStyle } from '@capacitor/haptics'
+import { Capacitor } from '@capacitor/core'
 
 export default {
   emits: ['update:modelValue'],
@@ -92,6 +94,12 @@ export default {
       slideValues.value = values
     }
 
+    function triggerHaptic() {
+      if (Capacitor.isNativePlatform()) {
+        Haptics.impact({ style: ImpactStyle.Light })
+      }
+    }
+
     const options = {
       slides: {
         number: props.length,
@@ -118,6 +126,7 @@ export default {
       slideChanged: (s) => {
         emit('update:modelValue', s.track.details.abs)
         playTickSound()
+        triggerHaptic()
       },
       rubberband: !props.loop,
       mode: 'free-snap'
