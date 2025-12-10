@@ -15,10 +15,41 @@
         :offset="[18, 18]"
         v-if="showTimer"
       >
-        <q-fab color="primary" text-color="white" icon="timer" direction="left" :label="time">
-          <q-fab-action color="green" text-color="white" @click.capture="startTimer" icon="play_arrow" v-if="!timerInterval" />
-          <q-fab-action color="warning" text-color="white" @click.capture="stopTimer" icon="pause" v-else />
-          <q-fab-action color="primary" text-color="white" @click.capture="setTimer" icon="restart_alt" v-if="timerInterval || minutes !== initialMinutes || seconds !== initialSeconds" />
+        <q-fab
+          color="primary"
+          text-color="white"
+          icon="timer"
+          direction="left"
+          label-position="left"
+          :label="time"
+          :hide-label="!timerAlreadyStarted"
+          persistent
+        >
+          <q-fab-action
+            color="green"
+            text-color="white"
+            @click.capture="startTimer"
+            icon="play_arrow"
+            external-label
+            :label="time"
+            label-position="top"
+            :hide-label="timerAlreadyStarted"
+            v-if="!timerInterval"
+          />
+          <q-fab-action
+            color="warning"
+            text-color="white"
+            @click.capture="stopTimer"
+            icon="pause"
+            v-else
+          />
+          <q-fab-action
+            color="primary"
+            text-color="white"
+            @click.capture="setTimer"
+            icon="restart_alt"
+            v-if="timerInterval || minutes !== initialMinutes || seconds !== initialSeconds"
+          />
         </q-fab>
       </q-page-sticky>
     </q-page-container>
@@ -71,11 +102,13 @@ export default {
   },
   computed: {
     time() {
-      if (!this.timerInterval && this.minutes === this.initialMinutes && this.seconds === this.initialSeconds) return undefined
       return (this.minutes <= 9 ? '0' + this.minutes : this.minutes) + ':' + (this.seconds <= 9 ? '0' + this.seconds : this.seconds)
     },
     showTimer() {
       return !this.excludedRoutesFromTimer.includes(this.$route.name)
+    },
+    timerAlreadyStarted() {
+      return this.timerInterval || this.minutes !== this.initialMinutes || this.seconds !== this.initialSeconds
     }
   },
   created() {
