@@ -13,62 +13,64 @@
       </div>
       <GymyHeader text="Commencer des séries d'Abs 💪" />
       <div class="text-h6 text-center q-mb-lg">Liste des séries</div>
-      <q-list class="q-mb-lg w-100">
+      <q-form @submit.prevent="start" class="w-100 text-center">
+        <q-list class="q-mb-lg w-100">
+          <div
+            v-if="workouts.length <= 0"
+            class="text-center"
+          >
+            <p>Aucune série d'abs disponible</p>
+            <p>Rendez-vous dans la page des <RouterLink :to="{ name: 'workouts' }">entraînements</RouterLink> pour ajouter un entraînement d'abs</p>
+          </div>
+          <q-card
+            v-for="workout in workouts"
+            :key="workout.id"
+            class="q-mb-md"
+            :class="{ 'bg-primary text-white': workout.selected }"
+            @click="selectWorkout(workout)"
+          >
+            <q-card-section>
+              <q-item-label class="text-center text-weight-bold">{{ workout.label }}</q-item-label>
+              <q-item-label class="text-center text-weight-bold">
+                {{ formatting().durationFromSeconds(workout.commonDuration) }}<span v-if="workout.lastDuration !== workout.commonDuration"> (dernière : {{ formatting().durationFromSeconds(workout.lastDuration) }})</span> - {{ workout.restTime }}s
+              </q-item-label>
+            </q-card-section>
+          </q-card>
+        </q-list>
+        <q-input
+          name="series_number"
+          rounded
+          outlined
+          label="Nombre de séries à réaliser"
+          class="q-mb-lg q-mx-auto"
+          type="number"
+          inputmode="numeric"
+          min="1"
+          :rules="[(val) => val > 0 || 'Veuillez renseigner un nombre de série supérieur à 0']"
+          v-model="seriesNb"
+          hide-bottom-space
+          suffix="série(s)"
+          @update:model-value="onAbsWorkoutSelectectUpdate"
+        />
         <div
-          v-if="workouts.length <= 0"
-          class="text-center"
+          v-if="isValid"
+          class="q-mb-sm"
         >
-          <p>Aucune série d'abs disponible</p>
-          <p>Rendez-vous dans la page des <RouterLink :to="{ name: 'workouts' }">entraînements</RouterLink> pour ajouter un entraînement d'abs</p>
+          Durée totale : {{ formatting().durationFromSeconds(totalDuration) }}
         </div>
-        <q-card
-          v-for="workout in workouts"
-          :key="workout.id"
-          class="q-mb-md"
-          :class="{ 'bg-primary text-white': workout.selected }"
-          @click="selectWorkout(workout)"
+        <div
+          v-if="isValid"
+          class="q-mb-lg"
         >
-          <q-card-section>
-            <q-item-label class="text-center text-weight-bold">{{ workout.label }}</q-item-label>
-            <q-item-label class="text-center text-weight-bold">
-              {{ formatting().durationFromSeconds(workout.commonDuration) }}<span v-if="workout.lastDuration !== workout.commonDuration"> (dernière : {{ formatting().durationFromSeconds(workout.lastDuration) }})</span> - {{ workout.restTime }}s
-            </q-item-label>
-          </q-card-section>
-        </q-card>
-      </q-list>
-      <q-input
-        name="series_number"
-        rounded
-        outlined
-        label="Nombre de séries à réaliser"
-        class="q-mb-lg"
-        type="number"
-        inputmode="numeric"
-        min="1"
-        :rules="[(val) => val > 0 || 'Veuillez renseigner un nombre de série supérieur à 0']"
-        v-model="seriesNb"
-        hide-bottom-space
-        suffix="série(s)"
-        @update:model-value="onAbsWorkoutSelectectUpdate"
-      />
-      <div
-        v-if="isValid"
-        class="q-mb-sm"
-      >
-        Durée totale : {{ formatting().durationFromSeconds(totalDuration) }}
-      </div>
-      <div
-        v-if="isValid"
-        class="q-mb-lg"
-      >
-        Heure de fin : {{ formatting().timeToDisplay(finishTime.value) }}
-      </div>
-      <q-btn
-        label="Commencer"
-        color="primary"
-        @click="start"
-        :disable="!isValid"
-      />
+          Heure de fin : {{ formatting().timeToDisplay(finishTime.value) }}
+        </div>
+        <q-btn
+          label="Commencer"
+          color="primary"
+          type="submit"
+          :disable="!isValid"
+        />
+      </q-form>
     </div>
     <div
       v-else
