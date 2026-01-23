@@ -77,7 +77,7 @@ import last3Sec from 'src/assets/sounds/clock-ticking.mp3'
 export default {
   name: 'MainLayout',
   setup() {
-    const { play: playEndSound } = useSound(endTimerSfx, { volume: 2.5, autoplay: false, interrupt: true })
+    const { play: playEndSound } = useSound(endTimerSfx, { volume: 1.2, autoplay: false, interrupt: true })
     const { play: playInProgressSound, stop: stopInProgressSound } = useSound(timerInProgressSfx, { volume: 1, autoplay: false, interrupt: true, loop: true })
     const { play: playLast3SecSound, stop: stopLast3SecSound } = useSound(last3Sec, { volume: 1, autoplay: false, interrupt: true, loop: true })
     return {
