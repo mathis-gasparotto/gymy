@@ -175,13 +175,14 @@ export default {
     return { PERFORMANCE_TYPES }
   },
   created() {
-    if (this.initData) {
-      this.series = this.initData.series
-      this.date = this.initData.date
-      this.comment = this.initData.comment
-    } else {
-      this.defaultNumberOfSeries = this.exercise.defaultSeriesNumber || getUser().defaultNumberOfSeries
-      this.initInputs()
+    this.initInputs()
+  },
+  watch: {
+    exercise: {
+      handler() {
+        this.initInputs()
+      },
+      deep: false
     }
   },
   computed: {
@@ -196,6 +197,16 @@ export default {
   },
   methods: {
     initInputs() {
+      if (this.initData) {
+        this.series = this.initData.series
+        this.date = this.initData.date
+        this.comment = this.initData.comment
+      } else {
+        this.defaultNumberOfSeries = this.exercise.defaultSeriesNumber || getUser().defaultNumberOfSeries
+        this.initDefaultInputs()
+      }
+    },
+    initDefaultInputs() {
       this.series = []
       this.date = new Date().toISOString().substr(0, 10)
       this.comment = null
