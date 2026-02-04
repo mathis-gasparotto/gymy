@@ -15,11 +15,12 @@
             <LineComp
               :dataKeys="['date', 'value']"
               type="step"
+              :dotStyle="{ r: 0 }"
             />
-            <LabelsLayer
+            <!-- <LabelsLayer
               :dataKeys="['date', 'value', 'showValue']"
               :reversed="reversed"
-            />
+            /> -->
           </template>
           <template #widgets>
             <Tooltip
@@ -44,7 +45,7 @@
 import { Responsive, Chart, Grid, Line as LineComp, Tooltip } from 'vue3-charts'
 import { getPerformanceAverage, getPerformances } from 'src/services/performanceService'
 import formatting from 'src/helpers/formatting'
-import LabelsLayer from './LabelsLayer.vue'
+// import LabelsLayer from './LabelsLayer.vue'
 
 export default {
   name: 'PerformancesGraph',
@@ -53,7 +54,7 @@ export default {
     Chart,
     Grid,
     LineComp,
-    LabelsLayer,
+    // LabelsLayer,
     Tooltip
   },
   props: {
@@ -79,13 +80,9 @@ export default {
           type: 'linear'
         },
         primary: {
-          format: (d) => {
-            const noFullYear = this.data.length >= 5
-            const i = this.data.findIndex((item) => item.date === d)
-            const indexValueInterval = this.data.length >= this.maxDate ? Math.round(this.data.length / (this.maxDate - 1)) : 1
-            const showValue = i === this.data.length - 1 || (i % indexValueInterval === 0 && this.data.length - i > indexValueInterval)
-            return showValue ? (noFullYear ? formatting().dateToDisplayCompact(d) : formatting().dateToDisplay(d)) : ''
-          }
+          type: 'linear',
+          // domain: ['dataMin', 'dataMax'],
+          format: (timestamp) => formatting().dateToDisplayCompact(new Date(timestamp))
         }
       },
       margin: {
@@ -95,18 +92,18 @@ export default {
         left: 20
       },
       showChart: false,
-      maxDate: 7
+      maxValueToShow: 7
     }
   },
   created() {
     if (screen.width >= 600 && screen.width < 1024) {
-      this.maxDate = 10
+      this.maxValueToShow = 10
     } else if (screen.width >= 1024 && screen.width < 1440) {
-      this.maxDate = 20
+      this.maxValueToShow = 20
     } else if (screen.width >= 1440 && screen.width < 1920) {
-      this.maxDate = 30
+      this.maxValueToShow = 30
     } else if (screen.width >= 1920) {
-      this.maxDate = 60
+      this.maxValueToShow = 60
     }
     this.loadPerformances()
     if (this.reversed) {
@@ -120,18 +117,30 @@ export default {
       let performances = getPerformances(this.workoutId, this.exerciseId)
       performances = performances.sort((a, b) => new Date(a.date) - new Date(b.date))
       this.data = []
-      const indexValueInterval = performances.length >= this.maxDate ? Math.round(performances.length / (this.maxDate - 1)) : 1
+      const indexValueInterval = performances.length >= this.maxValueToShow ? Math.round(performances.length / (this.maxValueToShow - 1)) : 1
+
       performances.forEach((perf, i) => {
         const showValue = i === performances.length - 1 || (i % indexValueInterval === 0 && performances.length - i > indexValueInterval)
         const value = getPerformanceAverage(this.workoutId, this.exerciseId, perf.id)
         this.data.push({
-          date: perf.date,
+          date: new Date(perf.date).getTime(),
           dateToShow: formatting().dateToDisplay(perf.date),
           value: value * (this.reversed ? -1 : 1),
           showValue,
-          comment: perf.comment
+          comment: formatting().maxStringLenght(perf.comment || '', 30)
         })
       })
+
+      if (this.data.length > 0) {
+        const timestamps = this.data.map(d => d.date)
+        const minTime = Math.min(...timestamps)
+        const maxTime = Math.max(...timestamps)
+
+        const dayInMs = 86400000
+        const timeMargin = dayInMs * 30
+        this.axis.primary.domain = [minTime - timeMargin, maxTime + timeMargin]
+      }
+
       this.showChart = this.data.length > 0
     }
   }
