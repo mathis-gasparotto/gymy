@@ -82,7 +82,7 @@ export default {
         primary: {
           type: 'linear',
           // domain: ['dataMin', 'dataMax'],
-          format: (timestamp) => formatting().dateToDisplayCompact(new Date(timestamp))
+          format: (timestamp) => formatting().dateToDisplayMonthAndYearCompact(new Date(timestamp))
         }
       },
       margin: {

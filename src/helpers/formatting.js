@@ -34,9 +34,21 @@ export default () => ({
     let d = new Date(date)
     return `${d.getDate() >= 10 ? d.getDate() : '0' + d.getDate()}/${d.getMonth() + 1 >= 10 ? d.getMonth() + 1 : '0' + (d.getMonth() + 1)}/${d.getFullYear()}`
   },
-  dateToDisplayCompact(date) {
+  dateToDisplayMonthAndYear(date) {
     let d = new Date(date)
-    return `${d.getDate() >= 10 ? d.getDate() : '0' + d.getDate()}/${d.getMonth() + 1 >= 10 ? d.getMonth() + 1 : '0' + (d.getMonth() + 1)}`
+    return `${d.getMonth() + 1 >= 10 ? d.getMonth() + 1 : '0' + (d.getMonth() + 1)}/${d.getFullYear()}`
+  },
+  dateToDisplayMonthAndYearCompact(date) {
+    let d = new Date(date)
+    return `${d.getMonth() + 1 >= 10 ? d.getMonth() + 1 : '0' + (d.getMonth() + 1)}/${d.getFullYear().toString().slice(-2)}`
+  },
+  dateToDisplayMonth(date) {
+    let d = new Date(date)
+    return d.getMonth() + 1 >= 10 ? d.getMonth() + 1 : '0' + (d.getMonth() + 1)
+  },
+  dateToDisplayYear(date) {
+    let d = new Date(date)
+    return d.getFullYear()
   },
   dateToDisplayDay(date) {
     let d = new Date(date)
