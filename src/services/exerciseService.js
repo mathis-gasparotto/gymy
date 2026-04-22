@@ -5,6 +5,7 @@ import { createData, removeData, updateData } from './firebaseService'
 import { LOCALSTORAGE_DB_USER } from 'src/helpers/databaseHelper'
 import { getUser } from './userService'
 import { USER_GUEST_UID } from 'src/helpers/userHelper'
+import { getWorkout } from './workoutService'
 
 export function getExercises(workoutId) {
   const exercisesObject = LocalDb.get(LOCALSTORAGE_DB_USER).workouts?.[workoutId]?.exercises
@@ -17,6 +18,20 @@ export function getExercises(workoutId) {
       }
     })
     .sort((a, b) => a.position - b.position)
+}
+
+export function getRelatedExercise(workoutId, exerciseId) {
+  const exercise = getExercise(workoutId, exerciseId)
+  if (exercise.link?.workout && exercise.link?.exercise) {
+    const relatedExercise = getExercise(exercise.link.workout, exercise.link.exercise)
+    if (relatedExercise) {
+      const relatedExerciseWorkout = getWorkout(exercise.link.workout)
+      return { workout: relatedExerciseWorkout, ...relatedExercise }
+    } else {
+      updateExercise(workoutId, exerciseId, { link: null })
+    }
+  }
+  return null
 }
 
 export function getNextExercise(workoutId, id) {
@@ -105,6 +120,9 @@ export async function copyExercise(workoutId, id, workoutDestinationId) {
 
 export async function updateExercise(workoutId, id, payload, timestamp = true) {
   const user = getUser()
+  delete payload?.position
+  delete payload?.createdAt
+  delete payload?.performances
   const updatedAt = timestamp ? new Date().toISOString() : user.workouts?.[workoutId]?.exercises[id]?.updatedAt
   if (user && user.uid === USER_GUEST_UID) {
     const dataToStore = {...user}
@@ -120,6 +138,20 @@ export async function updateExercise(workoutId, id, payload, timestamp = true) {
   }
 
   return payload
+}
+
+export async function updateExerciseWithRelated(workoutId, id, payload, timestamp = true) {
+  const exercise = updateExercise(workoutId, id, payload, timestamp)
+
+  const relatedExercise = getRelatedExercise(workoutId, id)
+
+  if (relatedExercise) {
+    delete payload?.link
+    delete payload?.disabled
+    updateExercise(relatedExercise.workout.id, relatedExercise.id, payload, timestamp)
+  }
+
+  return exercise
 }
 
 export async function moveExercise(workoutId, newExercisesOrder) {

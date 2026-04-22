@@ -141,7 +141,8 @@
 <script>
 import { PERFORMANCE_TYPES, PERFORMANCE_TYPE_DEFAULT, PERFORMANCE_TYPE_BAR, PERFORMANCE_TYPE_ARM } from 'src/helpers/performanceHelper'
 import { errorNotify, successNotify } from 'src/helpers/notifyHelper'
-import { addPerformance, deletePerformance, deletePerformanceWithRelated, getPerformances, getRelatedExercise, getRelatedPerformance, updatePerformanceWithRelated } from 'src/services/performanceService'
+import { addPerformance, deletePerformance, deletePerformanceWithRelated, getPerformances, getRelatedPerformance, updatePerformanceWithRelated } from 'src/services/performanceService'
+import { getRelatedExercise } from 'src/services/exerciseService'
 import formatting from 'src/helpers/formatting'
 import { Dialog } from 'quasar'
 import translatting from 'src/helpers/translatting'

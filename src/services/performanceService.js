@@ -6,8 +6,7 @@ import { LOCALSTORAGE_DB_USER } from 'src/helpers/databaseHelper'
 import { PERFORMANCE_TYPE_BAR, PERFORMANCE_TYPE_DEFAULT } from 'src/helpers/performanceHelper'
 import { getUser } from './userService'
 import { USER_GUEST_UID } from 'src/helpers/userHelper'
-import { getExercise, updateExercise } from './exerciseService'
-import { getWorkout } from './workoutService'
+import { getExercise, getRelatedExercise } from './exerciseService'
 
 export function getPerformances(workoutId, exerciseId) {
   const performancesObject = LocalDb.get(LOCALSTORAGE_DB_USER).workouts?.[workoutId]?.exercises?.[exerciseId]?.performances
@@ -20,20 +19,6 @@ export function getPerformances(workoutId, exerciseId) {
       }
     })
     .sort((a, b) => (b.date === a.date ? new Date(b.createdAt) - new Date(a.createdAt) : new Date(b.date) - new Date(a.date)))
-}
-
-export function getRelatedExercise(workoutId, exerciseId) {
-  const exercise = getExercise(workoutId, exerciseId)
-  if (exercise.link?.workout && exercise.link?.exercise) {
-    const relatedExercise = getExercise(exercise.link.workout, exercise.link.exercise)
-    if (relatedExercise) {
-      const relatedExerciseWorkout = getWorkout(exercise.link.workout)
-      return { workout: relatedExerciseWorkout, ...relatedExercise }
-    } else {
-      updateExercise(workoutId, exerciseId, { link: null })
-    }
-  }
-  return null
 }
 
 export function getPerformance(workoutId, exerciseId, id) {

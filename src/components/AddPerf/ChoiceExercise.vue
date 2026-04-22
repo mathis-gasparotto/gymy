@@ -146,7 +146,7 @@
 </template>
 
 <script>
-import { addExercise, copyExercise, deleteExercise, getExercises, moveExercise, updateExercise } from 'src/services/exerciseService'
+import { addExercise, copyExercise, deleteExercise, getExercises, moveExercise, updateExerciseWithRelated } from 'src/services/exerciseService'
 import GymyHeader from 'src/components/GymyHeader.vue'
 import { Dialog } from 'quasar'
 import { errorNotify, successNotify } from 'src/helpers/notifyHelper'
@@ -268,7 +268,7 @@ export default {
         message: 'Modification en cours...',
         boxClass: 'text-h5'
       })
-      updateExercise(this.workout.id, payload.id, payload)
+      updateExerciseWithRelated(this.workout.id, payload.id, payload)
         .then(() => {
           this.loadExercises()
           successNotify('Votre exercice a bien été modifié')
