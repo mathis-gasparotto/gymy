@@ -147,7 +147,22 @@ export async function deletePlan(id) {
 export function getTodayWorkouts() {
   const plans = getPlans()
   const today = new Date().getDay()
-  return plans.map(plan => {
+
+  const now = new Date()
+
+  const day = now.getDay()
+  const diff = day === 0 ? -6 : 1 - day
+  const monday = new Date(now)
+  monday.setDate(now.getDate() + diff)
+
+  const year = monday.getFullYear()
+  const jan1 = new Date(monday.getFullYear(), 0, 1)
+  const days = Math.floor((monday - jan1) / (24 * 60 * 60 * 1000))
+  const week = Math.ceil((days + jan1.getDay() + 1) / 7)
+  const isoWeek = week < 10 ? `W0${week}` : `W${week}`
+  const currentWeekStart = `${year}-${isoWeek}`
+
+  const todayWorkouts = plans.map(plan => {
     let workoutId
     let workoutLabel
     switch (today) {
@@ -183,7 +198,22 @@ export function getTodayWorkouts() {
     return {
       id: plan.id,
       label: plan.label,
-      workout: workoutId ? getWorkout(workoutId) : workoutLabel ? {label: workoutLabel} : null
+      weekStartAt: plan.weekStartAt,
+      workout: workoutId
+        ? getWorkout(workoutId)
+        : workoutLabel
+          ? { label: workoutLabel }
+          : null
     }
   })
+
+  todayWorkouts.sort((a, b) => {
+    const aIsCurrent = a.weekStartAt === currentWeekStart
+    const bIsCurrent = b.weekStartAt === currentWeekStart
+    if (aIsCurrent && !bIsCurrent) return -1
+    if (!aIsCurrent && bIsCurrent) return 1
+    return 0
+  })
+
+  return todayWorkouts
 }

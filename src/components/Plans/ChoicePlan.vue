@@ -13,10 +13,16 @@
             <div class="text-h6 text-center">
               {{ element.label }}
             </div>
+            <div class="text-center" v-if="element.weekStartAt">
+              {{ weekStartAtFormatted(element.weekStartAt) }}
+            </div>
           </q-card-section>
           <q-card-section class="q-pb-none lt-sm">
             <div class="text-h6 text-center">
               {{ element.label }}
+            </div>
+            <div class="text-center q-px-md" v-if="element.weekStartAt">
+              {{ weekStartAtFormatted(element.weekStartAt) }}
             </div>
           </q-card-section>
           <q-card-actions
@@ -130,6 +136,7 @@ import { Dialog } from 'quasar'
 import { errorNotify, successNotify } from 'src/helpers/notifyHelper'
 import PlanForm from 'src/components/Plans/PlanForm.vue'
 import CardDraggable from 'src/components/CardDraggable.vue'
+import formatting from 'src/helpers/formatting'
 
 export default {
   name: 'ChoicePlan',
@@ -154,6 +161,10 @@ export default {
     this.loadPlans()
   },
   methods: {
+    weekStartAtFormatted(weekStartAt) {
+      const date = formatting().firstDayOfWeek(weekStartAt)
+      return 'Commence la semaine du ' + formatting().dateToDisplay(date)
+    },
     onDragEnd(e) {
       this.$q.loading.show({
         delay: 400, // ms
@@ -202,7 +213,7 @@ export default {
         message: 'Modification en cours...',
         boxClass: 'text-h5'
       })
-      updatePlan(payload.id, { label: payload.label })
+      updatePlan(payload.id, { label: payload.label, weekStartAt: payload.weekStartAt })
         .then(() => {
           this.loadPlans()
           successNotify('Votre planification a bien été modifiée')

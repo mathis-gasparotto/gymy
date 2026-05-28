@@ -15,6 +15,16 @@
       ]"
       hide-bottom-space
     ></q-input>
+    <q-input
+      name="weekStartAt"
+      rounded
+      outlined
+      label="Semaine de la planification"
+      class="q-mb-md"
+      :type="isChromeOrMobile ? 'week' : 'date'"
+      v-model="planForm.weekStartAt"
+      mask="####-W##"
+    ></q-input>
     <q-btn
       v-if="buttonIcon"
       color="primary"
@@ -36,6 +46,7 @@
 </template>
 
 <script>
+import formatting from '../../helpers/formatting'
 export default {
   name: 'PlanForm',
   emits: ['submit'],
@@ -71,17 +82,30 @@ export default {
   created() {
     if (this.initData) {
       this.planForm = {...this.planForm, ...this.initData}
+      if (this.planForm.weekStartAt && !this.isChromeOrMobile) {
+        this.planForm.weekStartAt = formatting().firstDayOfWeek(this.planForm.weekStartAt)
+      }
     }
   },
   computed: {
     formValid() {
       return this.planForm.label.trim().length > 2
+    },
+    isChromeOrMobile() {
+      return navigator.userAgent.toLowerCase().includes('chrome') || navigator.userAgent.toLowerCase().includes('iphone') || navigator.userAgent.toLowerCase().includes('ipad') || navigator.userAgent.toLowerCase().includes('android')
     }
   },
   methods: {
     onsubmit() {
       if (!this.formValid) return
-      this.$emit('submit', this.planForm)
+      const payload = {
+        ...this.planForm
+      }
+      if (payload.weekStartAt && !this.isChromeOrMobile) {
+        const date = new Date(payload.weekStartAt)
+        payload.weekStartAt = formatting().weekString(date)
+      }
+      this.$emit('submit', payload)
     }
   }
 }

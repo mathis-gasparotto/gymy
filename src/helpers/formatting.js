@@ -88,5 +88,31 @@ export default () => ({
     }
     arr.splice(new_index, 0, arr.splice(old_index, 1)[0])
     return arr.filter((el) => !!el)
+  },
+  weekNumber(date) {
+    const d = new Date(date)
+    d.setHours(0, 0, 0, 0)
+    d.setDate(d.getDate() + 4 - (d.getDay() || 7))
+    const yearStart = new Date(d.getFullYear(), 0, 1)
+    return Math.ceil((((d - yearStart) / 86400000) + 1) / 7)
+  },
+  weekString(date) {
+    const d = new Date(date)
+    d.setHours(0, 0, 0, 0)
+    d.setDate(d.getDate() + 4 - (d.getDay() || 7))
+    const isoYear = d.getFullYear()
+    const week = this.weekNumber(date)
+    return `${isoYear}-W${week >= 10 ? week : '0' + week}`
+  },
+  firstDayOfWeek(weekNumber) {
+    const [year, weekPart] = weekNumber.split('-')
+    const week = parseInt(weekPart.replace('W', ''), 10)
+    const yearNum = parseInt(year, 10)
+    const jan4 = new Date(yearNum, 0, 4)
+    const day = jan4.getDay() || 7
+    const mondayOfWeek1 = new Date(yearNum, 0, 4 - day + 1)
+    const monday = new Date(mondayOfWeek1)
+    monday.setDate(mondayOfWeek1.getDate() + (week - 1) * 7)
+    return this.dateToInput(monday)
   }
 })

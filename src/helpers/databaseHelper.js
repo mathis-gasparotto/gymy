@@ -135,6 +135,11 @@ const planProps = [
     name: 'sundayWorkoutLabel',
     type: 'string',
     default: null
+  },
+  {
+    name: 'weekStartAt',
+    type: 'string',
+    default: null
   }
 ]
 
