@@ -30,8 +30,17 @@ export default () => ({
     let d = new Date(date)
     return `${d.getDate() >= 10 ? d.getDate() : '0' + d.getDate()}/${d.getMonth() + 1 >= 10 ? d.getMonth() + 1 : '0' + (d.getMonth() + 1)}/${d.getFullYear()} à ${d.getHours() >= 10 ? d.getHours() : '0' + d.getHours()}h${d.getMinutes() >= 10 ? d.getMinutes() : '0' + d.getMinutes()}`
   },
+  parseLocalDate(date) {
+    if (typeof date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(date)) {
+      const [year, month, day] = date.split('-').map(Number)
+      return new Date(year, month - 1, day)
+    }
+    const d = new Date(date)
+    d.setHours(0, 0, 0, 0)
+    return d
+  },
   dateToDisplay(date) {
-    let d = new Date(date)
+    const d = this.parseLocalDate(date)
     return `${d.getDate() >= 10 ? d.getDate() : '0' + d.getDate()}/${d.getMonth() + 1 >= 10 ? d.getMonth() + 1 : '0' + (d.getMonth() + 1)}/${d.getFullYear()}`
   },
   dateToDisplayMonthAndYear(date) {
@@ -55,7 +64,7 @@ export default () => ({
     return d.getDate() >= 10 ? d.getDate() : '0' + d.getDate()
   },
   dateToInput(date) {
-    let d = new Date(date)
+    const d = this.parseLocalDate(date)
     return `${d.getFullYear()}-${d.getMonth() + 1 >= 10 ? d.getMonth() + 1 : '0' + (d.getMonth() + 1)}-${d.getDate() >= 10 ? d.getDate() : '0' + d.getDate()}`
   },
   dateTimeFormatToBDD(date) {
@@ -90,15 +99,13 @@ export default () => ({
     return arr.filter((el) => !!el)
   },
   weekNumber(date) {
-    const d = new Date(date)
-    d.setHours(0, 0, 0, 0)
+    const d = this.parseLocalDate(date)
     d.setDate(d.getDate() + 4 - (d.getDay() || 7))
     const yearStart = new Date(d.getFullYear(), 0, 1)
     return Math.ceil((((d - yearStart) / 86400000) + 1) / 7)
   },
   weekString(date) {
-    const d = new Date(date)
-    d.setHours(0, 0, 0, 0)
+    const d = this.parseLocalDate(date)
     d.setDate(d.getDate() + 4 - (d.getDay() || 7))
     const isoYear = d.getFullYear()
     const week = this.weekNumber(date)
@@ -108,11 +115,11 @@ export default () => ({
     const [year, weekPart] = weekNumber.split('-')
     const week = parseInt(weekPart.replace('W', ''), 10)
     const yearNum = parseInt(year, 10)
-    const jan4 = new Date(yearNum, 0, 4)
-    const day = jan4.getDay() || 7
-    const mondayOfWeek1 = new Date(yearNum, 0, 4 - day + 1)
-    const monday = new Date(mondayOfWeek1)
-    monday.setDate(mondayOfWeek1.getDate() + (week - 1) * 7)
-    return this.dateToInput(monday)
+    const jan4 = new Date(Date.UTC(yearNum, 0, 4))
+    const day = jan4.getUTCDay() || 7
+    const monday = new Date(Date.UTC(yearNum, 0, 4 - day + 1 + (week - 1) * 7))
+    const month = monday.getUTCMonth() + 1
+    const dayOfMonth = monday.getUTCDate()
+    return `${monday.getUTCFullYear()}-${month >= 10 ? month : '0' + month}-${dayOfMonth >= 10 ? dayOfMonth : '0' + dayOfMonth}`
   }
 })

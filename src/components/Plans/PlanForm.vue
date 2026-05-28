@@ -21,7 +21,7 @@
       outlined
       label="Semaine de la planification"
       class="q-mb-md"
-      :type="isChromeOrMobile ? 'week' : 'date'"
+      :type="isChromeOrIos ? 'week' : 'date'"
       v-model="planForm.weekStartAt"
       mask="####-W##"
     ></q-input>
@@ -82,7 +82,7 @@ export default {
   created() {
     if (this.initData) {
       this.planForm = {...this.planForm, ...this.initData}
-      if (this.planForm.weekStartAt && !this.isChromeOrMobile) {
+      if (this.planForm.weekStartAt && !this.isChromeOrIos) {
         this.planForm.weekStartAt = formatting().firstDayOfWeek(this.planForm.weekStartAt)
       }
     }
@@ -91,8 +91,8 @@ export default {
     formValid() {
       return this.planForm.label.trim().length > 2
     },
-    isChromeOrMobile() {
-      return navigator.userAgent.toLowerCase().includes('chrome') || navigator.userAgent.toLowerCase().includes('iphone') || navigator.userAgent.toLowerCase().includes('ipad') || navigator.userAgent.toLowerCase().includes('android')
+    isChromeOrIos() {
+      return navigator.userAgent.toLowerCase().includes('chrome') || navigator.userAgent.toLowerCase().includes('iphone') || navigator.userAgent.toLowerCase().includes('ipad')
     }
   },
   methods: {
@@ -101,9 +101,8 @@ export default {
       const payload = {
         ...this.planForm
       }
-      if (payload.weekStartAt && !this.isChromeOrMobile) {
-        const date = new Date(payload.weekStartAt)
-        payload.weekStartAt = formatting().weekString(date)
+      if (payload.weekStartAt && !this.isChromeOrIos) {
+        payload.weekStartAt = formatting().weekString(payload.weekStartAt)
       }
       this.$emit('submit', payload)
     }

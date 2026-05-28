@@ -11,7 +11,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Run build app
         run: |
           touch .env
@@ -28,7 +28,7 @@ jobs:
           yarn install --frozen-lockfile && yarn build:web
 
       - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: app
           path: .
@@ -42,7 +42,7 @@ jobs:
       name: 'Production'
     steps:
       - name: Download artifact from build job
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: app
 
