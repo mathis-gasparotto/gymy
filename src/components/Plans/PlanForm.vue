@@ -21,7 +21,7 @@
       outlined
       label="Semaine de la planification"
       class="q-mb-md"
-      :type="isChromeOrIos ? 'week' : 'date'"
+      :type="isChromeDesktopOrIos ? 'week' : 'date'"
       v-model="planForm.weekStartAt"
       mask="####-W##"
       clearable
@@ -47,6 +47,7 @@
 </template>
 
 <script>
+import { Capacitor } from '@capacitor/core';
 import formatting from '../../helpers/formatting'
 export default {
   name: 'PlanForm',
@@ -83,7 +84,7 @@ export default {
   created() {
     if (this.initData) {
       this.planForm = {...this.planForm, ...this.initData}
-      if (this.planForm.weekStartAt && !this.isChromeOrIos) {
+      if (this.planForm.weekStartAt && !this.isChromeDesktopOrIos) {
         this.planForm.weekStartAt = formatting().firstDayOfWeek(this.planForm.weekStartAt)
       }
     }
@@ -92,8 +93,16 @@ export default {
     formValid() {
       return this.planForm.label.trim().length > 2
     },
-    isChromeOrIos() {
-      return navigator.userAgent.toLowerCase().includes('chrome') || navigator.userAgent.toLowerCase().includes('iphone') || navigator.userAgent.toLowerCase().includes('ipad')
+    isChromeDesktopOrIos() {
+      const platform = Capacitor.getPlatform()
+      if (platform === 'ios') return true
+      if (platform === 'android') return false
+
+      const ua = navigator.userAgent.toLowerCase()
+      const isAndroid = ua.includes('android')
+      const isIos = /iphone|ipad|ipod/.test(ua)
+      const isChromeDesktop = ua.includes('chrome') && !ua.includes('edg') && !isAndroid
+      return isIos || isChromeDesktop
     }
   },
   methods: {
@@ -102,7 +111,7 @@ export default {
       const payload = {
         ...this.planForm
       }
-      if (payload.weekStartAt && !this.isChromeOrIos) {
+      if (payload.weekStartAt && !this.isChromeDesktopOrIos) {
         payload.weekStartAt = formatting().weekString(payload.weekStartAt)
       }
       this.$emit('submit', payload)
