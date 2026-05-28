@@ -24,6 +24,7 @@
       :type="isChromeOrIos ? 'week' : 'date'"
       v-model="planForm.weekStartAt"
       mask="####-W##"
+      clearable
     ></q-input>
     <q-btn
       v-if="buttonIcon"
