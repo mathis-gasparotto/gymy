@@ -120,7 +120,6 @@ export async function copyExercise(workoutId, id, workoutDestinationId) {
 
 export async function updateExercise(workoutId, id, payload, timestamp = true) {
   const user = getUser()
-  delete payload?.position
   delete payload?.createdAt
   delete payload?.performances
   const updatedAt = timestamp ? new Date().toISOString() : user.workouts?.[workoutId]?.exercises[id]?.updatedAt
